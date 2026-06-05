@@ -1,0 +1,6 @@
+# 此資料夾用於存放可下載檔案，例如：
+# - resume.pdf  ← Resume 頁面「Download PDF」按鈕指向此檔
+# - cv.pdf
+# - portfolio.pdf
+#
+# 請將實際 PDF 履歷放在此資料夾，並命名為 resume.pdf 即可。
