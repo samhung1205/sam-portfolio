@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume · Personal Website</title>
+  <meta name="description" content="個人履歷：教育背景、技術技能、專案與研究經驗。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="projects.html">Projects</a></li>
+          <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="resume.html">Resume</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Page Header + Download CTA ===== -->
+    <section class="section">
+      <div class="container reveal">
+        <span class="section-eyebrow">// RESUME</span>
+        <h1>履歷</h1>
+        <p class="page-intro">
+          以下是我的教育背景、技術技能、專案與研究經驗的彙整。<br />
+          直接下載完整 PDF 履歷，或前往聯絡頁面與我聊聊喔！
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="assets/files/resume.pdf" download>
+            <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+          </a>
+          <a class="btn btn--ghost" href="contact.html">
+            <i class="fa-solid fa-paper-plane"></i> 直接聯絡我
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Education ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// EDUCATION</span>
+          <h2>教育背景</h2>
+        </header>
+        <div class="timeline" data-render="resume-education"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// SKILLS</span>
+          <h2>技術技能</h2>
+          <p>數字僅代表自評熟練度，實際請參考專案與經驗。</p>
+        </header>
+        <div class="grid grid--2">
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-code feature__title-icon feature__title-icon--primary"></i> Programming Languages</h4>
+            <div data-render="skills-languages"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-brain feature__title-icon feature__title-icon--primary-2"></i> AI / ML</h4>
+            <div data-render="skills-ai"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-screwdriver-wrench feature__title-icon feature__title-icon--accent"></i> Software Engineering</h4>
+            <div data-render="skills-engineering"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-square-root-variable feature__title-icon feature__title-icon--primary"></i> Math / Statistics</h4>
+            <div data-render="skills-math"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Experience (Project & Research) ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// EXPERIENCE</span>
+          <h2>專案與研究經驗</h2>
+        </header>
+        <div class="timeline" data-render="resume-experience"><!-- JS 渲染 --></div>
+
+        <div class="btn-row reveal">
+          <a class="btn btn--ghost" href="projects.html">
+            完整專案列表 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a class="btn btn--ghost" href="research.html">
+            研究主題 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Awards ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// AWARDS &amp; ACHIEVEMENTS</span>
+          <h2>獲獎與事蹟</h2>
+          <!-- <p>目前為 placeholder，請在 <code>js/data.js</code> 中的 <code>resume.awards</code> 補充內容。</p> -->
+        </header>
+        <div class="timeline" data-render="resume-awards"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

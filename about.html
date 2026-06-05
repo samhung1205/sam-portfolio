@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About · Personal Website</title>
+  <meta name="description" content="關於我：應用數學背景、軟體工程與 AI Agent 工程方向。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="projects.html">Projects</a></li>
+          <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="resume.html">Resume</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Page Header ===== -->
+    <section class="section about-hero">
+      <div class="container about-hero__grid">
+        <div class="fade-in">
+          <span class="section-eyebrow">// ABOUT ME</span>
+          <h1>關於我</h1>
+          <p class="page-intro">
+            我來自應用數學領域，習慣以數學語言抽象化問題，再以軟體工程實作落地。
+            目前持續往 <strong>軟體工程師</strong> 與 <strong>AI Agent 工程師</strong> 方向發展，
+            希望結合數學、資料與工程能力，建立有實際用途的智慧系統。
+          </p>
+        </div>
+
+        <aside class="code-card fade-in" aria-label="Profile code card">
+<pre><span class="c">// profile.ts</span>
+<span class="k">const</span> me = {
+  role: <span class="s">"SWE & AI Agent Engineer"</span>,
+  background: <span class="s">"Applied Mathematics"</span>,
+  focus: [
+    <span class="s">"LangChain"</span>,
+    <span class="s">"LangGraph"</span>,
+    <span class="s">"Deep Agents"</span>,
+    <span class="s">"RAG"</span>
+  ],
+  mindset: <span class="s">"Math × Code × AI"</span>
+};</pre>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== 核心特色 ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// WHO I AM</span>
+          <h2>我的核心特色</h2>
+          <p>不只是會寫程式，也不只是會推公式 —— 我希望兩者都能落地成可用的產品。</p>
+        </header>
+        <div class="feature-grid" data-render="about-core"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== 學歷 & 應用數學背景 ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// BACKGROUND</span>
+          <h2>學歷與應用數學背景</h2>
+          <p>從學士到碩士，皆專注於應用數學領域，並逐步擴展到計算與工程實作。</p>
+        </header>
+
+        <div class="grid grid--2">
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h4>應用數學的訓練</h4>
+            <p>機率、統計、最佳化、數值方法、線性代數與實驗設計，是我看待真實世界問題的基礎語言。</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-flask"></i></div>
+            <h4>研究經驗</h4>
+            <p>碩士論文聚焦於 Order-of-Addition 實驗設計與距離型線性模型，培養嚴謹的問題定義與分析能力。</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <h4>軟體工程實作</h4>
+            <p>透過個人專案累積前後端、資料處理與 API 開發經驗，能將理論模型實作成可運行的系統。</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h4>AI / Agent 探索</h4>
+            <p>從 ML 模型應用走向 LLM 與 Agent 系統設計，關注「如何讓模型在實際工作流程中真正有用」。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 技術能力 ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// SKILLS</span>
+          <h2>技術能力</h2>
+          <p>橫跨程式語言、AI / ML、軟體工程與數學統計 —— 詳細技能分布請見 <a href="resume.html">Resume</a>。</p>
+        </header>
+
+        <div class="grid grid--2">
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-code feature__title-icon feature__title-icon--primary"></i> Programming Languages</h4>
+            <div data-render="skills-languages"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-brain feature__title-icon feature__title-icon--primary-2"></i> AI / ML</h4>
+            <div data-render="skills-ai"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-screwdriver-wrench feature__title-icon feature__title-icon--accent"></i> Software Engineering</h4>
+            <div data-render="skills-engineering"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-square-root-variable feature__title-icon feature__title-icon--primary"></i> Math / Statistics</h4>
+            <div data-render="skills-math"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 目前學習方向 ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// CURRENT FOCUS</span>
+          <h2>目前學習方向</h2>
+          <p>正在深入 AI Agent 領域，從基礎 Chain 到 Graph-based、Deep Agents 架構的實作。</p>
+        </header>
+        <div class="feature reveal">
+          <ul class="learning-list" data-render="learning-focus"></ul>
+        </div>
+
+        <div class="btn-row reveal">
+          <a class="btn btn--primary" href="projects.html">看我做了什麼</a>
+          <a class="btn btn--ghost" href="research.html">研究方向</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

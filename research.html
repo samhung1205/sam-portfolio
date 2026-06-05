@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research · Personal Website</title>
+  <meta name="description" content="碩士論文研究與 AI Agent 實作探索。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="projects.html">Projects</a></li>
+          <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="resume.html">Resume</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Page Header ===== -->
+    <section class="section">
+      <div class="container reveal">
+        <span class="section-eyebrow">// RESEARCH</span>
+        <h1>研究展示</h1>
+        <p class="page-intro">
+          我的研究主要集中在 <strong>實驗設計 (Experimental Design)</strong> 與 <strong>AI Agent 工程</strong> 兩條主線。
+          一條延續應用數學訓練，另一條延伸到 LLM-based 系統的實作探索。
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Research Cards ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// CURRENT RESEARCH</span>
+          <h2>研究主題</h2>
+          <p>每個研究皆包含主題簡介、關鍵字、亮點與相關連結（部分為 placeholder，將陸續補齊）。</p>
+        </header>
+
+        <div class="grid grid--2" data-render="research-grid"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Methodology Note ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// HOW I WORK</span>
+          <h2>研究方法觀點</h2>
+          <p>不論是統計實驗設計或 AI Agent，我關注的核心是同一件事：「如何用最小成本，獲得最有用的資訊」。</p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h4>問題定義</h4>
+            <p>先抽象化問題本質，再決定要用統計、最佳化或 LLM 的哪種角度切入。</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-diagram-project"></i></div>
+            <h4>模型與設計</h4>
+            <p>從 OofA 候選設計到 Agent 的多節點 Graph，模型結構決定了結果的可解釋與可控性。</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h4>實驗與評估</h4>
+            <p>以模擬、評估指標（mAP、A-/D-optimal、檢索品質）量化方法效能，避免「感覺良好」式的結論。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section section--alt">
+      <div class="container reveal text-center">
+        <h2>想交流研究主題？</h2>
+        <p class="content-narrow content-narrow--center">
+          無論是實驗設計、Order-of-Addition、AI Agent 或 RAG，都歡迎來信討論。
+        </p>
+        <div class="btn-row btn-row--center">
+          <a class="btn btn--primary" href="contact.html">聯絡我</a>
+          <a class="btn btn--ghost"   href="projects.html">看相關專案</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

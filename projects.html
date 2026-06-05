@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects · Personal Website</title>
+  <meta name="description" content="個人專案：MetroPulse 推薦系統、YOLO 船舶物件偵測、AI Agent Lab 等。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="projects.html">Projects</a></li>
+          <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="resume.html">Resume</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Page Header ===== -->
+    <section class="section">
+      <div class="container reveal">
+        <span class="section-eyebrow">// PROJECTS</span>
+        <h1>專案作品</h1>
+        <p class="page-intro">
+          我的作品集橫跨 <strong>推薦系統</strong>、<strong>電腦視覺</strong> 與 <strong>AI Agent</strong>。
+          每個專案都附上技術棧、角色與亮點，並標示目前狀態（Completed / In Progress / Coming Soon）。
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Projects Grid ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// ALL WORK</span>
+          <h2>所有專案</h2>
+          <p>點擊 GitHub 可前往原始碼，Demo 連結將陸續補齊。</p>
+        </header>
+        <div class="grid grid--3" data-render="projects-grid"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
+      <div class="container reveal text-center">
+        <h2>想看更深入的內容？</h2>
+        <p class="content-narrow content-narrow--center">
+          歡迎到 GitHub 看原始碼，或透過 Contact 直接和我聊聊任何專案細節。
+        </p>
+        <div class="btn-row btn-row--center">
+          <a class="btn btn--primary" href="research.html">研究展示</a>
+          <a class="btn btn--ghost"   href="contact.html">聯絡我</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

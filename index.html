@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sam Hung · AI Agent Engineer</title>
+  <meta name="description" content="Sam Hung 是應用數學背景的 AI Agent 與軟體工程師，展示 AI Agent、電腦視覺、推薦系統與資料分析專案。" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <!-- <strong>Engineer</strong> -->
+          <!-- <small>AI Agent Engineer</small> -->
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="projects.html">Projects</a></li>
+          <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="resume.html">Resume</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Hero Section ===== -->
+    <section class="hero hero--home">
+      <div class="container hero__grid">
+        <div class="hero__content fade-in">
+          <div class="hero__eyebrow">AI Agent Engineer · Applied Mathematics</div>
+          <h1 class="hero__title">
+            Hello <br /> I'm <span class="text-gradient">Sam Hung</span><br />
+            <!-- I build AI systems from math, data, and code. -->
+          </h1>
+          <p class="hero__subtitle" data-render="hero-bio">
+            應用數學背景出身，正往軟體工程與 AI Agent 工程方向發展。
+          </p>
+
+          <div class="proof-grid" data-render="hero-proof">
+            <span class="proof-pill"><i class="fa-solid fa-location-dot"></i> Taiwan</span>
+            <span class="proof-pill"><i class="fa-solid fa-graduation-cap"></i> M.S. Applied Math</span>
+            <span class="proof-pill"><span class="live-dot"></span>Open to opportunities</span>
+          </div>
+
+          <div class="btn-row">
+            <a class="btn btn--primary" href="projects.html">
+              <i class="fa-solid fa-folder-open"></i> View Projects
+            </a>
+            <a class="btn btn--ghost" href="contact.html">
+              <i class="fa-solid fa-paper-plane"></i> Contact Me
+            </a>
+            <a class="btn btn--text" href="assets/files/resume.pdf" download>
+              <i class="fa-solid fa-file-arrow-down"></i> Download Resume
+            </a>
+          </div>
+        </div>
+
+        <aside class="hero__visual fade-in" aria-label="Sam Hung profile highlights">
+          <div class="portrait-card">
+            <img class="hero__photo" src="assets/images/me.jpeg" alt="Sam Hung portrait" />
+            <div class="portrait-card__badge">
+              <span class="live-dot"></span>
+              Available for AI / SWE roles
+            </div>
+          </div>
+          <div class="hero-mini-grid" aria-hidden="true">
+            <div class="mini-card mini-card--wide">
+              <span>Focus</span>
+              <strong>LangGraph / RAG / Tool Calling</strong>
+            </div>
+            <div class="mini-card">
+              <span>CV</span>
+              <strong>YOLO</strong>
+            </div>
+            <div class="mini-card">
+              <span>Data</span>
+              <strong>Recommender</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== Skills Snapshot ===== -->
+    <section class="section section--alt section--compact">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// POSITIONING</span>
+          <h2>數學訓練轉成可落地 AI 與軟體系統</h2>
+          <p>從問題建模、資料分析、模型實驗到前端展示，讓研究想法與工程實作能被看見、被驗證、被使用。</p>
+        </header>
+        <div class="bento-grid" data-render="core-grid"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Featured Projects ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// FEATURED PROJECTS</span>
+          <h2>精選專案：從資料、模型到可用系統</h2>
+          <p>這些專案展示我如何把推薦系統、電腦視覺與 AI Agent 技術，拆解成可實作、可驗證的工程成果。</p>
+        </header>
+        <div class="project-bento" data-render="featured-projects"><!-- JS 渲染 --></div>
+        <div class="btn-row reveal">
+          <a class="btn btn--ghost" href="projects.html">
+            查看所有專案 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Featured Research ===== -->
+    <section class="section section--alt research-showcase">
+      <div class="container">
+        <div class="research-layout">
+          <div class="research-copy reveal">
+            <span class="section-eyebrow">// RESEARCH & THESIS</span>
+            <h2>研究不只停在論文，也延伸成工程判斷</h2>
+            <p>我關注如何用數學與實驗設計定義問題，再用 AI / ML 與 Agent workflow 讓結果能被實際使用。</p>
+            <div class="btn-row">
+              <a class="btn btn--ghost" href="research.html">
+                深入了解 <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+          <div class="research-cards" data-render="featured-research"><!-- JS 渲染 --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-panel reveal">
+          <div>
+            <span class="section-eyebrow">// LET'S BUILD</span>
+            <h2>想找能把 AI 想法做成系統的人嗎？</h2>
+            <p>
+              歡迎查看我的專案、下載履歷，或直接聯絡我討論 AI Agent、資料產品、電腦視覺與軟體工程相關職缺。
+            </p>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="contact.html">Contact Me</a>
+            <a class="btn btn--ghost" href="assets/files/resume.pdf" download>Download Resume</a>
+            <a class="btn btn--text" href="projects.html">View Projects</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <!-- Scripts: data first, then logic -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
