@@ -43,12 +43,15 @@ jobs:
 
       - name: Commit & push if changed
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          # 只加同步產出的路徑。不可用 git add -A：本 repo 的 .gitignore 忽略了
+          # 自己（第一行 /.gitignore），CI 上不存在任何 ignore 規則，-A 會把
+          # npm ci 產生的 node_modules 一併commit 進來。
+          git add --all -- articles.html articles assets/images/articles
+          if git diff --cached --quiet; then
+            echo "沒有變更，跳過 commit"
+          else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -A # CI 的 checkout 是乾淨的，變更只會來自同步產出
             git commit -m "chore: sync articles from Notion"
             git push
-          else
-            echo "沒有變更，跳過 commit"
           fi
