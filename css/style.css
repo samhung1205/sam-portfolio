@@ -235,27 +235,27 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 
 .page-hero--about {
-  --page-hero-image: url("../assets/images/3.png");
+  --page-hero-image: url("../assets/images/3.jpg");
   --page-hero-position: center 58%;
 }
 
 .page-hero--projects {
-  --page-hero-image: url("../assets/images/4.png");
+  --page-hero-image: url("../assets/images/4.jpg");
   --page-hero-position: right center;
 }
 
 .page-hero--research {
-  --page-hero-image: url("../assets/images/2.png");
+  --page-hero-image: url("../assets/images/2.jpg");
   --page-hero-position: right center;
 }
 
 .page-hero--resume {
-  --page-hero-image: url("../assets/images/7.png");
+  --page-hero-image: url("../assets/images/7.jpg");
   --page-hero-position: right center;
 }
 
 .page-hero--contact {
-  --page-hero-image: url("../assets/images/1.png");
+  --page-hero-image: url("../assets/images/1.jpg");
   --page-hero-position: right center;
 }
 
