@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync-notion.mjs",
+    "sync:local": "node --env-file=.env scripts/sync-notion.mjs",
     "sync:fixture": "node scripts/sync-notion.mjs --fixture"
   },
   "engines": {
