@@ -44,6 +44,35 @@ const escapeAttr = escapeHtml;
    ===================================================== */
 const NOTION_VERSION = "2022-06-28";
 
+// 使用者可能貼整段網址而非純 ID，一律正規化成 32 碼十六進位
+function normalizeNotionId(raw = "") {
+  const hex = String(raw).trim().replace(/^.*?([0-9a-fA-F-]{32,36}).*$/s, "$1").replace(/-/g, "");
+  return /^[0-9a-f]{32}$/i.test(hex) ? hex : null;
+}
+
+// 失敗時把 Notion 的錯誤碼翻成「該怎麼修」，避免只看到一串 JSON
+function explainNotionError(status, body) {
+  let code = "";
+  try {
+    code = JSON.parse(body).code || "";
+  } catch {
+    /* 非 JSON 回應就只靠狀態碼判斷 */
+  }
+  if (status === 401)
+    return "NOTION_TOKEN 無效或已撤銷。請到 notion.so/my-integrations 重新複製 Internal Integration Secret，更新同名 secret。";
+  if (status === 404 || code === "object_not_found")
+    return (
+      "找得到 token 但讀不到資料庫，最常見原因是「整合尚未被加入這個資料庫」。\n" +
+      "  修法：在 Notion 開啟「Site Articles」資料庫 → 右上 ⋯ → Connections（連線）→ 選你的 integration。\n" +
+      "  次要可能：NOTION_DATABASE_ID 填錯（本專案應為 1b03014710694ddaab6fd85f84ede018）。"
+    );
+  if (status === 400 && code === "validation_error")
+    return "請求格式被拒。通常是資料庫欄位被改名或改型別（本腳本預期 Status 為 select，含 Published 選項）。";
+  if (status === 403)
+    return "整合權限不足。請確認該 integration 具備讀取內容的能力。";
+  return "";
+}
+
 async function notionApi(pathname, init = {}) {
   for (let attempt = 0; attempt < 5; attempt++) {
     const res = await fetch(`https://api.notion.com/v1${pathname}`, {
@@ -59,7 +88,11 @@ async function notionApi(pathname, init = {}) {
       await sleep((Number(res.headers.get("retry-after")) || 2) * 1000);
       continue;
     }
-    if (!res.ok) throw new Error(`Notion API ${pathname} → ${res.status}: ${await res.text()}`);
+    if (!res.ok) {
+      const body = await res.text();
+      const hint = explainNotionError(res.status, body);
+      throw new Error(`Notion API ${pathname} → HTTP ${res.status}\n  回應：${body}${hint ? `\n\n▶ ${hint}` : ""}`);
+    }
     return res.json();
   }
   throw new Error(`Notion API ${pathname}：重試多次仍被限流`);
@@ -73,7 +106,7 @@ async function queryPublishedPages() {
       filter: { property: "Status", select: { equals: "Published" } },
       ...(cursor ? { start_cursor: cursor } : {}),
     };
-    const res = await notionApi(`/databases/${env.NOTION_DATABASE_ID}/query`, {
+    const res = await notionApi(`/databases/${normalizeNotionId(env.NOTION_DATABASE_ID)}/query`, {
       method: "POST",
       body: JSON.stringify(body),
     });
@@ -473,16 +506,52 @@ function pageMeta(page) {
   };
 }
 
+// 只回報「有沒有設、格式對不對」，絕不印出任何 secret 的值
+function preflight() {
+  const token = env.NOTION_TOKEN || "";
+  const rawId = env.NOTION_DATABASE_ID || "";
+  const id = normalizeNotionId(rawId);
+  let ok = true;
+
+  console.log("環境變數檢查：");
+
+  if (!token) {
+    console.log("  ✗ NOTION_TOKEN：未設定（GitHub → Settings → Secrets and variables → Actions）");
+    ok = false;
+  } else if (!/^(ntn_|secret_)/.test(token)) {
+    console.log(`  ✗ NOTION_TOKEN：已設定但格式不像 Notion token（長度 ${token.length}，應以 ntn_ 或 secret_ 開頭）`);
+    ok = false;
+  } else {
+    console.log(`  ✓ NOTION_TOKEN：已設定（格式正確，長度 ${token.length}）`);
+  }
+
+  if (!rawId) {
+    console.log("  ✗ NOTION_DATABASE_ID：未設定");
+    ok = false;
+  } else if (!id) {
+    console.log(`  ✗ NOTION_DATABASE_ID：無法解析出 32 碼 ID（目前長度 ${rawId.length}）`);
+    ok = false;
+  } else {
+    console.log(`  ✓ NOTION_DATABASE_ID：${id}`);
+  }
+
+  const r2Set = R2_KEYS.filter((k) => env[k]);
+  console.log(
+    r2Set.length === R2_KEYS.length
+      ? "  ✓ R2：五個變數齊全，圖片將上傳 Cloudflare R2"
+      : `  · R2：已設 ${r2Set.length}/5${r2Set.length ? `（缺 ${R2_KEYS.filter((k) => !env[k]).join(", ")}）` : ""}，圖片改存 repo`
+  );
+
+  if (!ok) console.error("\n環境變數不完整，中止。名稱必須完全一致（含大小寫），參考 .env.example。");
+  return ok;
+}
+
 async function loadPosts() {
   if (FIXTURE) {
     const raw = await readFile(path.join(ROOT, "scripts", "fixture.json"), "utf8");
     return JSON.parse(raw).posts;
   }
-  const missing = ["NOTION_TOKEN", "NOTION_DATABASE_ID"].filter((k) => !env[k]);
-  if (missing.length) {
-    console.error(`缺少環境變數：${missing.join(", ")}（參考 .env.example）`);
-    process.exit(1);
-  }
+  if (!preflight()) process.exit(1);
   const pages = await queryPublishedPages();
   const posts = [];
   for (const page of pages) {
