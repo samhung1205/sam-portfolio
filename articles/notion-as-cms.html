@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用 Notion 當 CMS：我的個人網站文章發佈流程 · Sam Hung</title>
+  <meta name="description" content="示範文章：說明這個網站如何用 Notion 管理文章、GitHub Actions 同步、Cloudflare R2 當圖床。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/article.css" />
+</head>
+<body>
+  <!-- 本檔由 scripts/sync-notion.mjs 產生，請勿手動編輯；內容請到 Notion「Site Articles」資料庫修改 -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="../index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="../assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="../index.html">Home</a></li>
+          <li><a class="nav__link" href="../about.html">About</a></li>
+          <li><a class="nav__link" href="../projects.html">Projects</a></li>
+          <li><a class="nav__link" href="../research.html">Research</a></li>
+          <li><a class="nav__link" href="../articles.html">Articles</a></li>
+          <li><a class="nav__link" href="../resume.html">Resume</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section article-hero">
+      <div class="container reveal">
+        <span class="section-eyebrow">// ARTICLE</span>
+        <h1 class="article-title">用 Notion 當 CMS：我的個人網站文章發佈流程</h1>
+        <div class="article-meta">
+          <span><i class="fa-regular fa-calendar"></i> 2026-08-26</span>
+          <span class="tag-list"><span class="tag">Software Engineering</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <article class="article-body">
+<p>這是一篇示範文章，展示 Notion 各種 block 同步到網站後的樣子。</p><h3>為什麼用 Notion 當 CMS</h3><p>寫作體驗好，而且不用自己做後台。整體流程是：</p><ol><li>在 Notion 寫文章，設定 <strong>Status = Published</strong></li><li>GitHub Actions 定時（或手動）執行同步腳本</li><li>腳本把文章轉成靜態 HTML、圖片上傳到 Cloudflare R2</li><li>GitHub Pages 自動部署</li></ol><h3>程式碼區塊</h3><pre class="article-code"><code class="language-python">def hello(name: str) -&gt; str:
+    return f&quot;Hello, {name}!&quot;</code></pre><h3>引言與重點</h3><blockquote>如何用最小成本，獲得最有用的資訊。</blockquote><ul><li>支援<strong>粗體</strong>、<em>斜體</em>、<code>inline code</code> 與 <a href="https://github.com/" target="_blank" rel="noopener">連結</a></li><li>支援巢狀清單<ul><li>像這樣</li></ul></li></ul><hr /><p>以上就是示範內容，可以直接編輯或刪除這篇文章。</p>
+        </article>
+        <div class="btn-row btn-row--center">
+          <a class="btn btn--ghost" href="../articles.html"><i class="fa-solid fa-arrow-left"></i> 回文章列表</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
