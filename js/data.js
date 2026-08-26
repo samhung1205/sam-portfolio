@@ -24,7 +24,7 @@ const profile = {
     { icon: "fa-circle-check", label: "Open to opportunities", live: true }
   ],
   location: "Taiwan",
-  email: "shaojun5861@example.com",   
+  email: "shaojun5861@gmail.com",   
   links: {
     github:   "https://github.com/samhung1205",     // TODO
     linkedin: "https://www.linkedin.com/in/sam-hung05",  // TODO
