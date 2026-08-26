@@ -30,8 +30,8 @@
           <li><a class="nav__link" href="about.html">About</a></li>
           <li><a class="nav__link" href="projects.html">Projects</a></li>
           <li><a class="nav__link" href="research.html">Research</a></li>
+          <li><a class="nav__link" href="articles.html">Articles</a></li>
           <li><a class="nav__link" href="resume.html">Resume</a></li>
-          <li><a class="nav__link" href="contact.html">Contact</a></li>
         </ul>
       </nav>
     </div>
@@ -45,13 +45,13 @@
         <h1>履歷</h1>
         <p class="page-intro">
           以下是我的教育背景、技術技能、專案與研究經驗的彙整。<br />
-          直接下載完整 PDF 履歷，或前往聯絡頁面與我聊聊喔！
+          直接下載完整 PDF 履歷，或到頁面下方的聯絡管道與我聊聊喔！
         </p>
         <div class="btn-row">
           <a class="btn btn--primary" href="assets/files/resume.pdf" download>
             <i class="fa-solid fa-file-arrow-down"></i> Download PDF
           </a>
-          <a class="btn btn--ghost" href="contact.html">
+          <a class="btn btn--ghost" href="#contact">
             <i class="fa-solid fa-paper-plane"></i> 直接聯絡我
           </a>
         </div>
@@ -127,6 +127,29 @@
           <!-- <p>目前為 placeholder，請在 <code>js/data.js</code> 中的 <code>resume.awards</code> 補充內容。</p> -->
         </header>
         <div class="timeline" data-render="resume-awards"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Contact（原 contact.html 併入此處） ===== -->
+    <section class="section section--alt" id="contact">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="reveal">
+            <span class="section-eyebrow">// CONTACT</span>
+            <h2>聯絡我</h2>
+            <p>
+              合作邀約、面試機會、研究討論或單純打聲招呼都歡迎。
+              最快回覆的方式是 Email；技術相關討論也可以直接到 GitHub 留言。
+            </p>
+            <div class="btn-row">
+              <a class="btn btn--primary" href="assets/files/resume.pdf" download>
+                <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+              </a>
+              <a class="btn btn--ghost" href="projects.html">瀏覽專案</a>
+            </div>
+          </div>
+          <ul class="contact-list reveal" data-render="contact-list"><!-- JS 渲染 --></ul>
+        </div>
       </div>
     </section>
   </main>

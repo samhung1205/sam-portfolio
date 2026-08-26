@@ -1,0 +1,17 @@
+{
+  "name": "sam-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sam Hung 個人品牌網站（靜態站 + Notion 文章同步）",
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-notion.mjs",
+    "sync:fixture": "node scripts/sync-notion.mjs --fixture"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.658.0"
+  }
+}

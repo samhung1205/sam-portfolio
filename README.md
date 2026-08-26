@@ -13,11 +13,12 @@
 ```
 personal-website/
 ├── index.html          # Home：Hero、核心定位、Featured Projects、Featured Research、CTA
-├── about.html          # About：背景、技能、學習方向
+├── about.html          # About：背景、核心特色、學習方向
 ├── projects.html       # Projects：完整專案卡片列表
 ├── research.html       # Research：碩士論文 + AI Agent 研究
-├── resume.html         # Resume：教育、技能、經歷、獲獎 + PDF 下載
-├── contact.html        # Contact：聯絡管道 + 前端表單
+├── resume.html         # Resume：教育、技能、經歷、獲獎 + PDF 下載 + 聯絡管道
+├── articles.html       # Articles：Notion 同步的文章列表（產出檔，勿手改）
+├── articles/           # 各篇文章頁（產出檔，勿手改）
 │
 ├── css/
 │   └── style.css       # 全站樣式（含設計 tokens、元件、RWD、動畫）
@@ -41,8 +42,8 @@ personal-website/
 | `about.html` | 詳細介紹、應用數學背景、技能、目前學習方向 |
 | `projects.html` | 所有專案卡片（含狀態：Completed / In Progress / Coming Soon） |
 | `research.html` | 碩士論文研究 + AI Agent 獨立研究 |
-| `resume.html` | 履歷（教育、技能、經歷、獲獎），含 PDF 下載按鈕 |
-| `contact.html` | Email / GitHub / LinkedIn + 前端聯絡表單 |
+| `resume.html` | 履歷（教育、技能、經歷、獲獎），含 PDF 下載與聯絡管道（`#contact`） |
+| `articles.html` / `articles/` | Notion 同步產出的文章列表與內頁，**請勿手動編輯** |
 | `css/style.css` | 設計 tokens（CSS 變數）、版面、元件、動畫、RWD |
 | `js/data.js` | **資料層**：個人資料、技能、專案、研究、履歷、聯絡資訊 |
 | `js/main.js` | **邏輯層**：渲染 + 互動，依當頁存在的 DOM 自動執行 |
@@ -53,7 +54,8 @@ personal-website/
 
 ## 2. 已實作的功能
 
-✅ **頁面**：Home / About / Projects / Research / Resume / Contact 六頁完整串接
+✅ **頁面**：Home / About / Projects / Research / Articles / Resume 六頁完整串接
+（原 Contact 頁已併入 Resume 底部 `#contact`，聯絡管道另於每頁 footer 常駐）
 ✅ **導覽列**：sticky 黏頂、active link 標記、行動版漢堡選單
 ✅ **資料驅動渲染**：所有專案、研究、技能、履歷皆來自 `js/data.js`
 ✅ **設計系統**：以 CSS 變數定義色彩、間距、字級、圓角、陰影
@@ -62,7 +64,6 @@ personal-website/
 ✅ **狀態標籤**：`Completed` / `In Progress` / `Coming Soon`，三色清楚區分
 ✅ **技能進度條**：滾入時動畫展開
 ✅ **Scroll Reveal**：使用 `IntersectionObserver`，元素進場淡入
-✅ **聯絡表單**：前端驗證 + 友善錯誤訊息（尚未串後端）
 ✅ **RWD**：桌機 / 平板 / 手機三段斷點
 ✅ **動態 Footer**：年份、社群連結皆從 `data.js` 自動產生
 
@@ -79,7 +80,9 @@ personal-website/
 | `/projects.html` | Projects | 所有專案 |
 | `/research.html` | Research | 研究展示 |
 | `/resume.html` | Resume | 履歷（含 PDF 下載） |
-| `/contact.html` | Contact | 聯絡管道與表單 |
+| `/articles.html` | Articles | 文章列表（Notion 同步） |
+| `/articles/<slug>.html` | Article | 單篇文章（Notion 同步） |
+| `/resume.html#contact` | Contact | 聯絡管道（原 contact.html） |
 | `/assets/files/resume.pdf` | PDF | 履歷 PDF（請自行放置） |
 
 > 目前未實作任何 query string 或動態參數。
@@ -220,10 +223,10 @@ git push -u origin main
 ## 7. 未實作的功能與未來規劃
 
 ### 第一版未實作
-- ❌ Blog / Notes 文章系統（已預留導覽列空間與資料結構彈性）
+- ✅ Blog / Notes 文章系統（已實作，見第 10 節：Notion 同步）
+- ❌ 真實聯絡表單（原前端表單已移除，改以 Email / GitHub / LinkedIn 直接聯絡）
 - ❌ 英文版 i18n 切換（`data.js` 已採用單一來源結構，未來易擴充 `zh / en`）
 - ❌ 專案 / 研究的「詳細頁」（目前以卡片摘要呈現）
-- ❌ 真實後端表單寄送（目前僅前端驗證）
 - ❌ 暗色 / 亮色主題切換（目前為固定深色主題）
 - ❌ 搜尋 / 篩選功能（專案列表）
 
@@ -313,6 +316,44 @@ export const projects: Project[] = [/* ... 直接搬過去 */];
 | **資料儲存** | 純前端 JS 物件（`js/data.js`），無資料庫 |
 | **公開網址** | _尚未部署_（部署後請更新此欄位） |
 | **作者** | Your Name（請於 `js/data.js` 修改） |
+
+---
+
+## 10. Notion 文章同步（Articles）
+
+文章在 Notion 的「**Site Articles**」資料庫撰寫與管理，由 GitHub Actions 定時同步成靜態頁：
+
+```
+Notion（Status = Published）
+  → scripts/sync-notion.mjs（blocks → HTML、圖片上傳 Cloudflare R2）
+  → articles.html + articles/<slug>.html（自動 commit）
+  → GitHub Pages 自動部署
+```
+
+### 10.1 相關檔案
+
+| 檔案 | 用途 |
+|---|---|
+| `scripts/sync-notion.mjs` | 同步腳本：查詢資料庫 → 轉 HTML → 處理圖片 → 產頁 |
+| `scripts/fixture.json` | 離線測試資料，`npm run sync:fixture` 不用 token 就能驗證產頁 |
+| `css/article.css` | 文章列表頁 / 文章頁樣式（token 沿用 `style.css`） |
+| `.github/workflows/sync-notion.yml` | 排程（每天台北 05:00）＋ 手動觸發的同步 workflow |
+| `.env.example` | 所需環境變數清單（本機測試複製成 `.env` 填值） |
+
+### 10.2 首次設定（一次性）
+
+1. 到 <https://www.notion.so/my-integrations> 建立 internal integration，取得 `NOTION_TOKEN`。
+2. 在 Notion 打開「Site Articles」資料庫 → 右上 `⋯` → Connections → 加入該 integration。
+3. 到 GitHub repo Settings → Secrets and variables → Actions，新增 `NOTION_TOKEN` 與 `NOTION_DATABASE_ID`。
+4. （選配 R2 圖床）在 Cloudflare 建立 R2 bucket 並開啟公開存取，新增 `R2_ACCOUNT_ID`、`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_BUCKET_NAME`、`R2_PUBLIC_URL` 五個 secrets。**未設定 R2 時圖片會改存進 repo 的 `assets/images/articles/`，功能不受影響。**
+
+### 10.3 發佈文章
+
+1. 在「Site Articles」資料庫新增文章，填 `Slug`（英文網址代稱）、`Summary`、`Tags`、`PublishedAt`。
+2. 把 `Status` 設為 `Published`。
+3. 等每日排程，或到 GitHub repo 的 Actions → Sync Notion articles → Run workflow 立即同步。
+
+`articles.html` 與 `articles/` 為腳本產出檔，**請勿手動編輯**。
 
 ---
 

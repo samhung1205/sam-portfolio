@@ -1,0 +1,144 @@
+/* =========================================================
+   article.css — 文章列表頁 / 文章頁專用樣式
+   由 scripts/sync-notion.mjs 產生的頁面載入，設計 token 沿用 style.css
+   ========================================================= */
+
+/* 列表頁 hero：沿用 page-hero 機制，補上背景圖 */
+.page-hero--articles {
+  --page-hero-image: url("../assets/images/6.jpg");
+  --page-hero-position: right center;
+}
+
+/* 文章頁 hero */
+.article-hero {
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+.article-title {
+  max-width: 860px;
+  font-size: clamp(1.9rem, 4vw, var(--fs-3xl));
+}
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--color-text-dim);
+  font-size: var(--fs-sm);
+}
+.article-meta i { color: var(--color-primary); margin-right: 6px; }
+.article-meta .tag-list { margin-top: 0; }
+
+/* 內文排版 */
+.article-body {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  margin-top: var(--space-6);
+}
+.article-body figure {
+  margin: var(--space-5) 0;
+}
+.article-body figure img {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+.article-body figcaption,
+.article-caption {
+  margin-top: var(--space-2);
+  color: var(--color-text-dim);
+  font-size: var(--fs-xs);
+  text-align: center;
+}
+.article-body blockquote {
+  margin: var(--space-5) 0;
+  padding: var(--space-3) var(--space-5);
+  border-left: 3px solid var(--color-primary);
+  background: rgba(37, 99, 235, 0.05);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--color-text-muted);
+}
+.article-body blockquote p { margin: 0; }
+.article-body code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary-2);
+}
+.article-code {
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  background: #0f172a;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+.article-code code {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #e2e8f0;
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+.article-callout {
+  display: flex;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.article-callout > span { flex-shrink: 0; }
+.article-callout p:last-child { margin-bottom: 0; }
+.article-body details {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.article-body summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.article-body hr {
+  margin: var(--space-6) 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+.table-wrap {
+  margin: var(--space-5) 0;
+  overflow-x: auto;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.table-wrap th,
+.table-wrap td {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+.table-wrap th {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+.article-body input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  margin-right: 4px;
+}
+
+/* 列表卡片的標題連結沿用內文色 */
+.card__title a { color: var(--color-text); }
+.card__title a:hover { color: var(--color-primary); }

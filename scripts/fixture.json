@@ -1,0 +1,110 @@
+{
+  "_comment": "sync-notion.mjs --fixture 用的離線測試資料，形狀比照 Notion API 回傳格式",
+  "posts": [
+    {
+      "page": {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "created_time": "2026-08-20T00:00:00.000Z",
+        "properties": {
+          "Title": { "title": [{ "plain_text": "測試文章：所有 block 類型" }] },
+          "Slug": { "rich_text": [{ "plain_text": "test-all-blocks" }] },
+          "Status": { "select": { "name": "Published" } },
+          "PublishedAt": { "date": { "start": "2026-08-25" } },
+          "Tags": { "multi_select": [{ "name": "Software Engineering" }, { "name": "AI Agent" }] },
+          "Summary": { "rich_text": [{ "plain_text": "驗證段落、標題、清單、程式碼、引言、圖片、表格、toggle 等轉換結果。" }] }
+        }
+      },
+      "blocks": [
+        {
+          "type": "paragraph",
+          "paragraph": {
+            "rich_text": [
+              { "plain_text": "這段有", "annotations": {} },
+              { "plain_text": "粗體", "annotations": { "bold": true } },
+              { "plain_text": "、", "annotations": {} },
+              { "plain_text": "斜體", "annotations": { "italic": true } },
+              { "plain_text": "、", "annotations": {} },
+              { "plain_text": "inline code", "annotations": { "code": true } },
+              { "plain_text": "與", "annotations": {} },
+              { "plain_text": "連結", "annotations": {}, "href": "https://github.com" },
+              { "plain_text": "，還有 <script>alert(1)</script> 這種需要轉義的字元。", "annotations": {} }
+            ]
+          }
+        },
+        { "type": "heading_1", "heading_1": { "rich_text": [{ "plain_text": "H1 會變成 h2" }] } },
+        { "type": "heading_2", "heading_2": { "rich_text": [{ "plain_text": "H2 會變成 h3" }] } },
+        {
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [{ "plain_text": "無序清單第一項" }],
+            "children": [
+              { "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [{ "plain_text": "巢狀子項" }] } }
+            ]
+          }
+        },
+        { "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [{ "plain_text": "無序清單第二項" }] } },
+        { "type": "numbered_list_item", "numbered_list_item": { "rich_text": [{ "plain_text": "有序清單第一項" }] } },
+        { "type": "numbered_list_item", "numbered_list_item": { "rich_text": [{ "plain_text": "有序清單第二項" }] } },
+        { "type": "to_do", "to_do": { "checked": true, "rich_text": [{ "plain_text": "已完成的待辦" }] } },
+        {
+          "type": "code",
+          "code": {
+            "language": "python",
+            "rich_text": [{ "plain_text": "def hello(name: str) -> str:\n    return f\"Hello, {name}!\"" }],
+            "caption": []
+          }
+        },
+        { "type": "quote", "quote": { "rich_text": [{ "plain_text": "如何用最小成本，獲得最有用的資訊。" }] } },
+        {
+          "type": "callout",
+          "callout": { "icon": { "type": "emoji", "emoji": "💡" }, "rich_text": [{ "plain_text": "這是一個 callout 區塊。" }] }
+        },
+        {
+          "type": "toggle",
+          "toggle": {
+            "rich_text": [{ "plain_text": "點我展開" }],
+            "children": [{ "type": "paragraph", "paragraph": { "rich_text": [{ "plain_text": "toggle 裡面的內容。" }] } }]
+          }
+        },
+        {
+          "type": "image",
+          "image": {
+            "type": "external",
+            "external": { "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" },
+            "caption": [{ "plain_text": "測試圖片說明" }]
+          }
+        },
+        {
+          "type": "table",
+          "table": {
+            "has_column_header": true,
+            "children": [
+              { "type": "table_row", "table_row": { "cells": [[{ "plain_text": "欄位" }], [{ "plain_text": "說明" }]] } },
+              { "type": "table_row", "table_row": { "cells": [[{ "plain_text": "Status" }], [{ "plain_text": "Published 才會同步" }]] } }
+            ]
+          }
+        },
+        { "type": "divider", "divider": {} },
+        { "type": "equation", "equation": { "expression": "E = mc^2" } },
+        { "type": "bookmark", "bookmark": { "url": "https://developers.notion.com", "caption": [] } }
+      ]
+    },
+    {
+      "page": {
+        "id": "00000000-0000-0000-0000-000000000002",
+        "created_time": "2026-08-10T00:00:00.000Z",
+        "properties": {
+          "Title": { "title": [{ "plain_text": "第二篇：驗證列表排序（較舊）" }] },
+          "Slug": { "rich_text": [] },
+          "Status": { "select": { "name": "Published" } },
+          "PublishedAt": { "date": { "start": "2026-08-10" } },
+          "Tags": { "multi_select": [{ "name": "Algorithm" }] },
+          "Summary": { "rich_text": [{ "plain_text": "Slug 留空時應由標題／頁面 ID 產生，且列表按日期新到舊排序。" }] }
+        }
+      },
+      "blocks": [
+        { "type": "paragraph", "paragraph": { "rich_text": [{ "plain_text": "內文只有一段，測試最小情況。" }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+# 定時把 Notion「Site Articles」資料庫的 Published 文章同步成靜態頁並 commit，
+# push 後由 GitHub Pages 自動部署。
+# 需要的 secrets（repo Settings → Secrets and variables → Actions）：
+#   NOTION_TOKEN, NOTION_DATABASE_ID（必填）
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL（選填，缺任一則圖片存 repo）
+name: Sync Notion articles
+
+on:
+  schedule:
+    - cron: "0 21 * * *" # 每天 UTC 21:00 = 台北 05:00
+  workflow_dispatch: # 在 Notion 發完文後，可到 Actions 頁面手動觸發立即同步
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-notion
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Sync articles from Notion
+        run: npm run sync
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+
+      - name: Commit & push if changed
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A # CI 的 checkout 是乾淨的，變更只會來自同步產出
+            git commit -m "chore: sync articles from Notion"
+            git push
+          else
+            echo "沒有變更，跳過 commit"
+          fi
