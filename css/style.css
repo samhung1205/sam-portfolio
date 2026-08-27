@@ -19,30 +19,65 @@
 
 /* ---------- 1. CSS Variables (Design Tokens) ---------- */
 :root {
-  /* Color palette - Light-first professional tech */
-  --color-bg:           #f8fafc;
-  --color-bg-alt:       #eef4ff;
-  --color-surface:      #ffffff;
-  --color-surface-2:    #f1f5f9;
-  --color-border:       #d8e2f0;
+  /* Color channels（Phase 2 Commit 2）
+     兩層 token 模型：這裡是「原始 RGB channel」，下面的 --color-* 是
+     「對外公開、語意化」的 resolved token，值一樣、寫法不同。
+     只有「全站有 rgba(...) alpha 變體在用」的顏色才拆 channel——
+     text-muted/text-dim/surface-2 目前沒有 alpha 用法，維持原本純
+     hex，不做沒必要的拆分。拆 channel 的目的：讓 rgba(37,99,235,0.08)
+     這類字面值可以改寫成 rgb(var(--c-primary-rgb) / 0.08)，跟
+     --color-primary 共用同一個數值來源，不會各改各的、悄悄失去同步；
+     也讓 Phase 3 dark mode 只要覆寫這幾個 --c-*-rgb 就能連帶讓所有
+     alpha 用法一起換色。*/
+  --c-bg-rgb:         248 250 252;
+  --c-bg-alt-rgb:     238 244 255;
+  --c-surface-rgb:    255 255 255;
+  --c-border-rgb:     216 226 240;
+  --c-text-rgb:       15 23 42;
+  --c-primary-rgb:    37 99 235;
+  --c-primary-2-rgb:  79 70 229;
+  --c-accent-rgb:     8 145 178;
+  --c-success-rgb:    5 150 105;
+  --c-warning-rgb:    217 119 6;
 
-  --color-text:         #0f172a;
+  /* Color palette - Light-first professional tech */
+  --color-bg:           rgb(var(--c-bg-rgb));
+  --color-bg-alt:       rgb(var(--c-bg-alt-rgb));
+  --color-surface:      rgb(var(--c-surface-rgb));
+  --color-surface-2:    #f1f5f9;
+  --color-border:       rgb(var(--c-border-rgb));
+
+  --color-text:         rgb(var(--c-text-rgb));
   --color-text-muted:   #475569;
   --color-text-dim:     #64748b;
 
-  --color-primary:      #2563eb;
-  --color-primary-2:    #4f46e5;
-  --color-accent:       #0891b2;
-  --color-success:      #059669;
-  --color-warning:      #d97706;
+  --color-primary:      rgb(var(--c-primary-rgb));
+  --color-primary-2:    rgb(var(--c-primary-2-rgb));
+  --color-accent:       rgb(var(--c-accent-rgb));
+  /* 行內文字用的 accent：#0891b2 在 12px 常規字重下對 --color-bg／
+     --color-bg-alt 都量不到 4.5:1（實測 3.52 / 3.33），只在確認過的
+     純文字情境換用這個較深的版本；漸層、圖示、裝飾用途仍用
+     --color-accent，不要換。 */
+  --color-accent-text:  #0e7490;
+  --color-success:      rgb(var(--c-success-rgb));
+  --color-warning:      rgb(var(--c-warning-rgb));
 
   /* Status colors */
-  --status-completed-bg:   rgba(5, 150, 105, 0.10);
+  --status-completed-bg:   rgb(var(--c-success-rgb) / 0.10);
   --status-completed-fg:   #047857;
-  --status-progress-bg:    rgba(217, 119, 6, 0.10);
+  --status-progress-bg:    rgb(var(--c-warning-rgb) / 0.10);
   --status-progress-fg:    #b45309;
-  --status-planned-bg:     rgba(79, 70, 229, 0.10);
+  --status-planned-bg:     rgb(var(--c-primary-2-rgb) / 0.10);
   --status-planned-fg:     #4338ca;
+
+  /* Phase-3 debt：殘留的舊 dark-mode 配色（#7C9CFF / #22D3EE），目前
+     仍被幾處 light 版面的裝飾用途引用（hero mini-card、code-card
+     漸層、timeline dot 光暈、skill bar focus ring）。Commit 2 只是把它們
+     從匿名字面值改成有名字的 channel，數值完全不變、算染結果不變，
+     不套用目前的 light primary/accent。Phase 3 決定要不要做 dark mode
+     時再處理：可能要復用、也可能要整個拿掉。 */
+  --legacy-dark-primary-rgb: 124 156 255; /* 舊 dark-mode primary #7C9CFF */
+  --legacy-dark-accent-rgb:  34 211 238;  /* 舊 dark-mode accent  #22D3EE */
 
   /* Spacing scale */
   --space-1: 0.25rem;
@@ -78,10 +113,10 @@
   --radius-lg: 16px;
   --radius-xl: 22px;
 
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
-  --shadow-glow: 0 14px 34px rgba(37, 99, 235, 0.20);
+  --shadow-sm: 0 1px 2px rgb(var(--c-text-rgb) / 0.06);
+  --shadow-md: 0 12px 30px rgb(var(--c-text-rgb) / 0.08);
+  --shadow-lg: 0 24px 60px rgb(var(--c-text-rgb) / 0.12);
+  --shadow-glow: 0 14px 34px rgb(var(--c-primary-rgb) / 0.20);
 
   --transition-fast: 0.15s ease;
   --transition-base: 0.25s ease;
@@ -108,9 +143,9 @@ body {
   color: var(--color-text);
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(900px 420px at 85% -10%, rgba(37, 99, 235, 0.11), transparent 58%),
-    radial-gradient(760px 420px at -10% 18%, rgba(8, 145, 178, 0.10), transparent 62%),
-    linear-gradient(180deg, #ffffff 0%, var(--color-bg) 36%);
+    radial-gradient(900px 420px at 85% -10%, rgb(var(--c-primary-rgb) / 0.11), transparent 58%),
+    radial-gradient(760px 420px at -10% 18%, rgb(var(--c-accent-rgb) / 0.10), transparent 62%),
+    linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 36%);
   background-attachment: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -126,13 +161,13 @@ a {
   text-decoration: none;
   transition: color var(--transition-fast);
 }
-a:hover { color: var(--color-accent); }
+a:hover { color: var(--color-accent-text); }
 
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline: 3px solid rgb(var(--c-primary-rgb) / 0.35);
   outline-offset: 3px;
 }
 
@@ -167,7 +202,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   font-size: var(--fs-xs);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: var(--space-3);
 }
 
@@ -195,7 +230,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   min-height: clamp(420px, 48vh, 560px);
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(216, 226, 240, 0.82);
+  border-bottom: 1px solid rgb(var(--c-border-rgb) / 0.82);
   background: var(--color-bg);
 }
 
@@ -220,13 +255,13 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   z-index: -1;
   background:
     linear-gradient(90deg,
-      rgba(248, 250, 252, 0.98) 0%,
-      rgba(248, 250, 252, 0.92) 34%,
-      rgba(248, 250, 252, 0.62) 64%,
-      rgba(248, 250, 252, 0.38) 100%),
+      rgb(var(--c-bg-rgb) / 0.98) 0%,
+      rgb(var(--c-bg-rgb) / 0.92) 34%,
+      rgb(var(--c-bg-rgb) / 0.62) 64%,
+      rgb(var(--c-bg-rgb) / 0.38) 100%),
     linear-gradient(180deg,
-      rgba(255, 255, 255, 0.50) 0%,
-      rgba(238, 244, 255, 0.26) 100%);
+      rgb(var(--c-surface-rgb) / 0.50) 0%,
+      rgb(var(--c-bg-alt-rgb) / 0.26) 100%);
 }
 
 .page-hero > .container {
@@ -265,7 +300,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 
 .section--alt {
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.42)),
+    linear-gradient(180deg, rgb(var(--c-surface-rgb) / 0.72), rgb(var(--c-surface-rgb) / 0.42)),
     var(--color-bg-alt);
   border-block: 1px solid var(--color-border);
 }
@@ -307,7 +342,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   height: var(--nav-h);
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.82);
+  background: rgb(var(--c-surface-rgb) / 0.82);
   backdrop-filter: saturate(140%) blur(12px);
   -webkit-backdrop-filter: saturate(140%) blur(12px);
   border-bottom: 1px solid var(--color-border);
@@ -369,10 +404,10 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   font-weight: 500;
   transition: color var(--transition-fast), background var(--transition-fast);
 }
-.nav__link:hover { color: var(--color-text); background: rgba(37, 99, 235, 0.07); }
+.nav__link:hover { color: var(--color-text); background: rgb(var(--c-primary-rgb) / 0.07); }
 .nav__link.is-active {
   color: var(--color-primary);
-  background: rgba(37, 99, 235, 0.10);
+  background: rgb(var(--c-primary-rgb) / 0.10);
 }
 
 .nav__toggle {
@@ -422,16 +457,16 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 
 .btn--primary {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-2));
-  color: #ffffff;
+  color: var(--color-surface);
 }
 .btn--primary:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgb(var(--c-surface-rgb) / 0.72);
   color: var(--color-text);
   border-color: var(--color-border);
 }
@@ -448,7 +483,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 .btn--text:hover {
   color: var(--color-primary-2);
-  background: rgba(37, 99, 235, 0.07);
+  background: rgb(var(--c-primary-rgb) / 0.07);
   transform: translateY(-2px);
 }
 
@@ -474,7 +509,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-muted);
-  background: rgba(124, 156, 255, 0.08);
+  background: rgb(var(--legacy-dark-primary-rgb) / 0.08);
   border: 1px solid var(--color-border);
 }
 .tag-list {
@@ -518,7 +553,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   inset: 8% 0 auto auto;
   width: min(56vw, 720px);
   height: min(56vw, 720px);
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.12), transparent 65%);
+  background: radial-gradient(circle, rgb(var(--c-primary-rgb) / 0.12), transparent 65%);
   pointer-events: none;
 }
 .hero__grid {
@@ -575,7 +610,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   border: 1px solid var(--color-border);
   border-radius: 999px;
   color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgb(var(--c-surface-rgb) / 0.72);
   box-shadow: var(--shadow-sm);
   font-size: var(--fs-sm);
 }
@@ -593,8 +628,8 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   padding: 10px;
   border-radius: calc(var(--radius-xl) + 8px);
   background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(145deg, rgba(37,99,235,0.44), rgba(8,145,178,0.18), rgba(79,70,229,0.35)) border-box;
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(145deg, rgb(var(--c-primary-rgb) / 0.44), rgb(var(--c-accent-rgb) / 0.18), rgb(var(--c-primary-2-rgb) / 0.35)) border-box;
   border: 1px solid transparent;
   box-shadow: var(--shadow-lg);
 }
@@ -619,8 +654,8 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   min-height: 42px;
   padding: 0.65rem 0.9rem;
   color: var(--color-text);
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(216, 226, 240, 0.9);
+  background: rgb(var(--c-surface-rgb) / 0.86);
+  border: 1px solid rgb(var(--c-border-rgb) / 0.9);
   border-radius: 999px;
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);
@@ -639,15 +674,15 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   min-height: 82px;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.76);
+  background: rgb(var(--c-surface-rgb) / 0.76);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
 }
 .mini-card--wide {
   grid-column: span 2;
   background:
-    linear-gradient(135deg, rgba(37,99,235,0.08), rgba(8,145,178,0.08)),
-    rgba(255, 255, 255, 0.84);
+    linear-gradient(135deg, rgb(var(--c-primary-rgb) / 0.08), rgb(var(--c-accent-rgb) / 0.08)),
+    rgb(var(--c-surface-rgb) / 0.84);
 }
 .mini-card span {
   display: block;
@@ -673,9 +708,9 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 /* Code-style visual card */
 .code-card {
   background:
-    linear-gradient(160deg, rgba(124, 156, 255, 0.12), rgba(34, 211, 238, 0.06)),
-    rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(216, 226, 240, 0.96);
+    linear-gradient(160deg, rgb(var(--legacy-dark-primary-rgb) / 0.12), rgb(var(--legacy-dark-accent-rgb) / 0.06)),
+    rgb(var(--c-surface-rgb) / 0.94);
+  border: 1px solid rgb(var(--c-border-rgb) / 0.96);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   box-shadow: var(--shadow-md);
@@ -692,6 +727,8 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   top: 14px; left: 16px;
   width: 10px; height: 10px;
   border-radius: 50%;
+  /* 真正的字面常數：macOS 視窗紅黃綠三色點，是固定的系統色，
+     跟網站的 light/dark 主題無關，不 tokenize。 */
   background: #ff5f57;
   box-shadow: 18px 0 0 #febc2e, 36px 0 0 #28c840;
 }
@@ -701,7 +738,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   word-break: break-word;
 }
 .code-card .k { color: var(--color-primary-2); }
-.code-card .s { color: var(--color-accent); }
+.code-card .s { color: var(--color-accent-text); }
 .code-card .c { color: var(--color-text-dim); }
 
 
@@ -722,7 +759,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 .card:hover {
   transform: translateY(-4px);
   background: var(--color-surface);
-  border-color: rgba(37, 99, 235, 0.35);
+  border-color: rgb(var(--c-primary-rgb) / 0.35);
   box-shadow: var(--shadow-md);
 }
 
@@ -740,7 +777,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 .card__kicker {
   display: inline-block;
   margin-bottom: 5px;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.10em;
@@ -796,8 +833,8 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
   background:
-    radial-gradient(circle at 78% 18%, rgba(8,145,178,0.26), transparent 24%),
-    linear-gradient(135deg, rgba(37,99,235,0.15), rgba(79,70,229,0.12));
+    radial-gradient(circle at 78% 18%, rgb(var(--c-accent-rgb) / 0.26), transparent 24%),
+    linear-gradient(135deg, rgb(var(--c-primary-rgb) / 0.15), rgb(var(--c-primary-2-rgb) / 0.12));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -813,16 +850,16 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   z-index: 1;
   padding: 0.5rem 0.75rem;
   border-radius: 999px;
-  background: rgba(255,255,255,0.72);
-  border: 1px solid rgba(216, 226, 240, 0.8);
+  background: rgb(var(--c-surface-rgb) / 0.72);
+  border: 1px solid rgb(var(--c-border-rgb) / 0.8);
 }
 .card__thumb::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    linear-gradient(rgb(var(--c-surface-rgb) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c-surface-rgb) / 0.05) 1px, transparent 1px);
   background-size: 22px 22px;
   pointer-events: none;
 }
@@ -835,25 +872,28 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 .project-bento .project-card:first-child {
   grid-column: span 1;
 }
+/* 以下三個 .card__thumb 漸層裡的 #eaf2ff / #eff6ff / #f0f7ff 是手動挑的
+   裝飾用淡藍色調，只各用一次、彼此無關聯，刻意保留字面值不 tokenize
+   （每個都建一個 token 只是換個名字包裝魔術數字，沒有實質好處）。*/
 .project-card--metropulse .card__thumb {
   background:
-    radial-gradient(circle at 18% 22%, rgba(37,99,235,0.30), transparent 24%),
-    radial-gradient(circle at 78% 72%, rgba(8,145,178,0.24), transparent 28%),
-    linear-gradient(135deg, #eaf2ff, #ffffff);
+    radial-gradient(circle at 18% 22%, rgb(var(--c-primary-rgb) / 0.30), transparent 24%),
+    radial-gradient(circle at 78% 72%, rgb(var(--c-accent-rgb) / 0.24), transparent 28%),
+    linear-gradient(135deg, #eaf2ff, var(--color-surface));
 }
 .project-card--yolo-ship .card__thumb {
   background:
-    linear-gradient(90deg, rgba(15,23,42,0.12) 1px, transparent 1px),
-    linear-gradient(rgba(15,23,42,0.12) 1px, transparent 1px),
-    linear-gradient(135deg, #eff6ff, #f8fafc);
+    linear-gradient(90deg, rgb(var(--c-text-rgb) / 0.12) 1px, transparent 1px),
+    linear-gradient(rgb(var(--c-text-rgb) / 0.12) 1px, transparent 1px),
+    linear-gradient(135deg, #eff6ff, var(--color-bg));
   background-size: 34px 34px, 34px 34px, auto;
 }
 .project-card--ai-agent-lab .card__thumb {
   background:
-    radial-gradient(circle at 22% 28%, rgba(37,99,235,0.28), transparent 14%),
-    radial-gradient(circle at 72% 36%, rgba(79,70,229,0.24), transparent 14%),
-    radial-gradient(circle at 50% 76%, rgba(8,145,178,0.22), transparent 14%),
-    linear-gradient(135deg, #f0f7ff, #ffffff);
+    radial-gradient(circle at 22% 28%, rgb(var(--c-primary-rgb) / 0.28), transparent 14%),
+    radial-gradient(circle at 72% 36%, rgb(var(--c-primary-2-rgb) / 0.24), transparent 14%),
+    radial-gradient(circle at 50% 76%, rgb(var(--c-accent-rgb) / 0.22), transparent 14%),
+    linear-gradient(135deg, #f0f7ff, var(--color-surface));
 }
 
 
@@ -881,12 +921,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 .feature:hover {
   transform: translateY(-3px);
-  border-color: rgba(37, 99, 235, 0.28);
+  border-color: rgb(var(--c-primary-rgb) / 0.28);
   box-shadow: var(--shadow-md);
 }
 .bento-card:nth-child(3) {
   background:
-    linear-gradient(135deg, rgba(37,99,235,0.08), rgba(8,145,178,0.08)),
+    linear-gradient(135deg, rgb(var(--c-primary-rgb) / 0.08), rgb(var(--c-accent-rgb) / 0.08)),
     var(--color-surface);
 }
 .bento-card {
@@ -898,7 +938,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(37, 99, 235, 0.10);
+  background: rgb(var(--c-primary-rgb) / 0.10);
   color: var(--color-primary);
   margin-bottom: var(--space-3);
   font-size: 1.2rem;
@@ -975,12 +1015,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   width: 12px; height: 12px;
   border-radius: 50%;
   background: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(124, 156, 255, 0.18);
+  box-shadow: 0 0 0 4px rgb(var(--legacy-dark-primary-rgb) / 0.18);
 }
 .timeline__date {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   letter-spacing: 0.08em;
 }
 .timeline__title { font-size: var(--fs-md); margin: 4px 0; }
@@ -1014,7 +1054,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 8px;
-  background: rgba(124,156,255,0.12);
+  background: rgb(var(--legacy-dark-primary-rgb) / 0.12);
   color: var(--color-primary);
 }
 .contact-list small { color: var(--color-text-dim); display: block; }
@@ -1049,7 +1089,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 .form textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(124,156,255,0.18);
+  box-shadow: 0 0 0 3px rgb(var(--legacy-dark-primary-rgb) / 0.18);
 }
 .form textarea { min-height: 140px; resize: vertical; }
 .form__status {
@@ -1091,7 +1131,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   inset: 0 0 auto auto;
   width: 180px;
   height: 180px;
-  background: radial-gradient(circle, rgba(8,145,178,0.12), transparent 65%);
+  background: radial-gradient(circle, rgb(var(--c-accent-rgb) / 0.12), transparent 65%);
   pointer-events: none;
 }
 
@@ -1101,10 +1141,10 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   gap: var(--space-6);
   align-items: center;
   padding: clamp(2rem, 5vw, 3.5rem);
-  border: 1px solid rgba(37, 99, 235, 0.18);
+  border: 1px solid rgb(var(--c-primary-rgb) / 0.18);
   border-radius: var(--radius-xl);
   background:
-    linear-gradient(135deg, rgba(37,99,235,0.10), rgba(8,145,178,0.08)),
+    linear-gradient(135deg, rgb(var(--c-primary-rgb) / 0.10), rgb(var(--c-accent-rgb) / 0.08)),
     var(--color-surface);
   box-shadow: var(--shadow-lg);
 }
@@ -1124,7 +1164,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   margin-top: var(--space-7);
   color: var(--color-text-dim);
   font-size: var(--fs-sm);
-  background: rgba(255, 255, 255, 0.64);
+  background: rgb(var(--c-surface-rgb) / 0.64);
 }
 .footer__inner {
   display: flex;
@@ -1197,12 +1237,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   .page-hero::after {
     background:
       linear-gradient(90deg,
-        rgba(248, 250, 252, 0.98) 0%,
-        rgba(248, 250, 252, 0.92) 58%,
-        rgba(248, 250, 252, 0.72) 100%),
+        rgb(var(--c-bg-rgb) / 0.98) 0%,
+        rgb(var(--c-bg-rgb) / 0.92) 58%,
+        rgb(var(--c-bg-rgb) / 0.72) 100%),
       linear-gradient(180deg,
-        rgba(255, 255, 255, 0.58) 0%,
-        rgba(238, 244, 255, 0.32) 100%);
+        rgb(var(--c-surface-rgb) / 0.58) 0%,
+        rgb(var(--c-bg-alt-rgb) / 0.32) 100%);
   }
 
   .page-hero--about {
@@ -1253,7 +1293,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
     right: 0;
     flex-direction: column;
     align-items: stretch;
-    background: rgba(255, 255, 255, 0.98);
+    background: rgb(var(--c-surface-rgb) / 0.98);
     border-bottom: 1px solid var(--color-border);
     padding: var(--space-3);
     gap: 4px;
@@ -1285,12 +1325,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   .page-hero::after {
     background:
       linear-gradient(90deg,
-        rgba(248, 250, 252, 0.99) 0%,
-        rgba(248, 250, 252, 0.95) 70%,
-        rgba(248, 250, 252, 0.84) 100%),
+        rgb(var(--c-bg-rgb) / 0.99) 0%,
+        rgb(var(--c-bg-rgb) / 0.95) 70%,
+        rgb(var(--c-bg-rgb) / 0.84) 100%),
       linear-gradient(180deg,
-        rgba(255, 255, 255, 0.64) 0%,
-        rgba(238, 244, 255, 0.38) 100%);
+        rgb(var(--c-surface-rgb) / 0.64) 0%,
+        rgb(var(--c-bg-alt-rgb) / 0.38) 100%);
   }
 
   .page-hero--about {

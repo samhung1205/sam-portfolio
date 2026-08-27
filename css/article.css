@@ -58,7 +58,7 @@
   margin: var(--space-5) 0;
   padding: var(--space-3) var(--space-5);
   border-left: 3px solid var(--color-primary);
-  background: rgba(37, 99, 235, 0.05);
+  background: rgb(var(--c-primary-rgb) / 0.05);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--color-text-muted);
 }
@@ -79,6 +79,9 @@
 .article-code {
   margin: var(--space-5) 0;
   padding: var(--space-4) var(--space-5);
+  /* 真正的字面常數，故意不 tokenize：這是程式碼區塊固定的深色終端機底色，
+     不管網站主題是 light 或未來的 dark 都應該維持這個樣子（跟 --color-text
+     數值恰好相同純屬巧合，語意上完全無關，不要改成 var(--color-text)）。*/
   background: #0f172a;
   border-radius: var(--radius-md);
   overflow-x: auto;
@@ -87,6 +90,7 @@
   padding: 0;
   border: none;
   background: transparent;
+  /* 同上，固定搭配深色底色的淺色字，跟站台的 light/dark 主題無關。 */
   color: #e2e8f0;
   font-size: var(--fs-sm);
   line-height: 1.7;
