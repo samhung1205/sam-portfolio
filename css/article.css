@@ -71,6 +71,10 @@
   background: var(--color-surface-2);
   border: 1px solid var(--color-border);
   color: var(--color-primary-2);
+  overflow-wrap: anywhere;
+}
+.article-body a {
+  overflow-wrap: anywhere;
 }
 .article-code {
   margin: var(--space-5) 0;
@@ -86,6 +90,11 @@
   color: #e2e8f0;
   font-size: var(--fs-sm);
   line-height: 1.7;
+  /* 這條規則跟 .article-body code 的 CSS specificity 相同(0,1,1)，
+     純靠原始碼順序覆蓋；不明講 overflow-wrap 會被上面那條的 anywhere
+     帶進來，讓區塊程式碼跟著行內 code 一起換行，壞了原本靠
+     overflow-x:auto 橫向捲動、保留原始排版的行為。 */
+  overflow-wrap: normal;
 }
 .article-callout {
   display: flex;
