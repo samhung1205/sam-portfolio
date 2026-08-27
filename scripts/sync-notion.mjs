@@ -19,6 +19,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile, readdir, unlink } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { renderPage, loadNavConfig } from "./lib/layout.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FIXTURE = process.argv.includes("--fixture");
@@ -334,72 +335,38 @@ async function blocksToHtml(blocks = []) {
 }
 
 /* =====================================================
-   4. 頁面模板（與現有六頁的 nav / footer / head 一致）
+   4. 頁面模板
+   ---------------------------------------------------------
+   殼層（head / nav / footer）改用 scripts/lib/layout.mjs 的
+   renderPage()，與其餘六頁共用同一份 render 邏輯與 _src/config/nav.json
+   （Phase 2 Commit 1B）。escaping 仍由本檔負責——Notion 內容是不可信
+   輸入，renderPage() 假設呼叫端已經把 title / description escape 好
+   （與其餘六頁的 _src/pages/*.html 是同一個假設），這點與遷移前
+   pageShell() 內部呼叫 escapeHtml/escapeAttr 的行為完全等價。
+
+   已知、刻意的差異（已用 A/B 測試證實只有這一處、且是加法、零渲染
+   影響）：footer 現在統一走共用的 footer.html partial，會多出一行
+   `<!-- ===== Footer ===== -->` 註解——原本手寫六頁本來就有這行，只有
+   Notion 產出頁沒有，屬於重構前殼層本身不一致。統一成同一份共用
+   footer 正是本次 Commit 1B 的目的（不得為文章頁另建一份 shell）。
    ===================================================== */
-const NAV_ITEMS = [
-  ["index.html", "Home"],
-  ["about.html", "About"],
-  ["projects.html", "Projects"],
-  ["research.html", "Research"],
-  ["articles.html", "Articles"],
-  ["resume.html", "Resume"],
-];
+const ARTICLE_BANNER =
+  '  <!-- 本檔由 scripts/sync-notion.mjs 產生，請勿手動編輯；內容請到 Notion「Site Articles」資料庫修改 -->';
+const ARTICLE_EXTRA_CSS = ["css/article.css"];
+const nav = loadNavConfig();
 
 function pageShell({ title, description, rel, main }) {
-  const nav = NAV_ITEMS.map(
-    ([href, label]) => `          <li><a class="nav__link" href="${rel}${href}">${label}</a></li>`
-  ).join("\n");
-  return `<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeAttr(description)}" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="${rel}css/style.css" />
-  <link rel="stylesheet" href="${rel}css/article.css" />
-</head>
-<body>
-  <!-- 本檔由 scripts/sync-notion.mjs 產生，請勿手動編輯；內容請到 Notion「Site Articles」資料庫修改 -->
-  <header class="nav">
-    <div class="container nav__inner">
-      <a class="nav__brand" href="${rel}index.html" aria-label="Back to homepage">
-        <img class="nav__logo" src="${rel}assets/images/logo.png" alt="Sam logo" />
-        <span class="nav__brand-text">
-          <strong>Sam Hung</strong>
-          <small>AI Agent Engineer</small>
-        </span>
-      </a>
-      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
-      <nav aria-label="Primary navigation">
-        <ul class="nav__menu" id="site-menu">
-${nav}
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-${main}
-  </main>
-
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
-      <ul class="footer__social" data-render="footer-social"></ul>
-    </div>
-  </footer>
-
-  <script src="${rel}js/data.js"></script>
-  <script src="${rel}js/main.js"></script>
-</body>
-</html>
-`;
+  return renderPage(
+    {
+      title: escapeHtml(title),
+      description: escapeAttr(description),
+      pathPrefix: rel,
+      extraCss: ARTICLE_EXTRA_CSS,
+      banner: ARTICLE_BANNER,
+      content: main,
+    },
+    nav
+  );
 }
 
 function articleCardHtml(a) {
