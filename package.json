@@ -5,6 +5,8 @@
   "description": "Sam Hung 個人品牌網站（靜態站 + Notion 文章同步）",
   "type": "module",
   "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:check": "node scripts/build.mjs --check",
     "sync": "node scripts/sync-notion.mjs",
     "sync:local": "node --env-file=.env scripts/sync-notion.mjs",
     "sync:fixture": "node scripts/sync-notion.mjs --fixture"

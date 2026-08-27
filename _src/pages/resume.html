@@ -1,0 +1,120 @@
+<!--meta
+{
+  "title": "Resume · Personal Website",
+  "description": "個人履歷：教育背景、技術技能、專案與研究經驗。"
+}
+-->
+    <!-- ===== Page Header + Download CTA ===== -->
+    <section class="section page-hero page-hero--resume">
+      <div class="container reveal">
+        <span class="section-eyebrow">// RESUME</span>
+        <h1>履歷</h1>
+        <p class="page-intro">
+          以下是我的教育背景、技術技能、專案與研究經驗的彙整。<br />
+          直接下載完整 PDF 履歷，或到頁面下方的聯絡管道與我聊聊喔！
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="assets/files/resume.pdf" download>
+            <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+          </a>
+          <a class="btn btn--ghost" href="#contact">
+            <i class="fa-solid fa-paper-plane"></i> 直接聯絡我
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Education ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// EDUCATION</span>
+          <h2>教育背景</h2>
+        </header>
+        <div class="timeline" data-render="resume-education"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// SKILLS</span>
+          <h2>技術技能</h2>
+          <p>數字僅代表自評熟練度，實際請參考專案與經驗。</p>
+        </header>
+        <div class="grid grid--2">
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-code feature__title-icon feature__title-icon--primary"></i> Programming Languages</h4>
+            <div data-render="skills-languages"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-brain feature__title-icon feature__title-icon--primary-2"></i> AI / ML</h4>
+            <div data-render="skills-ai"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-screwdriver-wrench feature__title-icon feature__title-icon--accent"></i> Software Engineering</h4>
+            <div data-render="skills-engineering"></div>
+          </div>
+          <div class="feature reveal">
+            <h4><i class="fa-solid fa-square-root-variable feature__title-icon feature__title-icon--primary"></i> Math / Statistics</h4>
+            <div data-render="skills-math"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Experience (Project & Research) ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// EXPERIENCE</span>
+          <h2>專案與研究經驗</h2>
+        </header>
+        <div class="timeline" data-render="resume-experience"><!-- JS 渲染 --></div>
+
+        <div class="btn-row reveal">
+          <a class="btn btn--ghost" href="projects.html">
+            完整專案列表 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a class="btn btn--ghost" href="research.html">
+            研究主題 <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Awards ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">// AWARDS &amp; ACHIEVEMENTS</span>
+          <h2>獲獎與事蹟</h2>
+          <!-- <p>目前為 placeholder，請在 <code>js/data.js</code> 中的 <code>resume.awards</code> 補充內容。</p> -->
+        </header>
+        <div class="timeline" data-render="resume-awards"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Contact（原 contact.html 併入此處） ===== -->
+    <section class="section section--alt" id="contact">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="reveal">
+            <span class="section-eyebrow">// CONTACT</span>
+            <h2>聯絡我</h2>
+            <p>
+              合作邀約、面試機會、研究討論或單純打聲招呼都歡迎。
+              最快回覆的方式是 Email；技術相關討論也可以直接到 GitHub 留言。
+            </p>
+            <div class="btn-row">
+              <a class="btn btn--primary" href="assets/files/resume.pdf" download>
+                <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+              </a>
+              <a class="btn btn--ghost" href="projects.html">瀏覽專案</a>
+            </div>
+          </div>
+          <ul class="contact-list reveal" data-render="contact-list"><!-- JS 渲染 --></ul>
+        </div>
+      </div>
+    </section>

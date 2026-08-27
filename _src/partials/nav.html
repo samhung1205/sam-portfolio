@@ -1,0 +1,13 @@
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="{{pathPrefix}}{{brandHref}}" aria-label="{{brandAriaLabel}}">
+        <img class="nav__logo" src="{{pathPrefix}}{{brandLogo}}" alt="{{brandLogoAlt}}" />{{brandHtml}}
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="{{menuId}}" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="{{menuId}}">
+{{navItems}}
+        </ul>
+      </nav>
+    </div>
+  </header>

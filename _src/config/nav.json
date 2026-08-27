@@ -1,0 +1,20 @@
+{
+  "_comment": "Declared navigation + brand. Single source of truth: scripts/lib/layout.mjs GENERATES the nav from this file, and (from Commit 3) scripts/verify.mjs asserts the built output matches it. Phase 3 IA changes are edited here only - no verifier logic changes required.",
+  "menuId": "site-menu",
+  "brand": {
+    "href": "index.html",
+    "ariaLabel": "Back to homepage",
+    "logo": "assets/images/logo.png",
+    "logoAlt": "Sam logo",
+    "name": "Sam Hung",
+    "role": "AI Agent Engineer"
+  },
+  "items": [
+    { "label": "Home",     "href": "index.html" },
+    { "label": "About",    "href": "about.html" },
+    { "label": "Projects", "href": "projects.html" },
+    { "label": "Research", "href": "research.html" },
+    { "label": "Articles", "href": "articles.html" },
+    { "label": "Resume",   "href": "resume.html" }
+  ]
+}
