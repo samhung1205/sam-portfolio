@@ -1,0 +1,132 @@
+{
+  "_comment": "Phase 2 Commit 3：目前已核准的 light-mode 文字對比基準線，由 scripts/lib/checks.mjs 的 checkContrast() 強制驗證。foregroundToken / backgroundToken 對應 css/style.css :root 內宣告的 CSS 變數；threshold 依 WCAG 2.1 SC 1.4.3 決定（normal text 4.5、large text 或 UI 元件 3.0）；phase=2 的項目失敗會擋下 Commit；phase3Debt 只記錄、不強制。",
+  "pairs": [
+    {
+      "id": "body-text-on-bg",
+      "foregroundToken": "--color-text",
+      "backgroundToken": "--color-bg",
+      "context": "預設內文顏色（body / h1-h4）疊在頁面背景",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "body-text-on-surface",
+      "foregroundToken": "--color-text",
+      "backgroundToken": "--color-surface",
+      "context": "卡片內文字（.mini-card strong 等）疊在 --color-surface",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "muted-text-on-bg",
+      "foregroundToken": "--color-text-muted",
+      "backgroundToken": "--color-bg",
+      "context": "段落文字 <p> 預設色疊在頁面背景",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "muted-text-on-surface",
+      "foregroundToken": "--color-text-muted",
+      "backgroundToken": "--color-surface",
+      "context": ".card__summary / .code-card 等疊在 --color-surface",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "dim-text-on-bg",
+      "foregroundToken": "--color-text-dim",
+      "backgroundToken": "--color-bg",
+      "context": ".hero__meta / .footer 等次要文字疊在頁面背景",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "dim-text-on-surface",
+      "foregroundToken": "--color-text-dim",
+      "backgroundToken": "--color-surface",
+      "context": ".card__meta / .mini-card span 等次要文字疊在 --color-surface",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "accent-text-on-bg",
+      "foregroundToken": "--color-accent-text",
+      "backgroundToken": "--color-bg",
+      "context": "a:hover / .section-eyebrow / .timeline__date 疊在頁面背景（Commit 2 核准的 AA 修正）",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "accent-text-on-bg-alt",
+      "foregroundToken": "--color-accent-text",
+      "backgroundToken": "--color-bg-alt",
+      "context": "同上項目出現在 .section--alt（--color-bg-alt）時",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "accent-text-on-surface",
+      "foregroundToken": "--color-accent-text",
+      "backgroundToken": "--color-surface",
+      "context": ".card__kicker / .code-card .s 疊在 --color-surface",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "primary-link-on-bg",
+      "foregroundToken": "--color-primary",
+      "backgroundToken": "--color-bg",
+      "context": "預設 <a> 連結色、.hero__eyebrow 疊在頁面背景",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "primary-link-on-surface",
+      "foregroundToken": "--color-primary",
+      "backgroundToken": "--color-surface",
+      "context": ".nav__link.is-active / .btn--ghost:hover 疊在 --color-surface",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    },
+    {
+      "id": "primary-2-on-bg",
+      "foregroundToken": "--color-primary-2",
+      "backgroundToken": "--color-bg",
+      "context": ".code-card .k 疊在頁面背景",
+      "category": "normal-text",
+      "threshold": 4.5,
+      "wcag": "WCAG 2.1 SC 1.4.3 AA",
+      "phase": 2
+    }
+  ],
+  "phase3Debt": [
+    {
+      "id": "dark-mode-pairs-tbd",
+      "note": "Dark mode 尚未實作。--legacy-dark-primary-rgb / --legacy-dark-accent-rgb（css/style.css :root）目前只作裝飾用途（背景色調、box-shadow 光暈），不是任何文字前景色，因此現階段沒有可驗證的 dark-mode 文字對比 pair。Phase 3 定義 dark 模式的背景／文字 token 後，需在這裡補上實際 pair 並轉為 phase:3、納入強制驗證。",
+      "evaluated": false
+    }
+  ]
+}

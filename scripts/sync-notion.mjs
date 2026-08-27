@@ -24,6 +24,10 @@ import { renderPage, loadNavConfig } from "./lib/layout.mjs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FIXTURE = process.argv.includes("--fixture");
 const env = process.env;
+// Commit 3：verify:fixture 用來把「產出」導去隔離的暫存目錄，避免重演
+// fixture 測試曾經覆寫過真實 articles/ 的事故。只影響寫入路徑；
+// fixture.json 一律仍從真正的 repo（ROOT）讀。
+const OUT_ROOT = env.SYNC_OUT_DIR ? path.resolve(env.SYNC_OUT_DIR) : ROOT;
 
 // R2 五個變數齊全才走 R2；否則圖片落地到 repo（GitHub Pages 也能直接服務）
 const R2_KEYS = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "R2_PUBLIC_URL"];
@@ -164,7 +168,7 @@ async function resolveImage(sourceUrl) {
   if (R2_READY) {
     publicUrl = await uploadToR2(`articles/${filename}`, buf, contentType || "application/octet-stream");
   } else {
-    const dir = path.join(ROOT, "assets", "images", "articles");
+    const dir = path.join(OUT_ROOT, "assets", "images", "articles");
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, filename), buf);
     publicUrl = `../assets/images/articles/${filename}`; // 圖片只出現在 articles/*.html 內
@@ -545,7 +549,7 @@ async function main() {
   articles.sort((x, y) => (y.date || "").localeCompare(x.date || ""));
 
   // 清掉上次產生、這次已下架的文章頁
-  const outDir = path.join(ROOT, "articles");
+  const outDir = path.join(OUT_ROOT, "articles");
   await mkdir(outDir, { recursive: true });
   for (const f of await readdir(outDir)) {
     if (f.endsWith(".html")) await unlink(path.join(outDir, f));
@@ -554,7 +558,7 @@ async function main() {
   for (const a of articles) {
     await writeFile(path.join(outDir, `${a.slug}.html`), articlePageHtml(a));
   }
-  await writeFile(path.join(ROOT, "articles.html"), listingPageHtml(articles));
+  await writeFile(path.join(OUT_ROOT, "articles.html"), listingPageHtml(articles));
 
   console.log(`完成：${articles.length} 篇文章 → articles.html + articles/*.html`);
 }

@@ -9,7 +9,9 @@
     "build:check": "node scripts/build.mjs --check",
     "sync": "node scripts/sync-notion.mjs",
     "sync:local": "node --env-file=.env scripts/sync-notion.mjs",
-    "sync:fixture": "node scripts/sync-notion.mjs --fixture"
+    "sync:fixture": "node scripts/sync-notion.mjs --fixture",
+    "verify": "node scripts/verify.mjs",
+    "verify:fixture": "node scripts/verify-fixture.mjs"
   },
   "engines": {
     "node": ">=20"

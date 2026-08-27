@@ -1,0 +1,30 @@
+# Commit 3：對每次 push / PR 跑 npm run verify（build drift、共用殼層、
+# 導覽設定、色彩 token 紀律、WCAG 對比、結構性 HTML、文章換行回歸）。
+# 只讀權限：這個 workflow 不 commit、不 push，純檢查。
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build drift + shared-shell + nav + color-token + contrast + structural + article-robustness
+        run: npm run verify
+
+      - name: Notion fixture pipeline (isolated, non-destructive)
+        run: npm run verify:fixture

@@ -41,6 +41,11 @@ jobs:
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
           R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
 
+      # Commit 3：同步完成後、commit 前先跑驗證閘門。失敗就整個 job 中止，
+      # 不會把有問題的產出 commit + push 出去。
+      - name: Verify synced output before publishing
+        run: npm run verify
+
       - name: Commit & push if changed
         run: |
           # 只加同步產出的路徑。不可用 git add -A：本 repo 的 .gitignore 忽略了
