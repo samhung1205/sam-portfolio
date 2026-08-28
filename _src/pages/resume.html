@@ -1,24 +1,64 @@
 <!--meta
 {
   "title": "Resume · Personal Website",
-  "description": "個人履歷：教育背景、技術技能、專案與研究經驗。"
+  "description": "洪紹鈞（Sam Hung）的履歷：AI 與軟體工程能力、專案經驗、教育背景與聯絡方式。"
 }
 -->
-    <!-- ===== Page Header + Download CTA ===== -->
+    <!-- ===== Positioning + Primary actions ===== -->
     <section class="section page-hero page-hero--resume">
       <div class="container reveal">
-        <span class="section-eyebrow">// RESUME</span>
-        <h1>履歷</h1>
-        <p class="page-intro">
-          以下是我的教育背景、技術技能、專案與研究經驗的彙整。<br />
-          直接下載完整 PDF 履歷，或到頁面下方的聯絡管道與我聊聊喔！
+        <span class="section-eyebrow">Resume</span>
+        <h1>洪紹鈞 · Sam Hung</h1>
+        <p class="page-intro resume-summary">
+          應用數學背景的軟體與 AI 工程師。目前的主力是把研究階段的原型
+          變成能維護的系統——包含將一支耦合的 PySide6 桌面程式重構成
+          桌面與 Web 共用同一組 FastAPI 後端的偵測平台。
+          偏好先把邊界與資料流理清楚，再談功能。
         </p>
+        <ul class="resume-facts">
+          <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Taiwan</li>
+          <li><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> 數學建模與科學計算碩士（在學）</li>
+          <li><i class="fa-solid fa-trophy" aria-hidden="true"></i> TSMC IT CareerHack 冠軍</li>
+          <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> 開放工作機會</li>
+        </ul>
         <div class="btn-row">
           <a class="btn btn--primary" href="assets/files/resume.pdf" download>
-            <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+            <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> 下載 PDF 履歷
           </a>
           <a class="btn btn--ghost" href="#contact">
-            <i class="fa-solid fa-paper-plane"></i> 直接聯絡我
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> 聯絡方式
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Skills</span>
+          <h2>技術能力</h2>
+          <p>每一組都附上實際用在哪個專案，可以直接到 Projects 對照原始碼。</p>
+        </header>
+        <div class="skill-groups" data-render="skills-groups"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Experience ===== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Experience</span>
+          <h2>經驗</h2>
+        </header>
+        <div class="timeline" data-render="resume-experience"><!-- JS 渲染 --></div>
+
+        <div class="btn-row reveal">
+          <a class="btn btn--ghost" href="case-studies/yolo-system.html">
+            Yolo-System 案例研究 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a class="btn btn--ghost" href="projects.html">
+            所有專案 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
           </a>
         </div>
       </div>
@@ -28,59 +68,10 @@
     <section class="section section--alt">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// EDUCATION</span>
+          <span class="section-eyebrow">Education</span>
           <h2>教育背景</h2>
         </header>
         <div class="timeline" data-render="resume-education"><!-- JS 渲染 --></div>
-      </div>
-    </section>
-
-    <!-- ===== Skills ===== -->
-    <section class="section">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">// SKILLS</span>
-          <h2>技術技能</h2>
-          <p>數字僅代表自評熟練度，實際請參考專案與經驗。</p>
-        </header>
-        <div class="grid grid--2">
-          <div class="feature reveal">
-            <h4><i class="fa-solid fa-code feature__title-icon feature__title-icon--primary"></i> Programming Languages</h4>
-            <div data-render="skills-languages"></div>
-          </div>
-          <div class="feature reveal">
-            <h4><i class="fa-solid fa-brain feature__title-icon feature__title-icon--primary-2"></i> AI / ML</h4>
-            <div data-render="skills-ai"></div>
-          </div>
-          <div class="feature reveal">
-            <h4><i class="fa-solid fa-screwdriver-wrench feature__title-icon feature__title-icon--accent"></i> Software Engineering</h4>
-            <div data-render="skills-engineering"></div>
-          </div>
-          <div class="feature reveal">
-            <h4><i class="fa-solid fa-square-root-variable feature__title-icon feature__title-icon--primary"></i> Math / Statistics</h4>
-            <div data-render="skills-math"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== Experience (Project & Research) ===== -->
-    <section class="section section--alt">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">// EXPERIENCE</span>
-          <h2>專案與研究經驗</h2>
-        </header>
-        <div class="timeline" data-render="resume-experience"><!-- JS 渲染 --></div>
-
-        <div class="btn-row reveal">
-          <a class="btn btn--ghost" href="projects.html">
-            完整專案列表 <i class="fa-solid fa-arrow-right"></i>
-          </a>
-          <a class="btn btn--ghost" href="research.html">
-            研究主題 <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
       </div>
     </section>
 
@@ -88,30 +79,28 @@
     <section class="section">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// AWARDS &amp; ACHIEVEMENTS</span>
-          <h2>獲獎與事蹟</h2>
-          <!-- <p>目前為 placeholder，請在 <code>js/data.js</code> 中的 <code>resume.awards</code> 補充內容。</p> -->
+          <span class="section-eyebrow">Awards</span>
+          <h2>獲獎</h2>
         </header>
         <div class="timeline" data-render="resume-awards"><!-- JS 渲染 --></div>
       </div>
     </section>
 
-    <!-- ===== Contact（原 contact.html 併入此處） ===== -->
+    <!-- ===== Contact ===== -->
     <section class="section section--alt" id="contact">
       <div class="container">
         <div class="contact-grid">
           <div class="reveal">
-            <span class="section-eyebrow">// CONTACT</span>
+            <span class="section-eyebrow">Contact</span>
             <h2>聯絡我</h2>
             <p>
-              合作邀約、面試機會、研究討論或單純打聲招呼都歡迎。
-              最快回覆的方式是 Email；技術相關討論也可以直接到 GitHub 留言。
+              合作邀約、面試機會或技術討論都歡迎。Email 回覆最快；
+              專案細節也可以直接到 GitHub 的對應 repo 留言。
             </p>
             <div class="btn-row">
-              <a class="btn btn--primary" href="assets/files/resume.pdf" download>
-                <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+              <a class="btn btn--primary" href="mailto:shaojun5861@gmail.com">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i> 寄信給我
               </a>
-              <a class="btn btn--ghost" href="projects.html">瀏覽專案</a>
             </div>
           </div>
           <ul class="contact-list reveal" data-render="contact-list"><!-- JS 渲染 --></ul>

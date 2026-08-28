@@ -122,28 +122,6 @@
 
 
   /* =====================================================
-     4. Skill bar 進場動畫
-     ===================================================== */
-  function animateSkillBars() {
-    const bars = $$(".skill__fill");
-    if (!bars.length) return;
-    if (!("IntersectionObserver" in window)) {
-      bars.forEach(b => b.classList.add("is-filled"));
-      return;
-    }
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-filled");
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    bars.forEach(b => io.observe(b));
-  }
-
-
-  /* =====================================================
      5-1. Home：渲染核心定位、Featured Projects、Featured Research
      ===================================================== */
   function renderHome() {
@@ -444,41 +422,37 @@
     renderSkills();
   }
 
+  /* 標題用 h3 而不是 h4：這一頁的 section 標題是 h2，用 h4 會跳級
+     （design-system/MASTER.md §4.2）。org 留空時整行不渲染——沒有確認的
+     單位就不要放一行看起來像單位的字。 */
   function timelineHTML(items) {
     if (!items || !items.length) return "";
     return items.map(it => `
       <div class="timeline__item reveal">
         <div class="timeline__date">${escape(it.date)}</div>
-        <h4 class="timeline__title">${escape(it.title)}</h4>
-        <div class="timeline__org">${escape(it.org)}</div>
+        <h3 class="timeline__title">${escape(it.title)}</h3>
+        ${it.org ? `<div class="timeline__org">${escape(it.org)}</div>` : ""}
         ${it.desc ? `<p>${escape(it.desc)}</p>` : ""}
+        ${it.tech ? `<p class="timeline__tech">${escape(it.tech)}</p>` : ""}
       </div>
     `).join("");
   }
 
+  /* 技能改成「分組 + 實際用在哪」，不再有百分比或進度條。清單用純文字以
+     「·」分隔而不是一整片 badge——badge 牆會讓每一項看起來一樣重要，反而
+     讓真正有專案佐證的能力被稀釋。 */
   function renderSkills() {
-    if (!data.skills) return;
-    const groups = [
-      { key: "languages",   target: "skills-languages",   label: "Programming Languages" },
-      { key: "ai",          target: "skills-ai",          label: "AI / ML" },
-      { key: "engineering", target: "skills-engineering", label: "Software Engineering" },
-      { key: "math",        target: "skills-math",        label: "Math / Statistics" }
-    ];
-    groups.forEach(g => {
-      renderTargets(g.target).forEach(root => {
-        root.innerHTML = (data.skills[g.key] || []).map(s => `
-          <div class="skill">
-            <div class="skill__head">
-              <span>${escape(s.name)}</span>
-              <span>${escape(String(s.level))}%</span>
-            </div>
-            <div class="skill__bar">
-              <div class="skill__fill skill__fill--${escape(String(s.level))}"></div>
-            </div>
-          </div>
-        `).join("");
-      });
-    });
+    const root = renderTarget("skills-groups");
+    if (!root || !data.skills) return;
+    root.innerHTML = data.skills.map(g => `
+      <section class="skill-group reveal">
+        <h3 class="skill-group__title">
+          <i class="fa-solid ${escape(g.icon)}" aria-hidden="true"></i> ${escape(g.label)}
+        </h3>
+        <p class="skill-group__items">${(g.items || []).map(escape).join(" · ")}</p>
+        ${g.evidence ? `<p class="skill-group__evidence">${escape(g.evidence)}</p>` : ""}
+      </section>
+    `).join("");
   }
 
 
@@ -488,17 +462,25 @@
   function renderContact() {
     const list = renderTarget("contact-list");
     if (list && data.contacts) {
-      list.innerHTML = data.contacts.map(c => `
+      // 整列都是連結（原本只有 label 是 <a>，實測只有 42×20，遠低於
+      // 44px 基準）。mailto: 不該開新分頁，只有外部 http(s) 才加 target
+      // 與 rel（design-system/MASTER.md §15/§18）。
+      list.innerHTML = data.contacts.map(c => {
+        const external = /^https?:/i.test(c.href);
+        const attrs = external ? ' target="_blank" rel="noopener noreferrer"' : "";
+        return `
         <li class="reveal">
-          <i class="${escape(c.icon.startsWith('fa-brands') ? c.icon : 'fa-solid ' + c.icon)}"></i>
-          <div>
-            <a href="${escape(c.href)}" target="_blank" rel="noopener">
+          <a class="contact-list__link" href="${escape(c.href)}"${attrs}
+             aria-label="${escape(c.label)}：${escape(c.value)}">
+            <i class="${escape(c.icon.startsWith('fa-brands') ? c.icon : 'fa-solid ' + c.icon)}" aria-hidden="true"></i>
+            <span class="contact-list__body">
               <strong>${escape(c.label)}</strong>
-            </a>
-            <small>${escape(c.value)} · ${escape(c.hint || "")}</small>
-          </div>
-        </li>
-      `).join("");
+              <small>${escape(c.value)}${c.hint ? ` · ${escape(c.hint)}` : ""}</small>
+            </span>
+            ${external ? '<i class="fa-solid fa-arrow-up-right-from-square contact-list__ext" aria-hidden="true"></i>' : ""}
+          </a>
+        </li>`;
+      }).join("");
     }
 
     const form = renderTarget("contact-form");
@@ -544,6 +526,5 @@
     renderResume();
     renderContact();
     initReveal();
-    animateSkillBars();
   });
 })();

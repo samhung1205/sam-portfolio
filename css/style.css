@@ -30,9 +30,10 @@
      也讓 Phase 3 dark mode 只要覆寫這幾個 --c-*-rgb 就能連帶讓所有
      alpha 用法一起換色。*/
   /* Design Lock（design-system/MASTER.md §3）：Graphite neutrals +
-     Muted Copper accent。--c-accent-rgb 不移除——保留給 resume.html
-     等尚未這次一起改的頁面（如 .skill__fill）在改到之前不會斷色，
-     直接 alias 到 primary-hover（MASTER.md §19 item 2 的作法）。 */
+     Muted Copper accent。--c-accent-rgb 不移除，直接 alias 到
+     primary-hover（MASTER.md §19 item 2 的作法），讓尚未逐頁改完的
+     var(--color-accent) 用法不會斷色（Phase 4D 移除 .skill__fill 後，
+     全站只剩 .feature__title-icon--accent 這一處引用）。 */
   --c-bg-rgb:         250 250 250;
   --c-bg-alt-rgb:     244 244 245;
   --c-surface-rgb:    255 255 255;
@@ -300,9 +301,13 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   --page-hero-position: right center;
 }
 
+/* Phase 4D：7.jpg 是「筆電 + 藍色全息程式碼」庫存渲染圖，同時踩到兩條
+   鎖定規則——庫存插圖（MASTER.md §12）與藍／青色的 AI-tech 視覺語彙
+   （§3 明文排除）。履歷頁的第一屏應該是定位敘述與事實，不是一張跟本人
+   工作無關的裝飾圖。作法與 .page-hero--projects 一致：拿掉背景圖，沿用
+   既有的中性漸層。 */
 .page-hero--resume {
-  --page-hero-image: url("../assets/images/7.jpg");
-  --page-hero-position: right center;
+  --page-hero-image: none;
 }
 
 .page-hero--contact {
@@ -1394,41 +1399,66 @@ nav[aria-label="Primary navigation"] {
   color: var(--color-accent);
 }
 
-/* Skill bar */
-.skill {
-  margin-bottom: var(--space-4);
+/* 技能分組（Phase 4D）：百分比進度條已退場——自評數字沒有基準，讀者
+   無從判斷 80% 是什麼意思，而且動畫進度條正是 design-system/MASTER.md
+   §13 點名要避免的裝飾性指標。改成分組文字 + 一行實際佐證。 */
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  align-items: start;
 }
-.skill__head {
+.skill-group__title {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+.skill-group__title i {
+  font-size: 1rem;
+  color: var(--color-accent-text);
+}
+.skill-group__items {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.9;
+}
+.skill-group__evidence {
+  margin: var(--space-4) 0 0;
   font-size: var(--fs-sm);
-  margin-bottom: 6px;
+  color: var(--color-text-dim);
+  line-height: 1.6;
+}
+
+/* 履歷頁的定位段落與快速事實列 */
+.resume-summary { max-width: 60ch; }
+.resume-facts {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-5) 0 var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+}
+.resume-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
-.skill__bar {
-  height: 6px;
-  background: var(--color-border);
-  border-radius: 999px;
-  overflow: hidden;
+.resume-facts i { color: var(--color-accent-text); }
+
+.timeline__tech {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+  overflow-wrap: anywhere;
 }
-.skill__fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-  border-radius: 999px;
-  width: 0;
-  transition: width 1s ease;
-}
-.skill__fill--50.is-filled { width: 50%; }
-.skill__fill--55.is-filled { width: 55%; }
-.skill__fill--60.is-filled { width: 60%; }
-.skill__fill--65.is-filled { width: 65%; }
-.skill__fill--70.is-filled { width: 70%; }
-.skill__fill--75.is-filled { width: 75%; }
-.skill__fill--80.is-filled { width: 80%; }
-.skill__fill--85.is-filled { width: 85%; }
-.skill__fill--90.is-filled { width: 90%; }
-.skill__fill--95.is-filled { width: 95%; }
-.skill__fill--100.is-filled { width: 100%; }
 
 .learning-list {
   margin: 0;
@@ -1451,7 +1481,7 @@ nav[aria-label="Primary navigation"] {
   width: 12px; height: 12px;
   border-radius: 50%;
   background: var(--color-primary);
-  box-shadow: 0 0 0 4px rgb(var(--legacy-dark-primary-rgb) / 0.18);
+  box-shadow: 0 0 0 4px rgb(var(--c-primary-rgb) / 0.18);
 }
 .timeline__date {
   font-family: var(--font-mono);
@@ -1461,6 +1491,9 @@ nav[aria-label="Primary navigation"] {
 }
 .timeline__title { font-size: var(--fs-md); margin: 4px 0; }
 .timeline__org { color: var(--color-text-muted); font-size: var(--fs-sm); }
+/* 段落收在 §4.3 的閱讀寬度內。經歷描述變成完整敘述之後，沒有上限會
+   一路撐到 1126px，遠超過 62–65ch。 */
+.timeline__item p { max-width: 64ch; }
 
 /* Contact */
 .contact-grid {
@@ -1476,24 +1509,42 @@ nav[aria-label="Primary navigation"] {
   gap: var(--space-3);
 }
 .contact-list li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  transition: border-color var(--transition-base), transform var(--transition-base);
+  transition: border-color var(--transition-base);
 }
-.contact-list li:hover { border-color: var(--color-primary); transform: translateY(-2px); }
+.contact-list li:hover { border-color: var(--color-primary); }
+/* 整列是連結，不是只有標題那幾個字：原本 <a> 只包住 label，實測
+   42×20，遠低於 44px 基準（design-system/MASTER.md §18）。 */
+.contact-list__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: var(--space-4);
+  color: var(--color-text);
+}
+.contact-list__link:hover { color: var(--color-text); }
+.contact-list__body { min-width: 0; }
+.contact-list__body strong { display: block; }
+.contact-list__link:hover .contact-list__body strong { color: var(--color-primary); }
 .contact-list i {
+  flex-shrink: 0;
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 8px;
-  background: rgb(var(--legacy-dark-primary-rgb) / 0.12);
+  background: rgb(var(--c-primary-rgb) / 0.10);
   color: var(--color-primary);
 }
-.contact-list small { color: var(--color-text-dim); display: block; }
+.contact-list__ext {
+  margin-left: auto;
+  width: auto; height: auto;
+  background: none;
+  font-size: var(--fs-xs);
+  color: var(--color-text-dim);
+}
+.contact-list small { color: var(--color-text-dim); display: block; overflow-wrap: anywhere; }
 
 /* Form */
 .form {

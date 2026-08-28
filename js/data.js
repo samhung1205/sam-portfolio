@@ -59,33 +59,35 @@ const corePositioning = [
 
 
 /* ---------------- 技術能力 ---------------- */
-const skills = {
-  languages: [
-    { name: "Python",      level: 90 },
-    { name: "JavaScript",  level: 75 },
-    { name: "TypeScript",  level: 60 },
-    { name: "SQL",         level: 75 },
-    { name: "R",           level: 65 }
-  ],
-  ai: [
-    { name: "PyTorch / scikit-learn", level: 80 },
-    { name: "LangChain / LangGraph",  level: 75 },
-    { name: "RAG / Tool Calling",     level: 75 },
-    { name: "YOLO / Computer Vision", level: 70 }
-  ],
-  engineering: [
-    { name: "Git / GitHub",           level: 85 },
-    { name: "FastAPI / Flask",        level: 70 },
-    { name: "Docker",                 level: 60 },
-    { name: "HTML / CSS / Web",       level: 75 }
-  ],
-  math: [
-    { name: "Experimental Design",    level: 90 },
-    { name: "Statistical Modeling",   level: 85 },
-    { name: "Optimization",           level: 75 },
-    { name: "Data Analysis",          level: 85 }
-  ]
-};
+/* Phase 4D：百分比熟練度已永久退場。自評數字沒有可驗證的基準，讀者無從
+   判斷「PyTorch 80%」是什麼意思，只會稀釋真正有證據的項目。改成三個
+   分組 + 一行「實際用在哪」，每一項都能在 Projects／Case Study 追到出處。
+   刻意移除的項目見 Phase 4D 報告：Docker（Yolo-System 的容器化階段標記
+   為待辦，沒有實作）、Flask（三個專案都用 FastAPI）、RAG（agent 層是
+   唯讀 DB 工具，不是文件檢索）、scikit-learn（repo 內查無使用）。 */
+const skills = [
+  {
+    id: "ai",
+    icon: "fa-brain",
+    label: "AI 與電腦視覺",
+    items: ["Python", "PyTorch", "Ultralytics YOLO", "OpenCV", "LangGraph", "Agent tool calling"],
+    evidence: "實際用於：Yolo-System 的偵測服務與 agent 層、DetectionData_Engine 的標註與資料品質流程"
+  },
+  {
+    id: "engineering",
+    icon: "fa-screwdriver-wrench",
+    label: "軟體與系統",
+    items: ["FastAPI", "SQLAlchemy / Alembic", "MySQL / SQLite", "React", "TypeScript", "PySide6 / PyQt6", "Git"],
+    evidence: "實際用於：Yolo-System 的雙軌平台（後端、Web、桌面）、MetroPulse、本站的靜態建置流程"
+  },
+  {
+    id: "data",
+    icon: "fa-square-root-variable",
+    label: "統計與資料",
+    items: ["實驗設計", "統計建模", "最佳化", "資料分析", "SQL", "R"],
+    evidence: "實際用於：碩士研究、MetroPulse 以 PageRank 建構的可解釋推薦模型"
+  }
+];
 
 
 /* ---------------- 目前學習方向 ---------------- */
@@ -248,41 +250,51 @@ const research = [
 
 
 /* ---------------- 履歷 (Resume) ---------------- */
+/* org 可留空（例如尚未確認掛在哪個單位的研究專題），留空時不渲染該行，
+   不用topic 清單充當單位名稱。tech 是選填的技術行。 */
 const resume = {
   education: [
     {
       date: "2024 – Present",
       title: "數學建模與科學計算碩士",
-      org: "NYCU Taiwan · 數科所",
-      desc: "研究方向：科學計算、影像辨識、機器學習。"
+      org: "國立陽明交通大學（NYCU）· 數科所",
+      desc: "研究方向為科學計算與影像辨識。碩士論文進行中，題目為多尺度環境下的船舶偵測；研究內容見 Research 頁。"
     },
     {
       date: "2020 – 2024",
       title: "數學學士",
-      org: "NTNU Taiwan · 數學系",
-      desc: "主修：數值方法、機率、統計、最佳化、線性代數。"
+      org: "國立臺灣師範大學（NTNU）· 數學系",
+      desc: "與目前工作最相關的訓練：機率統計、最佳化、數值方法。"
     }
   ],
   experience: [
     {
       date: "2026 – Present",
-      title: "AI Agent / Software Engineer (Self-directed)",
-      org: "Independent Projects",
-      desc: "持續開發 AI Agent 與全端專案，包含 YOLO System、SDDE 資料工程工作台與 MetroPulse。"
+      title: "AI / 軟體工程（自主專案）",
+      org: "獨立開發",
+      desc:
+        "把一支 UI、業務邏輯與 SQL 耦合在同一層的 PySide6 桌面程式，重構成桌面版與 React Web 共用同一組 FastAPI 後端的偵測平台，" +
+        "過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL；另建一套 PyQt6 資料工程工作台，處理標註、YOLO 格式匯入匯出與資料集品質檢查。",
+      tech: "FastAPI · SQLAlchemy / Alembic · React · PySide6 / PyQt6 · LangGraph · MySQL"
     },
     {
       date: "2023 – 2024",
-      title: "Graduate Researcher",
-      org: "Scientific Computing / Statistics / Data Analysis",
-      desc: "運用 Google Pagerank 於台北捷運⼈流分析。"
+      title: "研究專題：台北捷運人流分析",
+      // 原本此欄寫的是「Scientific Computing / Statistics / Data Analysis」，
+      // 那是研究主題不是單位名稱；在確認實際掛靠單位之前留空，不編造。
+      org: "",
+      desc:
+        "把 Google PageRank 的連結分析套用到台北捷運站間人流，建立各時段的站點重要度模型。" +
+        "這套模型後來成為 MetroPulse 推薦系統的基礎。",
+      tech: "Python · PageRank · 統計分析"
     }
   ],
   awards: [
     {
       date: "2026",
-      title: " 1st Place TSMC IT CareerHack",
-      org: "legacy code / refactoring / AI Agent",
-      desc: "Hackathon 冠軍。"
+      title: "TSMC IT CareerHack 冠軍",
+      org: "台積電",
+      desc: "競賽主題為 legacy code 重構與 AI Agent 應用。"
     }
   ]
 };
