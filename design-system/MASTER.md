@@ -201,7 +201,30 @@ Unchanged from the legacy system — this part was already sound.
 - Constrained laptop width: all 6 nav destinations are preserved — the IA does not shrink. If the labelled Contact action starts crowding the nav at this width, **collapse Contact to a 44×44 icon-only action first**, before touching anything else.
 - Mobile: existing disclosure/hamburger behavior, Contact collapses to 44×44 icon-only. (A first prototype pass shipped Contact at 198px wide on mobile and visibly crowded the header — confirmed by testing, fixed by icon-only collapse.)
 
-**[RULE — implementation validation requirement, not an open design decision]** The exact width at which the labelled Contact action must collapse to icon-only between wide-desktop and mobile is **not specified as a pixel value here**, and must not be invented without testing against the real, built nav (logo + wordmark + 6 items + Contact, at production font metrics — not the prototype's approximation). Determine it from measured layout failure during implementation, record the measured value back into this document once found, and only then treat it as locked.
+**[RULE — three-state responsive contract, measured and now locked]** Measured against the real built nav (production logo, wordmark and font metrics, inner pages — the homepage's brandless nav is not the constraint):
+
+| Part | Measured width |
+|---|---:|
+| Brand (logo + wordmark + role line) | 295px |
+| Six nav links incl. gaps | 534px |
+| Contact — labelled | 108px |
+| Contact — icon-only | 44px |
+| `<nav>` internal menu↔Contact gap | 12px |
+| `.container` side padding | 24px each |
+
+With `W` = media-query width (includes the scrollbar; `clientWidth` = `W − 15`):
+
+| State | Range | Nav | Contact | Brand↔nav separation |
+|---|---|---|---|---|
+| **A** | `W ≥ 1041px` | 6 labelled links | labelled, 108px | ≥ 29px |
+| **B** | `965px – 1040px` | 6 labelled links | 44×44 icon-only | 18–93px |
+| **C** | `W ≤ 964px` | disclosure menu | 44×44 icon-only | n/a |
+
+Derivation: state A needs `295 + 653 = 949px` of content width and overflows the page at `W ≤ 987`; state B needs `295 + 589 = 884px` and overflows at `W ≤ 922`. Both breakpoints sit above their overflow point, so the collapse happens while the nav is merely getting tight rather than after it has already broken.
+
+**[RULE] The two collapses are independent and must not share a breakpoint.** The original implementation bound both to a single `820px` rule; their real failure points are ~140px apart, which left `821–987px` overflowing horizontally on every page. Contact collapses to icon-only ~76px before the disclosure menu takes over.
+
+**[RULE] The icon-only state hides the label with the clip technique, never `display:none`** — the accessible name "Contact" must stay in the accessibility tree. The envelope glyph carries `aria-hidden="true"`.
 
 **[CI]** `checkNavConfig` verifies rendered nav items match `_src/config/nav.json`. `checkSharedShellIntegrity` verifies the nav markup has one generating source. `checkStructuralHtml` verifies `aria-controls`/`aria-expanded` on the mobile toggle.
 
@@ -467,7 +490,6 @@ This section exists so implementation doesn't silently drift from this document.
 **Blocking real implementation, not a design question:**
 - At least one real project artifact (screenshot/diagram/plot) needs to exist before §12's State A can be verified end-to-end rather than just specified.
 - Real vector logo art (§19).
-- The exact nav Contact-collapse width (§7) — behavior is fully specified; the pixel value is found during implementation, not invented here.
 
 **Master's thesis information architecture (documented here, implemented in the Research phase):**
 - The thesis is a **Research** artifact, never an Article. Articles are technical writing; the thesis is primary research output and is delivered mainly as a PDF.
