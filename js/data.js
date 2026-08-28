@@ -85,7 +85,7 @@ const skills = [
     icon: "fa-square-root-variable",
     label: "統計與資料",
     items: ["實驗設計", "統計建模", "最佳化", "資料分析", "SQL", "R"],
-    evidence: "實際用於：碩士研究、MetroPulse 以 PageRank 建構的可解釋推薦模型"
+    evidence: "實際用於：MetroPulse 以 PageRank 建構的可解釋推薦模型、數學系與碩士課程的統計訓練"
   }
 ];
 
@@ -255,13 +255,13 @@ const research = [
 const resume = {
   education: [
     {
-      date: "2024 – Present",
+      date: "09/2024 – Present",
       title: "數學建模與科學計算碩士",
       org: "國立陽明交通大學（NYCU）· 數科所",
       desc: "研究方向為科學計算與影像辨識。碩士論文進行中，題目為多尺度環境下的船舶偵測；研究內容見 Research 頁。"
     },
     {
-      date: "2020 – 2024",
+      date: "09/2020 – 06/2024",
       title: "數學學士",
       org: "國立臺灣師範大學（NTNU）· 數學系",
       desc: "與目前工作最相關的訓練：機率統計、最佳化、數值方法。"
@@ -276,19 +276,14 @@ const resume = {
         "把一支 UI、業務邏輯與 SQL 耦合在同一層的 PySide6 桌面程式，重構成桌面版與 React Web 共用同一組 FastAPI 後端的偵測平台，" +
         "過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL；另建一套 PyQt6 資料工程工作台，處理標註、YOLO 格式匯入匯出與資料集品質檢查。",
       tech: "FastAPI · SQLAlchemy / Alembic · React · PySide6 / PyQt6 · LangGraph · MySQL"
-    },
-    {
-      date: "2023 – 2024",
-      title: "研究專題：台北捷運人流分析",
-      // 原本此欄寫的是「Scientific Computing / Statistics / Data Analysis」，
-      // 那是研究主題不是單位名稱；在確認實際掛靠單位之前留空，不編造。
-      org: "",
-      desc:
-        "把 Google PageRank 的連結分析套用到台北捷運站間人流，建立各時段的站點重要度模型。" +
-        "這套模型後來成為 MetroPulse 推薦系統的基礎。",
-      tech: "Python · PageRank · 統計分析"
     }
   ],
+  /* Phase 4D 曾有一筆「2023 – 2024 研究專題：台北捷運人流分析」的經歷，
+     org 留空、標題含糊寫成「研究專題」。日期落在 NTNU 學士班期間、早於
+     NYCU 碩士班（09/2024 起），沒有證據顯示這是一個獨立掛牌的職位或
+     研究職，Phase 4D.1 移除。底下的 PageRank／MetroPulse 工作本身仍
+     保留——透過 Projects 頁與上面 skills 的 evidence 行呈現，只是不再
+     包裝成一段查無實據的「經歷」。 */
   awards: [
     {
       date: "2026",
