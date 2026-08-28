@@ -126,6 +126,9 @@ const projects = [
     ],
     github: "https://github.com/samhung1205/Yolo-System",
     demo:   "",
+    // 只有真的存在案例研究頁的專案才有這個欄位——沒有就不渲染 CTA，
+    // 不指向不存在的頁面（design-system/MASTER.md §9/§20）。
+    caseStudy: "case-studies/yolo-system.html",
     status: "in-progress"
   },
   {

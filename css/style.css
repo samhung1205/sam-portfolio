@@ -1048,6 +1048,293 @@ nav[aria-label="Primary navigation"] {
 }
 
 
+/* ---------- 8c. Case Study（case-studies/*.html）
+   長文閱讀版型：行長受控、章節之間靠既有 section 節奏分段，
+   不新增第二套色彩或陰影語彙——沿用 §3 token 與既有 .section／
+   .card 的視覺規則（design-system/MASTER.md §11）。 ---------- */
+.cs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+.cs-back:hover { color: var(--color-primary); }
+
+.cs-header h1 { margin-top: var(--space-2); }
+.cs-lede { max-width: 62ch; }
+
+/* Meta 條：角色／技術／狀態。用 <dl> 而不是一排 badge——這是三則有標籤
+   的事實，不是三個裝飾標籤。 */
+.cs-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-5);
+  margin: var(--space-6) 0 var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+.cs-meta dt {
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: 6px;
+}
+.cs-meta dd {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* 閱讀區塊：65ch 上限（§4.3）。標題不套上限，避免短標題被硬擠。 */
+.cs-prose { max-width: 66ch; }
+.cs-prose p { max-width: 64ch; }
+
+.cs-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-5) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 65ch;
+}
+.cs-list li {
+  position: relative;
+  padding-left: var(--space-5);
+  line-height: 1.65;
+}
+.cs-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--c-primary-rgb) / 0.55);
+}
+.cs-list b { color: var(--color-text); font-weight: 600; }
+
+.cs-caveat {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--color-text-dim);
+  border-left: 2px solid var(--color-border);
+  padding-left: var(--space-4);
+}
+
+/* ---- 架構圖：語意化 HTML + CSS，不是圖片。
+   螢幕閱讀器讀得到每一個節點的文字；連接線是 aria-hidden 的裝飾。 ---- */
+.arch { margin: var(--space-7) 0 0; }
+.arch__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-6);
+  align-items: start;
+}
+.arch__panel {
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid rgb(var(--c-text-rgb) / 0.10);
+  border-radius: var(--radius-xl);
+}
+.arch__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-5);
+}
+.arch__badge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+}
+.arch__badge--after {
+  border-color: rgb(var(--c-primary-rgb) / 0.35);
+  color: var(--color-primary);
+}
+
+.arch__row {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+/* 四個基礎設施節點排成 2×2，而不是讓 auto-fit 切成 3+1 落單一個。 */
+.arch__row--pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.arch__node {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+.arch__node span {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--color-text-dim);
+  line-height: 1.5;
+}
+.arch__node--core {
+  border-color: rgb(var(--c-primary-rgb) / 0.40);
+  background: rgb(var(--c-primary-rgb) / 0.05);
+}
+.arch__services {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.arch__services li {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* 連接線：一段短垂直線 + 標籤，說明「這個箭頭是什麼協定」。 */
+.arch__edge {
+  margin: 0;
+  padding: var(--space-4) 0 var(--space-4) 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--color-text-dim);
+  text-align: center;
+  position: relative;
+}
+.arch__edge::before,
+.arch__edge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: var(--space-4);
+  background: rgb(var(--c-text-rgb) / 0.22);
+}
+.arch__edge::before { top: 0; }
+.arch__edge::after { bottom: 0; }
+
+.arch__note {
+  margin: var(--space-5) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.arch__caption {
+  margin-top: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--color-text-dim);
+  text-align: center;
+}
+
+/* ---- 決策卡：問題 → 決策 → 為什麼 → 取捨。用 <dl> 而不是段落，
+   讓每一則的四個面向在視覺與語意上都對齊。 ---- */
+.decision-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+.decision {
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid rgb(var(--c-text-rgb) / 0.10);
+  border-radius: var(--radius-xl);
+}
+.decision > h3 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.decision dl {
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+}
+.decision dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  padding-top: 4px;
+}
+.decision dd {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  /* §4.3 的 62–65ch 上限；原本寫 68ch 超出設計系統自己的規則，
+     偵測器也判為 line-length。 */
+  max-width: 64ch;
+}
+
+/* ---- 系統能力：分組清單，不是一整片 feature 卡海 ---- */
+.cs-caps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+.cs-cap h3 {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+.cs-cap ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.cs-cap li {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  /* 中英夾雜的短句（例如帶括號與 ASCII 符號的項目）在窄欄位裡會被當成
+     不可斷的整塊而溢出容器幾個 px；與 article.css 對行內程式碼／長網址
+     的處理一致。 */
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .decision dl { grid-template-columns: 1fr; gap: 4px var(--space-4); }
+  .decision dt { padding-top: var(--space-3); }
+  .decision dt:first-of-type { padding-top: 0; }
+}
+
+
 /* ---------- 9. About / Skills / Resume / Contact ---------- */
 .feature-grid {
   display: grid;

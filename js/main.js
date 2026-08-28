@@ -258,6 +258,9 @@
     const hasGithub = !!(p.github && p.github !== "#");
     const hasDemo = !!(p.demo && p.demo !== "#");
     const links = [
+      p.caseStudy
+        ? `<a class="card__case-cta" href="${escape(p.caseStudy)}">View Case Study <i class="fa-solid fa-arrow-right"></i></a>`
+        : "",
       hasGithub ? `<a href="${escape(p.github)}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a>` : "",
       hasDemo ? `<a href="${escape(p.demo)}" target="_blank" rel="noopener"><i class="fa-solid fa-up-right-from-square"></i> Live Demo</a>` : "",
     ].filter(Boolean).join("");
@@ -339,10 +342,9 @@
         }</div>`
       : `<div class="card__meta"><b>角色：</b>${escape(p.role || "—")}</div>`;
 
-    // 首頁 Tier 1 的 CTA 指到 projects.html 對應卡片的錨點。標籤刻意寫
-    // 「View Project」而不是「View Case Study」——精選專案不等於案例研究，
-    // 案例研究頁目前一頁都還沒有，按鈕不能承諾一個不存在的東西
-    // （design-system/MASTER.md §20）。
+    // 首頁 Tier 1 的 CTA：有真實案例研究頁才寫「View Case Study」並指過去，
+    // 沒有就退回「View Project」指到 projects.html 的錨點。精選專案不等於
+    // 案例研究，按鈕不能承諾一個不存在的頁面（design-system/MASTER.md §20）。
     // GitHub 連結只在真的有效時才渲染——p.github 是空字串代表「查證過
     // 沒有公開 repo」，不能落回 "#" 顯示一個會 404 的假按鈕
     // （design-system/MASTER.md §9）。
@@ -354,8 +356,8 @@
       : "";
     const footer = featured
       ? `<div class="card__footer">
-           <a class="card__case-cta" href="projects.html#project-${id}">
-             View Project <i class="fa-solid fa-arrow-right"></i>
+           <a class="card__case-cta" href="${p.caseStudy ? escape(p.caseStudy) : `projects.html#project-${id}`}">
+             ${p.caseStudy ? "View Case Study" : "View Project"} <i class="fa-solid fa-arrow-right"></i>
            </a>
          </div>`
       : `<div class="card__footer">

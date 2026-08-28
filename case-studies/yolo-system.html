@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<!-- shell:cfe2088790 -->
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YOLO System 案例研究 · Sam Hung</title>
+  <meta name="description" content="把一支 UI、業務邏輯與 SQL 全部耦合的 PySide6 桌面程式，重構成桌面與 Web 共用同一組 FastAPI 的偵測平台：架構演進、關鍵工程決策與取捨。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css?v=5e927b6668" />
+  <!-- JS 失敗時內容仍須可見（design-system/MASTER.md §16）：.reveal /
+       .fade-in 預設 opacity:0，只有 initReveal() 的 IntersectionObserver
+       會補上 is-visible。沒有 JS 就永遠是 0，此處強制蓋回可見。 -->
+  <noscript><style>.reveal,.fade-in{opacity:1 !important;transform:none !important;}</style></noscript>
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__brand" href="../index.html" aria-label="Back to homepage">
+        <img class="nav__logo" src="../assets/images/logo.png" alt="Sam logo" />
+        <span class="nav__brand-text">
+          <strong>Sam Hung</strong>
+          <small>AI Agent Engineer</small>
+        </span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Toggle menu" aria-controls="site-menu" aria-expanded="false"><span></span></button>
+      <nav aria-label="Primary navigation">
+        <ul class="nav__menu" id="site-menu">
+          <li><a class="nav__link" href="../index.html">Home</a></li>
+          <li><a class="nav__link" href="../about.html">About</a></li>
+          <li><a class="nav__link" href="../projects.html">Projects</a></li>
+          <li><a class="nav__link" href="../research.html">Research</a></li>
+          <li><a class="nav__link" href="../articles.html">Articles</a></li>
+          <li><a class="nav__link" href="../resume.html">Resume</a></li>
+        </ul>
+        <a class="nav__cta" href="mailto:shaojun5861@gmail.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Contact</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Case Study Header ===== -->
+    <section class="section cs-header">
+      <div class="container reveal">
+        <a class="cs-back" href="../projects.html">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> 回專案列表
+        </a>
+        <span class="section-eyebrow">Engineering Case Study</span>
+        <h1>YOLO System</h1>
+        <p class="page-intro cs-lede">
+          一支 UI、業務邏輯與 SQL 全部寫在同一層的 PySide6 桌面程式，
+          在不停機、不重寫的前提下，逐步變成桌面版與 React Web 共用同一組
+          FastAPI 的偵測平台。
+        </p>
+
+        <dl class="cs-meta">
+          <div>
+            <dt>角色</dt>
+            <dd>個人專案：架構、後端、Web 前端、桌面端重構</dd>
+          </div>
+          <div>
+            <dt>核心技術</dt>
+            <dd>FastAPI · SQLAlchemy · Alembic · React · PySide6 · LangGraph · Ultralytics YOLO · MySQL</dd>
+          </div>
+          <div>
+            <dt>狀態</dt>
+            <dd>開發中。後端、Web、桌面主流程可用；容器化與部署尚未完成</dd>
+          </div>
+        </dl>
+
+        <div class="btn-row">
+          <a class="btn btn--primary" href="https://github.com/samhung1205/Yolo-System" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github" aria-hidden="true"></i> 原始碼
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== The Problem ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">The Problem</span>
+          <h2>問題不是「偵測不準」，是「只剩一種改法」</h2>
+          <p>
+            這個系統原本能用：登入、使用者管理、YOLO 影像偵測、AI 對話都跑得起來。
+            問題出在它只有一層：PySide6 的 UI handler 直接執行 SQL、直接載入模型、
+            直接呼叫外部模型 API。任何一個需求都得回到那一層去改。
+          </p>
+          <ul class="cs-list">
+            <li><b>UI 就是資料層。</b>視窗事件處理函式裡直接組 SQL 字串送進 MySQL，沒有任何中介。</li>
+            <li><b>密碼以明文存在資料庫。</b>沒有雜湊，登入就是字串比對。</li>
+            <li><b>金鑰與連線字串寫死在原始碼裡。</b>模型 API key 與 DB 連線資訊都直接躺在檔案中。</li>
+            <li><b>SQL 用字串格式化拼接外部輸入。</b>注入風險是結構性的，不是個別疏漏。</li>
+            <li><b>狀態靠全域物件。</b>視窗之間靠一個全域 class 互相持有引用。</li>
+            <li><b>只有一種客戶端。</b>想要一個能展示、能遠端使用的 Web 版，等於整套重寫。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Constraints ===== -->
+    <section class="section">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">Constraints</span>
+          <h2>重構的邊界條件</h2>
+          <ul class="cs-list">
+            <li><b>桌面版必須全程可用。</b>它是既有的、有人在用的程式，不能為了重構先讓它壞掉幾個月。</li>
+            <li><b>一個人做。</b>沒有可以平行推進的第二條線，所以每一步都要能單獨驗證、單獨回頭。</li>
+            <li><b>模型權重不進版控。</b><code>.pt</code> 檔太大，部署與相容性得靠設定與註冊機制處理，不能靠「檔案剛好在」。</li>
+            <li><b>Agent 相關依賴很重。</b>LangChain / LangGraph 安裝失敗不能連帶讓整個 API 起不來。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Architecture ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">Architecture</span>
+          <h2>架構演進</h2>
+          <p>
+            真正的改變只有一句話：<b>把「誰可以直接碰資料庫、模型與外部 API」從 UI 手上拿走。</b>
+            客戶端從此只認得 HTTP，後端成為唯一持有資料與金鑰的地方——Web 版之所以能加上去，
+            是因為它不需要再實作一次任何業務邏輯。
+          </p>
+        </div>
+
+        <figure class="arch reveal">
+          <div class="arch__grid">
+            <div class="arch__panel">
+              <h3 class="arch__title"><span class="arch__badge arch__badge--before">Before</span> 單層桌面應用</h3>
+              <div class="arch__node arch__node--client">
+                PySide6 桌面 UI
+                <span>UI handler 內直接組 SQL、載入模型、持有 API key</span>
+              </div>
+              <p class="arch__edge" aria-hidden="true">直接呼叫</p>
+              <ul class="arch__row">
+                <li class="arch__node arch__node--infra">MySQL<span>pymysql 直連</span></li>
+                <li class="arch__node arch__node--infra">YOLO<span>本機推論</span></li>
+                <li class="arch__node arch__node--infra">外部模型 API<span>金鑰寫死</span></li>
+              </ul>
+              <p class="arch__note">改任何一件事，都要回到同一層。</p>
+            </div>
+
+            <div class="arch__panel">
+              <h3 class="arch__title"><span class="arch__badge arch__badge--after">After</span> 共用後端的雙軌架構</h3>
+              <ul class="arch__row">
+                <li class="arch__node arch__node--client">PySide6 桌面</li>
+                <li class="arch__node arch__node--client">React Web</li>
+              </ul>
+              <p class="arch__edge" aria-hidden="true">HTTP · JWT</p>
+              <div class="arch__node arch__node--core">
+                FastAPI 後端
+                <span>routes → services → repositories 分層</span>
+                <ul class="arch__services">
+                  <li>Auth / Users</li>
+                  <li>Detection</li>
+                  <li>Chat</li>
+                  <li>Agent</li>
+                  <li>Reports</li>
+                </ul>
+              </div>
+              <p class="arch__edge" aria-hidden="true">後端獨佔存取</p>
+              <ul class="arch__row arch__row--pair">
+                <li class="arch__node arch__node--infra">MySQL<span>SQLAlchemy · Alembic</span></li>
+                <li class="arch__node arch__node--infra">YOLO Engine<span>模型註冊表控管</span></li>
+                <li class="arch__node arch__node--infra">Chat Providers<span>可替換 adapter</span></li>
+                <li class="arch__node arch__node--infra">Static Storage<span>簽章 URL</span></li>
+              </ul>
+              <p class="arch__note">客戶端只認得 HTTP；金鑰與資料只存在於後端。</p>
+            </div>
+          </div>
+          <figcaption class="arch__caption">
+            重構前後的資料流對照。差別不在功能多寡，而在存取權責的位置。
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== Engineering Decisions ===== -->
+    <section class="section">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">Engineering Decisions</span>
+          <h2>五個關鍵決策</h2>
+        </div>
+
+        <div class="decision-list">
+          <article class="decision reveal">
+            <h3>先立 API 邊界，再一支一支搬客戶端</h3>
+            <dl>
+              <dt>問題</dt>
+              <dd>整包重寫風險太高，而且重寫期間桌面版會長時間不能用。</dd>
+              <dt>決策</dt>
+              <dd>先把 FastAPI 後端做起來，桌面端逐個功能改成呼叫 API：先 auth 與使用者管理，再 detection，再 chat；每一段都保持桌面版可執行。Web 前端是在邊界穩定之後才加上去的。</dd>
+              <dt>為什麼</dt>
+              <dd>API 邊界一旦立好，「再加一種客戶端」就從重寫變成純前端工作，因為業務邏輯只實作在一個地方。</dd>
+              <dt>取捨</dt>
+              <dd>過渡期同時存在新舊兩條路徑，得自己記得哪些還沒搬；webcam 與 RTSP 到現在仍走 legacy 本機推論。桌面端的 HTTP client 依操作類型分開設定 timeout（推論、上傳、SSE 各不相同），否則單一 timeout 會在長任務中途把連線砍斷。</dd>
+            </dl>
+          </article>
+
+          <article class="decision reveal">
+            <h3>認證與機密：從明文到 bcrypt + JWT，並讓錯誤設定在啟動時就爆</h3>
+            <dl>
+              <dt>問題</dt>
+              <dd>密碼明文儲存、金鑰與 DB 連線硬編碼在原始碼裡。</dd>
+              <dt>決策</dt>
+              <dd>密碼改用 bcrypt 雜湊，登入改發 JWT；所有機密移到 <code>.env</code> 並提供 <code>.env.example</code>。後端啟動時檢查 <code>SECRET_KEY</code> 是否仍是內建預設值。開發環境印警告，<code>APP_ENV=production</code> 則直接拋錯拒絕啟動。</dd>
+              <dt>為什麼</dt>
+              <dd>「忘記設定」是最容易發生也最貴的失誤。與其寫在文件裡提醒自己，不如讓程式在錯誤的環境下拒絕啟動。</dd>
+              <dt>取捨</dt>
+              <dd>明文舊密碼無法遷移成雜湊，既有帳號必須重設密碼。<code>users.email</code> 在資料表層仍允許 NULL 以相容舊資料，新的註冊流程才強制填寫。</dd>
+            </dl>
+          </article>
+
+          <article class="decision reveal">
+            <h3>偵測結果圖不能只靠登入保護</h3>
+            <dl>
+              <dt>問題</dt>
+              <dd>API 用 <code>Authorization</code> header 驗證，但 <code>&lt;img&gt;</code> 與下載連結送不出 header。若把結果圖直接開成公開靜態檔，等於任何人猜到路徑就能看別人的偵測影像。</dd>
+              <dt>決策</dt>
+              <dd>API 回傳的不是裸路徑，而是帶 HMAC 簽章與到期時間的 <code>/static/...</code> URL。取檔時後端驗簽、驗到期、正規化路徑擋掉 <code>..</code>，再回查該檔案屬於哪個 detection task，確認請求者是擁有者或 admin。</dd>
+              <dt>為什麼</dt>
+              <dd>簽章 URL 讓瀏覽器原生的 <code>&lt;img&gt;</code> 能直接用，同時保留每一次存取的授權檢查；短時效讓外流的連結會自己過期。</dd>
+              <dt>取捨</dt>
+              <dd>URL 會過期，前端拿到後不能長期快取或存下來當永久連結。</dd>
+            </dl>
+          </article>
+
+          <article class="decision reveal">
+            <h3>模型用註冊表控管，不讓客戶端指定檔案路徑</h3>
+            <dl>
+              <dt>問題</dt>
+              <dd>系統要能切換多個 YOLO 權重；但只要 API 收「路徑」，就等於開放讓外部載入任意檔案。而且部分權重是用自訂模組訓練的，PyTorch checkpoint 會記錄當初的 Python module 路徑，載入時找不到就會直接失敗。</dd>
+              <dt>決策</dt>
+              <dd>後端維護一份允許清單，每個 checkpoint 都登記 key、架構、類別對照與預期的 SHA-256。客戶端只能送 key。載入前比對檔案指紋，不符就把該模型標成不可用並附上原因；不相容的 OBB 權重直接標記為停用並寫明理由。自訂模組則在載入前，把 checkpoint 需要的歷史 module 路徑指回 repo 內的原始碼。</dd>
+              <dt>為什麼</dt>
+              <dd>把「哪些模型可以跑」變成程式碼裡的顯式清單，而不是檔案系統的巧合。指紋比對讓權重被換掉時會被擋下，而不是安靜地跑出不同結果。相容層則避免了「把檔案複製進 site-packages」這種裝完就忘、換台機器就壞的作法。</dd>
+              <dt>取捨</dt>
+              <dd>新增模型必須改程式碼並更新指紋，不能只丟檔案進資料夾。這是刻意的：每一個能跑的權重都應該被審過一次。</dd>
+            </dl>
+          </article>
+
+          <article class="decision reveal">
+            <h3>Agent 層唯讀、可降級，而且有一套 eval 盯著它別亂講</h3>
+            <dl>
+              <dt>問題</dt>
+              <dd>要讓使用者能用自然語言問「這次偵測結果代表什麼」，但 LLM 一旦能寫入資料就很難界定風險，而且它很容易把沒看到的細節講得像真的。</dd>
+              <dt>決策</dt>
+              <dd>用 LangGraph 做一層 supervisor（分類意圖 → 呼叫工具或子代理 → 組答案 → 錯誤處理），工具全部唯讀，不提供 create／update／delete；非 admin 強制只能查自己的資料，admin 專用工具在函式開頭硬檢查權限。Agent 不能觸發 YOLO，只能讀既有紀錄。LangChain 相關套件一律 lazy import，缺套件或缺金鑰時回 fallback 訊息而不是讓 FastAPI 起不來。</dd>
+              <dt>為什麼</dt>
+              <dd>唯讀邊界讓「agent 出錯」的最壞情況止於一段錯誤的文字，而不是資料損毀。lazy import 則讓這層重依賴不會變成整個後端的單點故障。</dd>
+              <dt>取捨與驗證</dt>
+              <dd>
+                自然語言輸出沒辦法靠單元測試斷言，所以另外寫了一組 component eval：20 個手工設計的案例（零物件、低信心度、失敗任務、信心度邊界值、缺欄位等），檢查回答有沒有捏造類別、有沒有引用不存在的信心度數值、該提醒人工複核時有沒有提醒。repo 內committed 的那次執行（deepseek-chat，2026-07-08）在 grounding 與捏造視覺細節這兩項全數通過，過度觸發複核的比率為 8.3%。
+                <span class="cs-caveat">這是單一 provider、20 個案例的一次執行結果，用途是回歸偵測，不是通用品質保證。</span>
+              </dd>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Capabilities ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">System Today</span>
+          <h2>重構後的系統做得到什麼</h2>
+          <p>兩種客戶端共用同一組 API，因此以下能力在桌面與 Web 上是同一份實作。</p>
+        </div>
+        <div class="cs-caps reveal">
+          <section class="cs-cap">
+            <h3>偵測</h3>
+            <ul>
+              <li>單張影像同步偵測</li>
+              <li>影片偵測，背景任務產出結果影片與預覽圖</li>
+              <li>多圖與資料夾批次分析</li>
+              <li>偵測歷史查詢</li>
+            </ul>
+          </section>
+          <section class="cs-cap">
+            <h3>模型</h3>
+            <ul>
+              <li>七個可選權重，含自訂模組變體</li>
+              <li>每次任務記錄模型 key、SHA-256 與類別對照</li>
+            </ul>
+          </section>
+          <section class="cs-cap">
+            <h3>對話與 Agent</h3>
+            <ul>
+              <li>多 provider 對話（OpenAI／DeepSeek／Ollama／mock）</li>
+              <li>SSE 串流，桌面與 Web 共用同一份協定</li>
+              <li>七種 agent 模式，報告可匯出</li>
+            </ul>
+          </section>
+          <section class="cs-cap">
+            <h3>帳號與資料</h3>
+            <ul>
+              <li>JWT 認證，使用者與 admin 權限分離</li>
+              <li>10 個 Alembic migration 管理 schema 演進</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Trade-offs ===== -->
+    <section class="section">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">Trade-offs</span>
+          <h2>還沒做完的部分</h2>
+          <p>以下都是已知並且刻意延後的，不是被忽略的。</p>
+          <ul class="cs-list">
+            <li><b>影像偵測仍是同步呼叫。</b>單張圖片可以接受，但這條路徑遲早要跟影片一樣改成非同步任務。</li>
+            <li><b>影片偵測用 <code>BackgroundTasks</code>，不是真正的 job queue。</b>沒有進度百分比、不能取消，桌面端目前靠輪詢等待完成。</li>
+            <li><b>影片只保存預覽幀的物件列表</b>，不是每一幀的結果。</li>
+            <li><b>webcam 與 RTSP 仍走 legacy 本機推論路徑</b>，尚未後端化。</li>
+            <li><b>Web 的一般對話頁還沒接上 SSE</b>（Agent 頁已經接了）。</li>
+            <li><b>容器化、部署與 CI 尚未完成</b>，目前仍是本機執行。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Learned ===== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="cs-prose reveal">
+          <span class="section-eyebrow">What I Learned</span>
+          <h2>做完之後的三個體會</h2>
+          <ul class="cs-list">
+            <li>
+              <b>邊界比技術選型重要得多。</b>真正讓 Web 版變成可行的不是 React，
+              而是「業務邏輯只實作一次」這件事先做到了。
+            </li>
+            <li>
+              <b>安全問題大多是預設值問題。</b>明文密碼、硬編碼金鑰都不是難修的技術問題，
+              難的是讓它們不會再回來，所以最後選擇讓錯誤設定在啟動時就失敗，而不是寫在 README 裡提醒自己。
+            </li>
+            <li>
+              <b>文件會落後於程式碼。</b>整理這頁時發現架構文件仍記載 agent streaming 是 placeholder，
+              但它其實已經實作完成，文件索引也還指向一份不存在的檔案。下一輪要做的是讓文件檢查進到流程裡，而不是靠記得。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
+      <div class="container reveal text-center">
+        <h2>想聊聊細節？</h2>
+        <p class="content-narrow content-narrow--center">
+          原始碼、架構文件與 API 規格都在 repo 裡；任何一個決策的背景都歡迎直接問我。
+        </p>
+        <div class="btn-row btn-row--center">
+          <a class="btn btn--primary" href="https://github.com/samhung1205/Yolo-System" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github" aria-hidden="true"></i> 查看原始碼
+          </a>
+          <a class="btn btn--ghost" href="mailto:shaojun5861@gmail.com">聯絡我</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>© <span data-render="footer-year"></span> Sam Hung · AI Agent Engineer</div>
+      <ul class="footer__social" data-render="footer-social"></ul>
+    </div>
+  </footer>
+
+  <script src="../js/data.js?v=5e927b6668"></script>
+  <script src="../js/main.js?v=5e927b6668"></script>
+</body>
+</html>
