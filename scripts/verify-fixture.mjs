@@ -70,7 +70,10 @@ try {
       throw new Error(`articles.html 未連結到 fixture 產生的文章：${f}`);
     }
     const articleHtml = readFileSync(join(articlesDir, f), "utf8");
-    if (!articleHtml.includes('href="../index.html"') || !articleHtml.includes('href="../css/style.css"')) {
+    // css/style.css 現在帶 ?v=<BUILD_VERSION> 快取破棄字串（Phase 4A hotfix），
+    // 所以用「開頭字串」比對而非完整相等比對；../index.html 是頁面導覽連結，
+    // 不是靜態資源，維持完整比對。
+    if (!articleHtml.includes('href="../index.html"') || !articleHtml.includes('href="../css/style.css?v=')) {
       throw new Error(`${f} 缺少預期的 ../ path-prefix 導覽/樣式連結`);
     }
   }

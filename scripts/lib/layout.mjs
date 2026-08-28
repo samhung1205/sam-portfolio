@@ -15,9 +15,35 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SRC = join(HERE, "..", "..", "_src");
+const ROOT = join(HERE, "..", "..");
+
+/* =====================================================
+   Build version — cache-busting for靜態 asset（css/js）
+   ---------------------------------------------------------
+   Phase 4A hotfix：使用者在自己裝置上看到「新 CSS + 舊 HTML」混版
+   （FOCUS/CV/DATA 殘留成無樣式純文字）——GitHub Pages 的 CDN／瀏覽器
+   對 index.html 與 css/style.css 的快取有效期不同步，導致同一次造訪
+   拿到不同版本的檔案組合。修法：css/js 的 <link>/<script> URL 一律
+   帶上 ?v=<git commit short hash> 這個 query string。commit 一變，
+   URL 就變，瀏覽器/CDN 必須當成全新資源重新抓取，不會再讀到「HTML
+   換版但資源沒換」的混版快取。用 git commit hash 而不是手動日期字串：
+   每次真的有改動才會變、不需要每次發布手動記得改一個版本號。
+   單一計算、單一來源——build.mjs 與 sync-notion.mjs 都經由這裡的
+   renderPage() 拿到同一個版本字串，不需要各自維護。 */
+function computeBuildVersion() {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  } catch {
+    // 沒有 git（理論上不會發生在這個 repo 的正常工作流程），
+    // 用當下時間當退路，至少每次執行都會產生新版本號、不會靜默沒有快取破棄。
+    return `dev${Date.now()}`;
+  }
+}
+export const BUILD_VERSION = computeBuildVersion();
 
 /** 讀 partial／layout，並去掉檔尾那一個換行（由 base 版型自行控制換行）。 */
 const readPart = (rel) => readFileSync(join(SRC, rel), "utf8").replace(/\n$/, "");
@@ -82,7 +108,7 @@ export function renderPage(page, nav) {
     .join("\n");
 
   const extraCss = (page.extraCss ?? [])
-    .map((href) => `\n  <link rel="stylesheet" href="${pathPrefix}${href}" />`)
+    .map((href) => `\n  <link rel="stylesheet" href="${pathPrefix}${href}?v=${BUILD_VERSION}" />`)
     .join("");
 
   const head = fill(readPart("partials/head.html"), {
@@ -90,6 +116,7 @@ export function renderPage(page, nav) {
     description: page.description,
     pathPrefix,
     extraCss,
+    buildVersion: BUILD_VERSION,
   });
 
   const navHtml = fill(readPart("partials/nav.html"), {
@@ -105,7 +132,7 @@ export function renderPage(page, nav) {
     contactLabel: nav.contact.label,
   });
 
-  const footer = fill(readPart("partials/footer.html"), { pathPrefix });
+  const footer = fill(readPart("partials/footer.html"), { pathPrefix, buildVersion: BUILD_VERSION });
 
   const out = fill(readPart("layouts/base.html"), {
     head,
