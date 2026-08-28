@@ -80,11 +80,10 @@
   --status-planned-bg:     rgb(var(--c-primary-2-rgb) / 0.10);
   --status-planned-fg:     var(--color-primary-2);
 
-  /* 殘留的舊 dark-mode 配色（#7C9CFF / #22D3EE），目前仍被幾處 light
-     版面（About 的 code-card 漸層、表單 focus ring 等）當裝飾色引用，
-     數值不變、與目前的 light primary/accent 無關。dark mode 目前
-     Deferred（design-system/MASTER.md §3），排進日程時再決定要復用
-     還是整個拿掉。 */
+  /* 殘留的舊 dark-mode 配色（#7C9CFF / #22D3EE）。Phase 4E 之後只剩
+     .form input:focus 這一處引用，而目前站上沒有任何頁面渲染 <form>，
+     等同死碼。dark mode 仍為 Deferred（design-system/MASTER.md §3），
+     排進日程時再決定要復用還是連同這兩個 token 一起移除。 */
   --legacy-dark-primary-rgb: 124 156 255; /* 舊 dark-mode primary #7C9CFF */
   --legacy-dark-accent-rgb:  34 211 238;  /* 舊 dark-mode accent  #22D3EE */
 
@@ -283,9 +282,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   z-index: 1;
 }
 
+/* Phase 4E：3.jpg 與 2.jpg 都是抽象的藍／青色「網格節點 + 發光線條」
+   庫存插圖，同時踩到庫存插圖（MASTER.md §12）與藍系 AI-tech 視覺語彙
+   （§3 明文排除）。比照 Projects 與 Resume 的作法拿掉背景圖，沿用
+   .page-hero 既有的中性漸層。 */
 .page-hero--about {
-  --page-hero-image: url("../assets/images/3.jpg");
-  --page-hero-position: center 58%;
+  --page-hero-image: none;
 }
 
 /* Phase 4B：原本的 4.jpg 是通用的「AI 神經網路方塊 + 大腦圖示」庫存
@@ -297,8 +299,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 
 .page-hero--research {
-  --page-hero-image: url("../assets/images/2.jpg");
-  --page-hero-position: right center;
+  --page-hero-image: none;
 }
 
 /* Phase 4D：7.jpg 是「筆電 + 藍色全息程式碼」庫存渲染圖，同時踩到兩條
@@ -564,7 +565,7 @@ nav[aria-label="Primary navigation"] {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-muted);
-  background: rgb(var(--legacy-dark-primary-rgb) / 0.08);
+  background: rgb(var(--c-primary-rgb) / 0.06);
   border: 1px solid var(--color-border);
 }
 .tag-list {
@@ -726,41 +727,120 @@ nav[aria-label="Primary navigation"] {
   align-items: center;
 }
 
-/* Code-style visual card */
-.code-card {
-  background:
-    linear-gradient(160deg, rgb(var(--legacy-dark-primary-rgb) / 0.12), rgb(var(--legacy-dark-accent-rgb) / 0.06)),
-    rgb(var(--c-surface-rgb) / 0.94);
-  border: 1px solid rgb(var(--c-border-rgb) / 0.96);
-  border-radius: var(--radius-lg);
+/* .code-card（假的 macOS 終端機視窗 + profile.ts）已於 Phase 4E 移除：
+   它同時踩到三條鎖定規則——假終端機裝飾、legacy dark 藍色漸層、
+   glassmorphism（全站只保留人像徽章一個例外，MASTER.md §2/§3）；
+   內容也只是把旁邊那段文字改寫成假的 TypeScript，沒有資訊量。
+   改成真的人像照片。 */
+.about-portrait {
+  margin: 0;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgb(var(--c-text-rgb) / 0.10);
+  background: var(--color-surface);
+  max-width: 380px;
+  justify-self: end;
+}
+.about-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+/* About / Research 的敘述區塊：閱讀寬度受控，不用卡片包裝散文 */
+.about-lede { max-width: 56ch; }
+.about-pointer,
+.research-scope {
+  margin: var(--space-4) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-dim);
+  max-width: 56ch;
+}
+.about-prose { max-width: 66ch; }
+.about-prose p { max-width: 64ch; margin-bottom: var(--space-5); }
+.about-prose p:last-of-type { margin-bottom: 0; }
+.about-note,
+.research-note { max-width: 62ch; }
+.research-lede { max-width: 58ch; }
+
+/* 「我實際會做的決定」／「怎麼判斷結果算不算數」：條列式段落，
+   不是四張等重的裝飾卡片。用左側銅色細線做視覺分隔就夠。 */
+.principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+.principle {
+  padding-left: var(--space-5);
+  border-left: 2px solid rgb(var(--c-primary-rgb) / 0.35);
+}
+.principle h3 {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-3);
+}
+.principle p {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* Research → Projects 的精簡交叉連結。刻意不重畫一次專案卡：
+   這些是支撐研究的工程產出，主場在 Projects。 */
+.artifact-links {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-6) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.artifact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: center;
   padding: var(--space-5);
-  box-shadow: var(--shadow-md);
-  font-family: var(--font-mono);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.artifact__title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-2);
+}
+.artifact__body p {
+  margin: 0;
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
-  position: relative;
-  backdrop-filter: blur(8px) saturate(115%);
-  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  line-height: 1.6;
+  max-width: 62ch;
 }
-.code-card::before {
-  content: "";
-  position: absolute;
-  top: 14px; left: 16px;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  /* 真正的字面常數：macOS 視窗紅黃綠三色點，是固定的系統色，
-     跟網站的 light/dark 主題無關，不 tokenize。 */
-  background: #ff5f57;
-  box-shadow: 18px 0 0 #febc2e, 36px 0 0 #28c840;
+.artifact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
-.code-card pre {
-  margin: 30px 0 0;
-  white-space: pre-wrap;
-  word-break: break-word;
+.artifact__links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 這是獨立的動作連結（不是句子裡的行內連結），所以寬高都要滿足 44px
+     基準；「專案頁」只有三個字，不補水平內距時實測只有 42px 寬。 */
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-primary);
+  white-space: nowrap;
 }
-.code-card .k { color: var(--color-primary-2); }
-.code-card .s { color: var(--color-accent-text); }
-.code-card .c { color: var(--color-text-dim); }
+.artifact__links a:hover { color: var(--color-primary-2); }
+
+@media (max-width: 720px) {
+  .artifact { grid-template-columns: 1fr; align-items: start; gap: var(--space-3); }
+}
 
 
 /* ---------- 8. Cards ---------- */
@@ -1460,13 +1540,7 @@ nav[aria-label="Primary navigation"] {
   overflow-wrap: anywhere;
 }
 
-.learning-list {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: var(--color-text-muted);
-}
-
-/* Timeline (Resume / About) */
+/* Timeline (Resume) */
 .timeline {
   position: relative;
   padding-left: var(--space-5);

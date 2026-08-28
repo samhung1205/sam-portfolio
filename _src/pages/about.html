@@ -1,101 +1,113 @@
 <!--meta
 {
   "title": "About · Personal Website",
-  "description": "關於我：應用數學背景、軟體工程與 AI Agent 工程方向。"
+  "description": "從應用數學走到軟體與 AI 工程：我怎麼看問題、怎麼決定邊界，以及目前的方向。"
 }
 -->
-    <!-- ===== Page Header ===== -->
+    <!-- ===== Header ===== -->
     <section class="section about-hero page-hero page-hero--about">
       <div class="container about-hero__grid">
         <div class="fade-in">
-          <span class="section-eyebrow">// ABOUT ME</span>
+          <span class="section-eyebrow">About</span>
           <h1>關於我</h1>
-          <p class="page-intro">
-            我來自應用數學領域，習慣以數學語言抽象化問題，再以軟體工程實作落地。
-            目前持續往 <strong>軟體工程師</strong> 與 <strong>AI Agent 工程師</strong> 方向發展，
-            希望結合數學、資料與工程能力，建立有實際用途的智慧系統。
+          <p class="page-intro about-lede">
+            我是洪紹鈞，應用數學背景，現在做軟體與 AI 工程。
+            這一頁講的是我怎麼看問題、怎麼決定系統的邊界，
+            以及為什麼我最後總是先處理「誰可以碰什麼」再處理功能。
+          </p>
+          <p class="about-pointer">
+            學經歷與技能清單在 <a href="resume.html">Resume</a>；
+            實際做出來的東西在 <a href="projects.html">Projects</a>。
           </p>
         </div>
 
-        <aside class="code-card fade-in" aria-label="Profile code card">
-<pre><span class="c">// profile.ts</span>
-<span class="k">const</span> me = {
-  role: <span class="s">"SWE & AI Agent Engineer"</span>,
-  background: <span class="s">"Applied Mathematics"</span>,
-  focus: [
-    <span class="s">"LangChain"</span>,
-    <span class="s">"LangGraph"</span>,
-    <span class="s">"Deep Agents"</span>,
-    <span class="s">"RAG"</span>
-  ],
-  mindset: <span class="s">"Math × Code × AI"</span>
-};</pre>
-        </aside>
+        <figure class="about-portrait fade-in">
+          <img src="assets/images/me.jpeg" alt="洪紹鈞（Sam Hung）本人照片" />
+        </figure>
       </div>
     </section>
 
-    <!-- ===== 核心特色 ===== -->
+    <!-- ===== Math -> Engineering -> AI ===== -->
     <section class="section section--alt">
       <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">// WHO I AM</span>
-          <h2>我的核心特色</h2>
-          <p>不只是會寫程式，也不只是會推公式 —— 我希望兩者都能落地成可用的產品。</p>
-        </header>
-        <div class="feature-grid" data-render="about-core"><!-- JS 渲染 --></div>
+        <div class="about-prose reveal">
+          <span class="section-eyebrow">Background</span>
+          <h2>從數學到工程，中間那一段</h2>
+          <p>
+            應用數學訓練給我的不是公式，是一套把混亂問題講清楚的習慣：
+            先問「要衡量什麼」，再問「用什麼結構表達它」，最後才問「怎麼算」。
+            機率統計、最佳化與數值方法都在做同一件事——在資訊不完整的情況下做出可辯護的決定。
+          </p>
+          <p>
+            寫程式之後我才發現，這套習慣最值錢的地方不在建模，而在系統設計。
+            大部分難以維護的系統並不是演算法錯了，而是沒有人講清楚哪一層可以做什麼決定。
+            捷運人流的 PageRank 模型後來變成 MetroPulse 的推薦引擎，
+            靠的也不是模型多複雜，而是把「熱門度、連結強度、偏好、成本」拆成四個能各自檢查的分數。
+          </p>
+          <p>
+            現在做 AI 工程，我的判斷標準沒有變：模型能不能用，取決於它周圍的系統
+            有沒有把權限、資料流與失敗情況定義清楚。
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- ===== 學歷 & 應用數學背景 ===== -->
+    <!-- ===== How I work ===== -->
     <section class="section">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// BACKGROUND</span>
-          <h2>學歷與應用數學背景</h2>
-          <p>從學士到碩士，皆專注於應用數學領域，並逐步擴展到計算與工程實作。</p>
+          <span class="section-eyebrow">How I Work</span>
+          <h2>三個我實際會做的決定</h2>
+          <p class="about-note">以下每一項都能在 <a href="case-studies/yolo-system.html">Yolo-System 案例研究</a>裡找到對應的實作。</p>
         </header>
 
-        <div class="grid grid--2">
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-graduation-cap"></i></div>
-            <h4>應用數學的訓練</h4>
-            <p>機率、統計、最佳化、數值方法、線性代數與實驗設計，是我看待真實世界問題的基礎語言。</p>
+        <div class="principles">
+          <article class="principle reveal">
+            <h3>先立邊界，再談功能</h3>
+            <p>
+              重構 Yolo-System 時，我沒有從「加什麼功能」開始，而是先把資料庫、模型與外部 API
+              的存取權從 UI 手上拿走。邊界立好之後，加一個 Web 前端就從「重寫一次」變成純前端工作。
+            </p>
           </article>
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-flask"></i></div>
-            <h4>研究經驗</h4>
-            <p>碩士論文聚焦於 Order-of-Addition 實驗設計與距離型線性模型，培養嚴謹的問題定義與分析能力。</p>
+          <article class="principle reveal">
+            <h3>讓錯誤設定當場失敗</h3>
+            <p>
+              把密鑰搬到環境變數不難，難的是確保沒有人忘記設。所以後端啟動時會檢查
+              <code>SECRET_KEY</code> 是否仍是預設值：開發環境印警告，production 直接拒絕啟動。
+              寫在文件裡提醒自己，不如讓程式替我擋下來。
+            </p>
           </article>
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-laptop-code"></i></div>
-            <h4>軟體工程實作</h4>
-            <p>透過個人專案累積前後端、資料處理與 API 開發經驗，能將理論模型實作成可運行的系統。</p>
-          </article>
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <h4>AI / Agent 探索</h4>
-            <p>從 ML 模型應用走向 LLM 與 Agent 系統設計，關注「如何讓模型在實際工作流程中真正有用」。</p>
+          <article class="principle reveal">
+            <h3>先想清楚最壞情況能壞到哪</h3>
+            <p>
+              Agent 層的工具全部唯讀、不提供任何寫入操作，非 admin 強制只能查自己的資料。
+              這樣「agent 講錯話」的最壞結果就止於一段錯誤的文字，而不是資料損毀。
+            </p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ===== 目前學習方向 ===== -->
+    <!-- ===== Direction ===== -->
     <section class="section section--alt">
       <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">// CURRENT FOCUS</span>
-          <h2>目前學習方向</h2>
-          <p>正在深入 AI Agent 領域，從基礎 Chain 到 Graph-based、Deep Agents 架構的實作。</p>
-        </header>
-        <div class="feature reveal">
-          <ul class="learning-list" data-render="learning-focus"></ul>
-        </div>
-
-        <div class="btn-row reveal">
-          <a class="btn btn--primary" href="projects.html">看我做了什麼</a>
-          <a class="btn btn--ghost" href="research.html">研究方向</a>
-          <a class="btn btn--text" href="resume.html">完整技能與履歷 <i class="fa-solid fa-arrow-right"></i></a>
+        <div class="about-prose reveal">
+          <span class="section-eyebrow">Direction</span>
+          <h2>目前的方向</h2>
+          <p>
+            短期想做的是把 agent 從「能回答」推到「能被驗證」。
+            Yolo-System 的 agent 層已經有一套 component eval，用手寫案例檢查回答有沒有捏造
+            不存在的類別或信心度數值；我想把這件事做得更系統化，而不是靠人工抽查。
+          </p>
+          <p>
+            中期目標是軟體工程師或 AI 工程師的職位——尤其是需要同時處理模型與系統邊界的那種。
+            正在補的是部署與維運這一段：容器化、CI/CD 與正式的任務佇列，
+            這些在我目前的專案裡都還是待辦。
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="projects.html">看實際做了什麼</a>
+            <a class="btn btn--ghost" href="research.html">研究方向</a>
+          </div>
         </div>
       </div>
     </section>

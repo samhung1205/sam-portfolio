@@ -173,29 +173,6 @@
 
 
   /* =====================================================
-     5-2. About：核心定位 / 學習方向
-     ===================================================== */
-  function renderAbout() {
-    const coreGrid = renderTarget("about-core");
-    if (coreGrid && data.corePositioning) {
-      coreGrid.innerHTML = data.corePositioning.map(c => `
-        <article class="feature reveal">
-          <div class="feature__icon"><i class="fa-solid ${escape(c.icon)}"></i></div>
-          <h3>${escape(c.title)}</h3>
-          <p>${escape(c.desc)}</p>
-        </article>
-      `).join("");
-    }
-
-    const focusList = renderTarget("learning-focus");
-    if (focusList && data.learningFocus) {
-      focusList.innerHTML = data.learningFocus
-        .map(item => `<li>${escape(item)}</li>`).join("");
-    }
-  }
-
-
-  /* =====================================================
      5-3. Projects：完整列表（三層真實分級）
      ===================================================== */
   /**
@@ -520,7 +497,6 @@
     initNav();
     initFooter();
     renderHome();
-    renderAbout();
     renderProjects();
     renderResearch();
     renderResume();

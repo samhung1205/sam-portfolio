@@ -1,73 +1,118 @@
 <!--meta
 {
   "title": "Research · Personal Website",
-  "description": "碩士論文研究與 AI Agent 實作探索。"
+  "description": "研究方向：多尺度環境下的船舶偵測（碩士論文進行中），以及 agent 系統的可驗證性探索。"
 }
 -->
-    <!-- ===== Page Header ===== -->
+    <!-- ===== Research Focus ===== -->
     <section class="section page-hero page-hero--research">
       <div class="container reveal">
-        <span class="section-eyebrow">// RESEARCH</span>
-        <h1>研究展示</h1>
-        <p class="page-intro">
-          我的研究主要集中在 <strong>實驗設計 (Experimental Design)</strong> 與 <strong>AI Agent 工程</strong> 兩條主線。<br />
-          一條延續應用數學訓練，另一條延伸到 LLM-based 系統的實作探索。
+        <span class="section-eyebrow">Research</span>
+        <h1>研究</h1>
+        <p class="page-intro research-lede">
+          我關心的問題是：一個模型或一套系統，怎麼證明它真的有效。
+          目前有兩條線——碩士論文的多尺度船舶偵測，以及 agent 回答可驗證性的實作探索。
+        </p>
+        <p class="research-scope">
+          這一頁講的是「在研究什麼、怎麼驗證」；把它做成軟體的部分在
+          <a href="projects.html">Projects</a>。
         </p>
       </div>
     </section>
 
-    <!-- ===== Research Cards ===== -->
+    <!-- ===== Current Research ===== -->
     <section class="section section--alt">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// CURRENT RESEARCH</span>
-          <h2>研究主題</h2>
-          <p>每個研究皆包含主題簡介、關鍵字、亮點與相關連結（部分為 placeholder，將陸續補齊）。</p>
+          <span class="section-eyebrow">Current Research</span>
+          <h2>正在進行的研究</h2>
+          <p>兩項都在進行中。尚未完成的結論不會提前寫在這裡。</p>
         </header>
 
         <div class="grid grid--2" data-render="research-grid"><!-- JS 渲染 --></div>
       </div>
     </section>
 
-    <!-- ===== Methodology Note ===== -->
+    <!-- ===== Methods ===== -->
     <section class="section">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// HOW I WORK</span>
-          <h2>研究方法觀點</h2>
-          <p>不論是統計實驗設計或 AI Agent，我關注的核心是同一件事：「如何用最小成本，獲得最有用的資訊」。</p>
+          <span class="section-eyebrow">Methods</span>
+          <h2>我怎麼判斷一個結果算不算數</h2>
         </header>
 
-        <div class="grid grid--3">
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-bullseye"></i></div>
-            <h4>問題定義</h4>
-            <p>先抽象化問題本質，再決定要用統計、最佳化或 LLM 的哪種角度切入。</p>
+        <div class="principles">
+          <article class="principle reveal">
+            <h3>先定義「更好」是什麼意思</h3>
+            <p>
+              比較兩個模型或兩種做法之前，得先講清楚衡量的是什麼、在哪個資料分布上比、
+              什麼情況算失敗。這一步沒做，後面的數字都只是描述而不是證據。
+            </p>
           </article>
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-diagram-project"></i></div>
-            <h4>模型與設計</h4>
-            <p>從 OofA 候選設計到 Agent 的多節點 Graph，模型結構決定了結果的可解釋與可控性。</p>
+          <article class="principle reveal">
+            <h3>資料品質先於模型調整</h3>
+            <p>
+              多尺度偵測最容易被標註品質影響。與其反覆調參數，
+              我花更多時間在標註一致性、難例標記與資料集檢查上——這也是我另外做一套資料工程工具的原因。
+            </p>
           </article>
-          <article class="feature reveal">
-            <div class="feature__icon"><i class="fa-solid fa-chart-line"></i></div>
-            <h4>實驗與評估</h4>
-            <p>以模擬、評估指標（mAP、A-/D-optimal、檢索品質）量化方法效能，避免「感覺良好」式的結論。</p>
+          <article class="principle reveal">
+            <h3>會捏造的輸出要有辦法抓出來</h3>
+            <p>
+              語言模型的回答沒辦法用單元測試斷言，所以我改成用一組設計過的案例去檢查它的接地程度：
+              有沒有引用不存在的數值、該提醒人工複核時有沒有提醒。
+            </p>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- ===== CTA ===== -->
+    <!-- ===== Related Engineering Work ===== -->
     <section class="section section--alt">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Related Engineering Work</span>
+          <h2>支撐研究的工程產出</h2>
+          <p class="research-note">
+            以下是為了讓研究跑得動而做的系統與工具。
+            它們是研究的<strong>支撐工具</strong>，不是研究成果本身；完整的工程說明在 Projects。
+          </p>
+        </header>
+
+        <ul class="artifact-links reveal">
+          <li class="artifact">
+            <div class="artifact__body">
+              <h3 class="artifact__title">Yolo-System</h3>
+              <p>把偵測、模型註冊與批次分析包成可重複執行的服務，讓實驗不必每次手動跑腳本。</p>
+            </div>
+            <div class="artifact__links">
+              <a href="case-studies/yolo-system.html">案例研究</a>
+              <a href="projects.html#project-yolo-system">專案頁</a>
+            </div>
+          </li>
+          <li class="artifact">
+            <div class="artifact__body">
+              <h3 class="artifact__title">DetectionData_Engine</h3>
+              <p>標註、YOLO 格式匯入匯出、prediction review 與資料集品質檢查的工作台，處理訓練資料的一致性。</p>
+            </div>
+            <div class="artifact__links">
+              <a href="projects.html#project-detection-data-engine">專案頁</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
       <div class="container reveal text-center">
-        <h2>想交流研究主題？</h2>
+        <h2>想討論研究主題？</h2>
         <p class="content-narrow content-narrow--center">
-          無論是實驗設計、Order-of-Addition、AI Agent 或 RAG，都歡迎來信討論。
+          多尺度偵測、資料品質或 agent 評估，都歡迎來信聊聊。
         </p>
         <div class="btn-row btn-row--center">
-          <a class="btn btn--primary" href="resume.html#contact">聯絡我</a>
-          <a class="btn btn--ghost"   href="projects.html">看相關專案</a>
+          <a class="btn btn--primary" href="mailto:shaojun5861@gmail.com">聯絡我</a>
+          <a class="btn btn--ghost" href="projects.html">看相關專案</a>
         </div>
       </div>
     </section>

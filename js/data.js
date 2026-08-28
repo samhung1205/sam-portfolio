@@ -90,16 +90,6 @@ const skills = [
 ];
 
 
-/* ---------------- 目前學習方向 ---------------- */
-const learningFocus = [
-  "LangChain：基礎 Chain / Prompt / Memory 整合與工具串接",
-  "LangGraph：以圖結構建構多步驟、可控的 Agent workflow",
-  "Deep Agents：探索具備規劃、反思、子任務分派能力的 Agent 架構",
-  "RAG (Retrieval-Augmented Generation)：向量檢索、Reranker 與評估",
-  "Tool Calling：讓 LLM 安全、結構化地呼叫外部 API 與資料源"
-];
-
-
 /* ---------------- 專案 (Projects) ---------------- */
 /* status:  "completed" | "in-progress" | "planned"
    tier:    1 = 精選（碩論相關的主力系統）｜2 = 一般專案｜3 = 附屬／索引
@@ -200,51 +190,41 @@ const projects = [
 
 
 /* ---------------- 研究 (Research) ---------------- */
+/* Phase 4E：論文尚未完成，因此這裡只描述「在做什麼、怎麼驗證」，
+   不寫最終 mAP、不寫結論、不放論文 PDF 連結。links 內的值若是 "#"
+   會被 researchCardHTML 濾掉，不會渲染成假連結。 */
 const research = [
   {
-    id: "thesis-Yolo",
-    type: "Master Thesis",
-    title: "Optimizing Ship Detection in Multi-Scale Environments",
+    id: "thesis-ship-detection",
+    type: "Master Thesis · 進行中",
+    title: "多尺度環境下的船舶偵測",
     summary:
-      "Developed a ship detection pipeline for multi-scale environments and evaluated model performance across complex visual scenes." +
-      "Improved the YOLO11 architecture by comparing feature extraction modules using Python and PyTorch.",
-    keywords: [
-      "Ship Detection",
-      "YOLO11",
-      "Computer Vision",
-      "Deep Learning"
-    ],
+      "研究在尺度差異大、背景複雜的遙測與航空影像中，如何提升船舶偵測的穩定度。" +
+      "以 YOLO11 為基礎比較不同特徵擷取模組，並建立可重複的評估流程。",
+    keywords: ["Ship Detection", "YOLO11", "Computer Vision", "Multi-scale"],
     highlights: [
-      "Constructed a custom dataset with multi-scale ship annotations",
-      "Implemented and compared different feature extraction in YOLO11",
-      "Analyzed model performance using mAP and visualized detection results"
-      
+      "建立含多尺度船舶標註的自訂資料集，並持續處理標註一致性",
+      "在同一套流程下比較不同特徵擷取模組，控制變因以便對照",
+      "評估流程以 mAP 為指標；結論待論文完成後才會公開"
     ],
     status: "in-progress",
-    links: {
-      paper: "#",          // TODO
-      slides: "#",         // TODO
-      repo: "#"            // TODO
-    }
+    links: {}
   },
   {
-    id: "ai-agent-research",
-    type: "Independent Research",
-    title: "AI Agent：從 LangChain 到 Deep Agents 的實作探索",
+    id: "agent-verifiability",
+    type: "Independent Research · 進行中",
+    title: "Agent 回答的可驗證性",
     summary:
-      "正在學習與實作 LangChain、LangGraph、Deep Agents、RAG、Tool Calling 等技術，" +
-      "目標是建立可用於研究整理、報告生成與自動化工作流程的 AI Agent 系統。",
-    keywords: [
-      "LangChain", "LangGraph", "Deep Agents",
-      "RAG", "Tool Calling", "LLM Workflow"
-    ],
+      "探討語言模型在讀取結構化資料後產生的說明，如何被系統性地檢查——" +
+      "重點不是讓它答得漂亮，而是能不能抓出它捏造的部分。",
+    keywords: ["LLM Evaluation", "Grounding", "LangGraph", "Tool Calling"],
     highlights: [
-      "比較不同 Agent 架構（ReAct / Plan-Execute / Graph-based）",
-      "建立研究文獻 RAG 流程，並嘗試自動化摘要與彙整",
-      "探索 Deep Agents 風格的長期規劃與反思機制"
+      "以 LangGraph 建立唯讀工具邊界，限制 agent 可存取的資料範圍",
+      "設計 20 個涵蓋零物件、低信心度、失敗任務與邊界值的評估案例",
+      "檢查回答是否引用不存在的類別或信心度數值、該提醒複核時是否提醒"
     ],
     status: "in-progress",
-    links: { repo: "#", notes: "#" }
+    links: {}
   }
 ];
 
@@ -329,7 +309,6 @@ window.siteData = {
   profile,
   corePositioning,
   skills,
-  learningFocus,
   projects,
   research,
   resume,
