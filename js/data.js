@@ -48,7 +48,7 @@ const corePositioning = [
   {
     icon: "fa-robot",
     title: "AI Agent 工程",
-    desc: "專注 LangChain / LangGraph / Deep Agents、RAG 與 Tool Calling，打造可推理的自動化系統。"
+    desc: "以 LangGraph、Tool Calling 與 SSE 串流建構可操作後端工具的 Agent 工作流，並整合 Web 與桌面端共用服務。"
   },
   {
     icon: "fa-brain",
