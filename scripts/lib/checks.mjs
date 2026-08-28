@@ -174,21 +174,6 @@ export function checkSharedShellIntegrity(rootDir, scriptRelPaths, excludeRelPat
 export const COLOR_EXCEPTIONS = [
   { file: "css/style.css", line: "background: #ff5f57;", reason: "macOS 視窗紅黃綠三色點（Category D，固定系統色，與主題無關）" },
   { file: "css/style.css", line: "box-shadow: 18px 0 0 #febc2e, 36px 0 0 #28c840;", reason: "同上" },
-  {
-    file: "css/style.css",
-    line: "linear-gradient(135deg, #eaf2ff, var(--color-surface));",
-    reason: "project-card--metropulse 裝飾縮圖，一次性手選色（Category D）",
-  },
-  {
-    file: "css/style.css",
-    line: "linear-gradient(135deg, #eff6ff, var(--color-bg));",
-    reason: "project-card--yolo-ship 裝飾縮圖，一次性手選色（Category D）",
-  },
-  {
-    file: "css/style.css",
-    line: "linear-gradient(135deg, #f0f7ff, var(--color-surface));",
-    reason: "project-card--ai-agent-lab 裝飾縮圖，一次性手選色（Category D）",
-  },
   { file: "css/article.css", line: "background: #0f172a;", reason: "文章程式碼區塊固定深色終端機底色（Category E）" },
   { file: "css/article.css", line: "color: #e2e8f0;", reason: "文章程式碼區塊固定淺色字（Category E）" },
 ];

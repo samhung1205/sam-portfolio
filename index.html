@@ -11,6 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/style.css" />
+  <!-- JS 失敗時內容仍須可見（design-system/MASTER.md §16）：.reveal /
+       .fade-in 預設 opacity:0，只有 initReveal() 的 IntersectionObserver
+       會補上 is-visible。沒有 JS 就永遠是 0，此處強制蓋回可見。 -->
+  <noscript><style>.reveal,.fade-in{opacity:1 !important;transform:none !important;}</style></noscript>
 </head>
 <body>
   <!-- ===== Navigation ===== -->
@@ -30,6 +34,7 @@
           <li><a class="nav__link" href="articles.html">Articles</a></li>
           <li><a class="nav__link" href="resume.html">Resume</a></li>
         </ul>
+        <a class="nav__cta" href="mailto:shaojun5861@gmail.com"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
       </nav>
     </div>
   </header>
@@ -41,11 +46,10 @@
         <div class="hero__content fade-in">
           <div class="hero__eyebrow">AI Agent Engineer · Applied Mathematics</div>
           <h1 class="hero__title">
-            Hello <br /> I'm <span class="text-gradient">Sam Hung</span><br />
-            <!-- I build AI systems from math, data, and code. -->
+            用數學思維建構軟體，<br />用工程實作落地 AI
           </h1>
-          <p class="hero__subtitle" data-render="hero-bio">
-            應用數學背景出身，正往軟體工程與 AI Agent 工程方向發展。
+          <p class="hero__subtitle">
+            將研究、資料與模型轉化為可驗證、可部署的軟體系統。
           </p>
 
           <div class="proof-grid" data-render="hero-proof">
@@ -58,7 +62,7 @@
             <a class="btn btn--primary" href="projects.html">
               <i class="fa-solid fa-folder-open"></i> View Projects
             </a>
-            <a class="btn btn--ghost" href="resume.html#contact">
+            <a class="btn btn--ghost" href="mailto:shaojun5861@gmail.com">
               <i class="fa-solid fa-paper-plane"></i> Contact Me
             </a>
             <a class="btn btn--text" href="assets/files/resume.pdf" download>
@@ -75,20 +79,6 @@
               Available for AI / SWE roles
             </div>
           </div>
-          <div class="hero-mini-grid" aria-hidden="true">
-            <div class="mini-card mini-card--wide">
-              <span>Focus</span>
-              <strong>LangGraph / RAG / Tool Calling</strong>
-            </div>
-            <div class="mini-card">
-              <span>CV</span>
-              <strong>YOLO</strong>
-            </div>
-            <div class="mini-card">
-              <span>Data</span>
-              <strong>Recommender</strong>
-            </div>
-          </div>
         </aside>
       </div>
     </section>
@@ -97,7 +87,7 @@
     <section class="section section--alt section--compact">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// POSITIONING</span>
+          <span class="section-eyebrow">Positioning</span>
           <h2>數學訓練轉成可落地 AI 與軟體系統</h2>
           <p>從問題建模、資料分析、模型實驗到前端展示，讓研究想法與工程實作能被看見、被驗證、被使用。</p>
         </header>
@@ -109,7 +99,7 @@
     <section class="section">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">// FEATURED PROJECTS</span>
+          <span class="section-eyebrow">Featured Projects</span>
           <h2>精選專案：從資料、模型到可用系統</h2>
           <p>這些專案展示我如何把推薦系統、電腦視覺與 AI Agent 技術，拆解成可實作、可驗證的工程成果。</p>
         </header>
@@ -127,7 +117,7 @@
       <div class="container">
         <div class="research-layout">
           <div class="research-copy reveal">
-            <span class="section-eyebrow">// RESEARCH & THESIS</span>
+            <span class="section-eyebrow">Research & Thesis</span>
             <h2>研究不只停在論文，也延伸成工程判斷</h2>
             <p>我關注如何用數學與實驗設計定義問題，再用 AI / ML 與 Agent workflow 讓結果能被實際使用。</p>
             <div class="btn-row">
@@ -146,14 +136,14 @@
       <div class="container">
         <div class="cta-panel reveal">
           <div>
-            <span class="section-eyebrow">// LET'S BUILD</span>
+            <span class="section-eyebrow">Let's Build</span>
             <h2>想找能把 AI 想法做成系統的人嗎？</h2>
             <p>
               歡迎查看我的專案、下載履歷，或直接聯絡我討論 AI Agent、資料產品、電腦視覺與軟體工程相關職缺。
             </p>
           </div>
           <div class="btn-row">
-            <a class="btn btn--primary" href="resume.html#contact">Contact Me</a>
+            <a class="btn btn--primary" href="mailto:shaojun5861@gmail.com">Contact Me</a>
             <a class="btn btn--ghost" href="assets/files/resume.pdf" download>Download Resume</a>
             <a class="btn btn--text" href="projects.html">View Projects</a>
           </div>

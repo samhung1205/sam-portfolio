@@ -147,10 +147,8 @@
      5-1. Home：渲染核心定位、Featured Projects、Featured Research
      ===================================================== */
   function renderHome() {
-    // Hero 名字 & 描述
-    const heroBio  = renderTarget("hero-bio");
-    if (heroBio  && data.profile) heroBio.textContent  = data.profile.shortBio;
-
+    // Hero 副標語現在是 design-system/MASTER.md §8 鎖定的靜態文案，
+    // 直接寫在 _src/pages/index.html，不再從 data.profile.shortBio 渲染。
     const heroProof = renderTarget("hero-proof");
     if (heroProof && data.profile && data.profile.proof) {
       heroProof.innerHTML = data.profile.proof.map(item => `
@@ -167,16 +165,19 @@
       coreGrid.innerHTML = data.corePositioning.map(c => `
         <article class="feature bento-card reveal">
           <div class="feature__icon"><i class="fa-solid ${escape(c.icon)}"></i></div>
-          <h4>${escape(c.title)}</h4>
+          <h3>${escape(c.title)}</h3>
           <p>${escape(c.desc)}</p>
         </article>
       `).join("");
     }
 
-    // Featured Projects（取前 3 個）
+    // Featured Projects（取前 3 個；第一個是 Tier 1 精選案例，降密度）
     const featProj = renderTarget("featured-projects");
     if (featProj && data.projects) {
-      featProj.innerHTML = data.projects.slice(0, 3).map(projectCardHTML).join("");
+      featProj.innerHTML = data.projects
+        .slice(0, 3)
+        .map((p, i) => projectCardHTML(p, { featured: i === 0 }))
+        .join("");
     }
 
     // Featured Research（全部，通常 1–2 筆）
@@ -196,7 +197,7 @@
       coreGrid.innerHTML = data.corePositioning.map(c => `
         <article class="feature reveal">
           <div class="feature__icon"><i class="fa-solid ${escape(c.icon)}"></i></div>
-          <h4>${escape(c.title)}</h4>
+          <h3>${escape(c.title)}</h3>
           <p>${escape(c.desc)}</p>
         </article>
       `).join("");
@@ -216,10 +217,21 @@
   function renderProjects() {
     const grid = renderTarget("projects-grid");
     if (!grid || !data.projects) return;
-    grid.innerHTML = data.projects.map(projectCardHTML).join("");
+    grid.innerHTML = data.projects.map(p => projectCardHTML(p)).join("");
   }
 
-  function projectCardHTML(p) {
+  /**
+   * 專案卡渲染。
+   * @param {object}  p
+   * @param {object}  [opts]
+   * @param {boolean} [opts.featured=false]  Tier 1（首頁精選案例）用：
+   *   降密度——拿掉 highlights／雙連結，角色與技術併成一行，footer 換成
+   *   單一「View Case Study」（design-system/MASTER.md §11）。projects.html
+   *   的完整列表與首頁 Tier 2/3 都不傳這個 flag，維持原本完整內容。
+   */
+  function projectCardHTML(p, opts = {}) {
+    const featured = !!opts.featured;
+    const id = escape(p.id || "default");
     const s = statusMap[p.status] || statusMap["planned"];
     const tags = (p.tech || []).map(t => `<span class="tag">${escape(t)}</span>`).join("");
     const highlights = (p.highlights || [])
@@ -233,8 +245,29 @@
            <i class="fa-solid fa-up-right-from-square"></i> Live Demo
          </a>`;
 
+    const metaLine = featured
+      ? `<div class="card__meta"><b>角色：</b>${escape(p.role || "—")}${
+          (p.tech || []).length ? ` &middot; ${(p.tech || []).slice(0, 3).map(escape).join(" / ")}` : ""
+        }</div>`
+      : `<div class="card__meta"><b>角色：</b>${escape(p.role || "—")}</div>`;
+
+    // 首頁案例研究頁尚未建立（Phase 4B+），先指到 projects.html 對應卡片的
+    // 錨點，是誠實可用的目的地，不是虛構連結。
+    const footer = featured
+      ? `<div class="card__footer">
+           <a class="card__case-cta" href="projects.html#project-${id}">
+             View Case Study <i class="fa-solid fa-arrow-right"></i>
+           </a>
+         </div>`
+      : `<div class="card__footer">
+           <a href="${escape(p.github || "#")}" target="_blank" rel="noopener">
+             <i class="fa-brands fa-github"></i> GitHub
+           </a>
+           ${demoLink}
+         </div>`;
+
     return `
-      <article class="card project-card project-card--${escape(p.id || "default")} reveal">
+      <article id="project-${id}" class="card project-card project-card--${id} reveal">
         <div class="card__thumb" aria-hidden="true">
           <span>${escape(p.slug || p.name)}</span>
         </div>
@@ -246,15 +279,10 @@
           <span class="status ${s.cls}">${s.text}</span>
         </div>
         <p class="card__summary">${escape(p.summary)}</p>
-        <div class="card__meta"><b>角色：</b>${escape(p.role || "—")}</div>
-        ${highlights ? `<ul class="card__highlights">${highlights}</ul>` : ""}
-        <div class="tag-list">${tags}</div>
-        <div class="card__footer">
-          <a href="${escape(p.github || "#")}" target="_blank" rel="noopener">
-            <i class="fa-brands fa-github"></i> GitHub
-          </a>
-          ${demoLink}
-        </div>
+        ${metaLine}
+        ${!featured && highlights ? `<ul class="card__highlights">${highlights}</ul>` : ""}
+        ${!featured ? `<div class="tag-list">${tags}</div>` : ""}
+        ${footer}
       </article>
     `;
   }

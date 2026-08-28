@@ -9,6 +9,10 @@
     "name": "Sam Hung",
     "role": "AI Agent Engineer"
   },
+  "contact": {
+    "href": "mailto:shaojun5861@gmail.com",
+    "label": "Contact"
+  },
   "items": [
     { "label": "Home",     "href": "index.html" },
     { "label": "About",    "href": "about.html" },

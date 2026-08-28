@@ -101,6 +101,8 @@ export function renderPage(page, nav) {
     brandHtml,
     menuId: nav.menuId,
     navItems,
+    contactHref: nav.contact.href,
+    contactLabel: nav.contact.label,
   });
 
   const footer = fill(readPart("partials/footer.html"), { pathPrefix });
