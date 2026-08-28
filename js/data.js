@@ -113,8 +113,8 @@ const projects = [
       "設計 Hybrid Recommender：Content-Based + Collaborative Filtering",
       "前後端整合並提供即時推薦 API"
     ],
-    github: "https://github.com/samhung1205/MetroPulse",   // TODO
-    demo:   "#",                                              // TODO: Demo URL
+    github: "https://github.com/samhung1205/MetroPulse",
+    demo:   "#",
     status: "completed"
   },
   {
@@ -129,7 +129,11 @@ const projects = [
       "比較 YOLOv5 / YOLOv8 在不同尺度船舶上的表現",
       "輸出可視化偵測結果與 mAP 評估報告"
     ],
-    github: "https://github.com/samhung1205/yolo-ship",    // TODO
+    // Phase 4B：原本 "yolo-ship" repo 404，不存在。改連到
+    // DetectionData_Engine——本人自建的船舶偵測標註/QC/YOLO格式匯入
+    // 匯出 GUI 工具，內容與這個標註清理 highlight 直接對應，是驗證過
+    // 真實存在、有實質內容的 repo（非 fork）。
+    github: "https://github.com/samhung1205/DetectionData_Engine",
     demo:   "#",
     status: "completed"
   },
@@ -145,7 +149,11 @@ const projects = [
       "整合本地向量資料庫提供研究文獻 RAG 檢索",
       "預計加入 Deep Agents 風格的子任務分派"
     ],
-    github: "https://github.com/samhung1205/ai-agent-lab", // TODO
+    // Phase 4B：原本 "ai-agent-lab" repo 404，不存在。查過本人所有
+    // public repo，沒有對應此專案的 repo——LangGraph/RAG 相關代碼尚未
+    // 公開。誠實留空，不猜一個網址；main.js 會因此不渲染 GitHub 連結，
+    // 而不是顯示一個會 404 的假連結。
+    github: "",
     demo:   "#",
     status: "in-progress"
   },
@@ -161,8 +169,10 @@ const projects = [
       "資料與畫面分離：所有內容集中在 js/data.js",
       "響應式設計，支援桌機、平板、手機"
     ],
-    github: "https://github.com/samhung1205/personal-website", // TODO
-    demo:   "#",
+    // Phase 4B：原本 "personal-website" repo 404，不存在——這個網站的
+    // 真實 repo 名稱是 sam-portfolio（見 package.json / git remote）。
+    github: "https://github.com/samhung1205/sam-portfolio",
+    demo:   "https://samhung1205.github.io/sam-portfolio/",
     status: "completed"
   }
 ];

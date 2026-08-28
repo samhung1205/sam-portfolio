@@ -287,9 +287,12 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   --page-hero-position: center 58%;
 }
 
+/* Phase 4B：原本的 4.jpg 是通用的「AI 神經網路方塊 + 大腦圖示」庫存
+   插圖，跟任何一個實際專案都無關——正是 design-system/MASTER.md §2
+   點名禁止的「decorative neural-network motif」。拿掉背景圖，維持
+   .page-hero 既有的中性漸層過場，不引入新的裝飾。 */
 .page-hero--projects {
-  --page-hero-image: url("../assets/images/4.jpg");
-  --page-hero-position: right center;
+  --page-hero-image: none;
 }
 
 .page-hero--research {
@@ -921,6 +924,113 @@ nav[aria-label="Primary navigation"] {
   color: var(--color-primary);
 }
 .card__case-cta:hover { color: var(--color-primary-2); }
+
+/* ---------- 8b. Projects 頁：三層真實分級（design-system/MASTER.md §11）
+   Tier 1／2／3 用密度、間距、有無縮圖來分層，不是套用四種不同的裝飾
+   風格；自然內容高度，不寫死卡片像素高度。 ---------- */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+/* Tier 1 — 精選案例：橫向卡，artifact 與內容並排，滿版寬度。
+   兩張以上時垂直堆疊，不是並排成 2 欄——並排在 3 欄網格裡會各佔
+   不到一半寬，反而弱化「精選」的份量。 */
+.project-tier1 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.project-feature {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: stretch;
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid rgb(var(--c-text-rgb) / 0.10);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+.project-feature__thumb {
+  height: auto;
+  min-height: 200px;
+  margin-bottom: 0;
+}
+.project-feature__thumb span { font-size: 1.75rem; }
+.project-feature__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.project-feature__body .card__summary { font-size: var(--fs-md); max-width: none; }
+.project-feature__body .card__meta { font-size: var(--fs-sm); color: var(--color-text-muted); margin-top: auto; }
+.project-feature__links {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+.project-feature__links a {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: var(--space-5);
+}
+.project-feature__links a:hover { color: var(--color-primary); }
+
+/* Tier 2 — 一般專案：標準卡（沿用既有 .card / .project-card），
+   數量少時單欄，數量多時自動排列，不強迫湊滿三欄。 */
+.project-tier2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+.project-tier2 .project-card { height: auto; }
+
+/* Tier 3 — 附屬／索引專案：緊湊列表列，不給縮圖。 */
+.project-tier3 {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+.project-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.project-row__name { font-weight: 600; color: var(--color-text); }
+.project-row__tech { font-size: var(--fs-sm); color: var(--color-text-dim); }
+.project-row__link {
+  font-size: var(--fs-sm);
+  text-align: right;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.project-row__link a { color: var(--color-primary); min-height: 44px; display: inline-flex; align-items: center; }
+.project-row__link a:hover { color: var(--color-primary-2); }
+.project-row__link .card__link-placeholder { color: var(--color-text-dim); font-size: var(--fs-sm); }
+
+@media (max-width: 720px) {
+  .project-feature {
+    grid-template-columns: 1fr;
+  }
+  .project-feature__thumb { min-height: 160px; }
+  .project-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding: var(--space-4) 0;
+  }
+  .project-row__link { justify-content: flex-start; }
+}
 
 
 /* ---------- 9. About / Skills / Resume / Contact ---------- */

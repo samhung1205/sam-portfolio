@@ -212,12 +212,100 @@
 
 
   /* =====================================================
-     5-3. Projects：完整列表
+     5-3. Projects：完整列表（三層真實分級）
      ===================================================== */
+  /**
+   * Phase 4B 暫定的精選案例（TEMPORARY DISPLAY TIER，非最終案例研究頁
+   * 選定）：MetroPulse + YOLO 船舶偵測。理由見 Phase 4B 報告——兩者都有
+   * 驗證過、真實存在且有實質內容的 repo，技術深度與個人主導權都最
+   * 清楚；AI Agent Lab 雖然主題與「AI Agent Engineer」定位最貼合，但
+   * 目前沒有公開 repo、highlights 裡還有「預計加入」這種未完成的項目，
+   * 現階段拿不出足夠證據撐起 Tier 1。是否要正式定為 Case Study 需要
+   * Sam 確認，這裡先只決定「首頁/Projects 頁怎麼分層顯示」。
+   */
+  const FEATURED_PROJECT_IDS = ["metropulse", "yolo-ship"];
+
   function renderProjects() {
     const grid = renderTarget("projects-grid");
     if (!grid || !data.projects) return;
-    grid.innerHTML = data.projects.map(p => projectCardHTML(p)).join("");
+    const featured = data.projects.filter(p => FEATURED_PROJECT_IDS.includes(p.id));
+    const rest = data.projects.filter(p => !FEATURED_PROJECT_IDS.includes(p.id));
+    // Tier 2：有真實 highlights/tech 但份量比 Tier 1 少的專案，用標準卡。
+    // Tier 3：份量最輕、或屬性上偏「附屬/索引」的專案，用列表列（本站
+    // 目前只有 personal-website 落在這裡——它是這個網站本身，訪客已經
+    // 在用了，不需要再用一張大卡重複強調）。
+    const tier2 = rest.filter(p => p.id !== "personal-website");
+    const tier3 = rest.filter(p => p.id === "personal-website");
+
+    grid.innerHTML = `
+      <div class="project-tier1">
+        ${featured.map(projectFeaturedHTML).join("")}
+      </div>
+      ${tier2.length ? `<div class="project-tier2">${tier2.map(p => projectCardHTML(p)).join("")}</div>` : ""}
+      ${tier3.length ? `<div class="project-tier3">${tier3.map(projectRowHTML).join("")}</div>` : ""}
+    `;
+  }
+
+  /**
+   * Tier 1 — Projects 頁精選案例：橫向、artifact 與內容並排、只放
+   * 「這是什麼／做了什麼／為什麼重要」等級的濃縮內容，不放 highlights
+   * 條列、不放整排 tag（design-system/MASTER.md §11）。目前還沒有
+   * Case Study 詳細頁，所以只放驗證過真的有效的 GitHub/Demo 連結，
+   * 不放「View Case Study」——按鈕不能指向不存在的頁面。
+   */
+  function projectFeaturedHTML(p) {
+    const s = statusMap[p.status] || statusMap["planned"];
+    const hasGithub = !!(p.github && p.github !== "#");
+    const hasDemo = !!(p.demo && p.demo !== "#");
+    const links = [
+      hasGithub ? `<a href="${escape(p.github)}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a>` : "",
+      hasDemo ? `<a href="${escape(p.demo)}" target="_blank" rel="noopener"><i class="fa-solid fa-up-right-from-square"></i> Live Demo</a>` : "",
+    ].filter(Boolean).join("");
+
+    return `
+      <article id="project-${escape(p.id)}" class="project-feature project-feature--${escape(p.id)} reveal">
+        <div class="card__thumb project-feature__thumb" aria-hidden="true">
+          <span>${escape(p.slug || p.name)}</span>
+        </div>
+        <div class="project-feature__body">
+          <div class="card__header">
+            <div>
+              <span class="card__kicker">Featured</span>
+              <h3 class="card__title">${escape(p.name)}</h3>
+            </div>
+            <span class="status ${s.cls}">${s.text}</span>
+          </div>
+          <p class="card__summary">${escape(p.summary)}</p>
+          <div class="card__meta">
+            <b>角色：</b>${escape(p.role || "—")}${
+              (p.tech || []).length ? ` &middot; ${(p.tech || []).slice(0, 4).map(escape).join(" / ")}` : ""
+            }
+          </div>
+          ${links ? `<div class="card__footer project-feature__links">${links}</div>` : ""}
+        </div>
+      </article>
+    `;
+  }
+
+  /**
+   * Tier 3 — 附屬／索引專案：緊湊列表列，不給縮圖，避免版面為了對稱
+   * 硬塞一張用不到的卡（design-system/MASTER.md §11）。
+   */
+  function projectRowHTML(p) {
+    const hasGithub = !!(p.github && p.github !== "#");
+    const hasDemo = !!(p.demo && p.demo !== "#");
+    const link = hasDemo
+      ? `<a href="${escape(p.demo)}" target="_blank" rel="noopener">Demo</a>`
+      : hasGithub
+        ? `<a href="${escape(p.github)}" target="_blank" rel="noopener">GitHub</a>`
+        : `<span class="card__link-placeholder">尚未公開</span>`;
+    return `
+      <div id="project-${escape(p.id)}" class="project-row">
+        <span class="project-row__name">${escape(p.name)}</span>
+        <span class="project-row__tech">${(p.tech || []).slice(0, 4).map(escape).join(" / ")}</span>
+        <span class="project-row__link">${link}</span>
+      </div>
+    `;
   }
 
   /**
@@ -253,6 +341,15 @@
 
     // 首頁案例研究頁尚未建立（Phase 4B+），先指到 projects.html 對應卡片的
     // 錨點，是誠實可用的目的地，不是虛構連結。
+    // GitHub 連結只在真的有效時才渲染——p.github 是空字串代表「查證過
+    // 沒有公開 repo」，不能落回 "#" 顯示一個會 404 的假按鈕
+    // （design-system/MASTER.md §9）。
+    const hasGithub = !!(p.github && p.github !== "#");
+    const githubLink = hasGithub
+      ? `<a href="${escape(p.github)}" target="_blank" rel="noopener">
+           <i class="fa-brands fa-github"></i> GitHub
+         </a>`
+      : "";
     const footer = featured
       ? `<div class="card__footer">
            <a class="card__case-cta" href="projects.html#project-${id}">
@@ -260,9 +357,7 @@
            </a>
          </div>`
       : `<div class="card__footer">
-           <a href="${escape(p.github || "#")}" target="_blank" rel="noopener">
-             <i class="fa-brands fa-github"></i> GitHub
-           </a>
+           ${githubLink}
            ${demoLink}
          </div>`;
 
@@ -273,7 +368,7 @@
         </div>
         <div class="card__header">
           <div>
-            <span class="card__kicker">Case Study</span>
+            <span class="card__kicker">Project</span>
             <h3 class="card__title">${escape(p.name)}</h3>
           </div>
           <span class="status ${s.cls}">${s.text}</span>
