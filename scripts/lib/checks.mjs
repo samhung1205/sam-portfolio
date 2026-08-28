@@ -8,6 +8,7 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { SHELL_VERSION } from "./layout.mjs";
 
 function lineOf(text, index) {
   return text.slice(0, index).split("\n").length;
@@ -351,6 +352,43 @@ export function checkArticleRobustness(rootDir) {
       line: null,
       message: '區塊程式碼應仍輸出 <pre class="article-code">（瀏覽器預設 white-space:pre 是橫向捲動與保留排版的前提）',
     });
+  }
+  return findings;
+}
+
+/* =====================================================
+   I. 殼層新鮮度（Phase 4B.3）
+   ---------------------------------------------------------
+   articles.html / articles/*.html 由 sync-notion.mjs 產生，不像手寫
+   六頁有 build.mjs --check 保證逐位元組同步——殼層（nav/head/footer）
+   改版後，這些檔案不會自動跟著換版，過去就曾經悄悄停在加 Contact CTA
+   之前的舊殼層而 CI 毫無反應（Phase 4B.2 才發現）。
+
+   不重新實作一份 nav/head/footer 邏輯、也不整頁 diff：只比對
+   renderPage() 烙進每個產物開頭的 <!-- shell:<hash> --> 簽章，跟
+   layout.mjs 用「目前」殼層來源檔算出來的 SHELL_VERSION 是否一致。
+   文章內容本身完全不影響這個簽章，天生容忍合法的內容差異。 */
+export function checkShellFreshness(rootDir, htmlRelPaths) {
+  const findings = [];
+  const marker = /<!-- shell:([0-9a-f]{10}) -->/;
+  for (const rel of htmlRelPaths) {
+    const html = readFileSync(join(rootDir, rel), "utf8");
+    const m = html.match(marker);
+    if (!m) {
+      findings.push({
+        file: rel,
+        line: null,
+        message: `找不到 <!-- shell:... --> 版本標記，殼層可能是用更舊版本的 renderPage() 產生的（過期），需要重新產生`,
+      });
+      continue;
+    }
+    if (m[1] !== SHELL_VERSION) {
+      findings.push({
+        file: rel,
+        line: lineOf(html, m.index),
+        message: `殼層版本過舊（檔案內為 shell:${m[1]}，目前應為 shell:${SHELL_VERSION}），需要重新產生`,
+      });
+    }
   }
   return findings;
 }

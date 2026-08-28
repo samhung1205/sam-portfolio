@@ -13,6 +13,7 @@
      E. _src/config/contrast.json 宣告的 WCAG 對比基準線
      F. 結構性 HTML 檢查（title/description/main/h1/aria-controls/內部連結）
      H. 文章行動裝置換行修正（overflow-wrap）不回歸
+     I. 產生頁（articles.html / articles/*.html）殼層是否為最新版本
    ========================================================= */
 
 import { execFileSync } from "node:child_process";
@@ -26,6 +27,7 @@ import {
   checkColorTokenDiscipline,
   checkContrast,
   checkArticleRobustness,
+  checkShellFreshness,
 } from "./lib/checks.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -88,6 +90,7 @@ run("D. color token discipline", () => checkColorTokenDiscipline(ROOT, ["css/sty
 run("E. contrast", () => checkContrast(ROOT, "css/style.css", contrastConfig));
 run("F. structural HTML", () => checkStructuralHtml(ROOT, htmlFiles));
 run("H. article robustness", () => checkArticleRobustness(ROOT));
+run("I. shell freshness", () => checkShellFreshness(ROOT, htmlFiles));
 
 if (findings.length === 0) {
   console.log(`verify: 全數通過（${htmlFiles.length} 個 HTML 頁面、${scriptFiles.length} 個 script 來源檔）`);

@@ -226,7 +226,7 @@ Derivation: state A needs `295 + 653 = 949px` of content width and overflows the
 
 **[RULE] The icon-only state hides the label with the clip technique, never `display:none`** — the accessible name "Contact" must stay in the accessibility tree. The envelope glyph carries `aria-hidden="true"`.
 
-**[CI]** `checkNavConfig` verifies rendered nav items match `_src/config/nav.json`. `checkSharedShellIntegrity` verifies the nav markup has one generating source. `checkStructuralHtml` verifies `aria-controls`/`aria-expanded` on the mobile toggle.
+**[CI]** `checkNavConfig` verifies rendered nav items match `_src/config/nav.json`. `checkSharedShellIntegrity` verifies the nav markup has one generating source. `checkStructuralHtml` verifies `aria-controls`/`aria-expanded` on the mobile toggle. **[CI — Phase 4B.3]** Every page `renderPage()` produces (hand-written and Notion-generated alike) carries a `<!-- shell:<hash> -->` signature derived from the current nav/head/footer partials and `nav.json`; `checkShellFreshness` fails the build if a committed page's signature doesn't match the current one — this is what catches an out-of-date shell on `articles.html`/`articles/*.html`, which `build.mjs --check` cannot see since they aren't produced by `build.mjs`.
 
 **[RULE]** Sticky top, light translucent surface, visible active state, `:focus-visible` on every link, ≥44px tap targets — unchanged from legacy, still correct.
 
@@ -455,6 +455,7 @@ The separate 820px nav-only and 720px type/hero-polish breakpoints are folded in
 | Structural HTML (title/description/`<main>`/single `<h1>`/`aria-controls`/internal links resolve) | `checkStructuralHtml` |
 | Nav matches `nav.json` | `checkNavConfig` |
 | One shared nav/shell source (no drift between pages) | `checkSharedShellIntegrity` |
+| Generated pages (incl. Notion-synced articles) use the current shared shell, not a stale one | `checkShellFreshness` |
 | No unexplained hardcoded color literals (must be a token, or a documented exception in `COLOR_EXCEPTIONS`) | `checkColorTokenDiscipline` |
 | WCAG contrast on the declared pairs | `checkContrast` against `_src/config/contrast.json` |
 | Article mobile line-wrap regression | `checkArticleRobustness` |

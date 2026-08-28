@@ -59,6 +59,40 @@ function computeBuildVersion() {
 }
 export const BUILD_VERSION = computeBuildVersion();
 
+/* =====================================================
+   Shell version — 殼層新鮮度簽章（Phase 4B.3）
+   ---------------------------------------------------------
+   背景：articles.html / articles/*.html 是由 sync-notion.mjs 產生，
+   只在有人手動跑 sync 時才會重新產出；BUILD_VERSION（上面）只反映
+   css/js「資產內容」有沒有變，跟殼層「標記結構」（nav 有沒有
+   Contact、footer 長什麼樣）是不是最新的完全是兩回事——手寫六頁靠
+   build.mjs --check 保證逐位元組同步，但文章頁沒有對應機制，殼層可以
+   悄悄過期而 CI 仍是綠的（Phase 4B.2 導覽 hotfix 之後才發現 articles/
+   還在用加 Contact 之前的舊殼層）。
+
+   SHELL_VERSION 只雜湊「定義殼層標記結構」的來源檔（不含 css/js 資產
+   內容、不含頁面各自的 content），任何一個檔案的結構性改動（例如
+   Phase 4A 幫 nav.html 加 Contact CTA、Phase 4B.2 改 head.html 的
+   cache-busting）都會讓這個值改變。renderPage() 把它烙進每個產物的
+   <!-- shell:... --> 註解裡，verify.mjs 的殼層新鮮度檢查只需要比對這
+   個值，不必重新實作一份 nav/head/footer 邏輯，也不必整頁 diff。 */
+const SHELL_SOURCE_PATHS = [
+  join(SRC, "partials", "head.html"),
+  join(SRC, "partials", "nav.html"),
+  join(SRC, "partials", "footer.html"),
+  join(SRC, "layouts", "base.html"),
+  join(SRC, "config", "nav.json"),
+];
+
+function computeShellVersion() {
+  const hash = createHash("sha256");
+  for (const abs of SHELL_SOURCE_PATHS) {
+    hash.update(readFileSync(abs));
+  }
+  return hash.digest("hex").slice(0, 10);
+}
+export const SHELL_VERSION = computeShellVersion();
+
 /** 讀 partial／layout，並去掉檔尾那一個換行（由 base 版型自行控制換行）。 */
 const readPart = (rel) => readFileSync(join(SRC, rel), "utf8").replace(/\n$/, "");
 
@@ -131,6 +165,7 @@ export function renderPage(page, nav) {
     pathPrefix,
     extraCss,
     buildVersion: BUILD_VERSION,
+    shellVersion: SHELL_VERSION,
   });
 
   const navHtml = fill(readPart("partials/nav.html"), {
