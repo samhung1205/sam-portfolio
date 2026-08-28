@@ -15,33 +15,47 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SRC = join(HERE, "..", "..", "_src");
 const ROOT = join(HERE, "..", "..");
 
 /* =====================================================
-   Build version — cache-busting for靜態 asset（css/js）
+   Build version — cache-busting for 靜態 asset（css/js）
    ---------------------------------------------------------
    Phase 4A hotfix：使用者在自己裝置上看到「新 CSS + 舊 HTML」混版
    （FOCUS/CV/DATA 殘留成無樣式純文字）——GitHub Pages 的 CDN／瀏覽器
    對 index.html 與 css/style.css 的快取有效期不同步，導致同一次造訪
    拿到不同版本的檔案組合。修法：css/js 的 <link>/<script> URL 一律
-   帶上 ?v=<git commit short hash> 這個 query string。commit 一變，
-   URL 就變，瀏覽器/CDN 必須當成全新資源重新抓取，不會再讀到「HTML
-   換版但資源沒換」的混版快取。用 git commit hash 而不是手動日期字串：
-   每次真的有改動才會變、不需要每次發布手動記得改一個版本號。
+   帶上 ?v=<內容雜湊> 這個 query string。內容一變，URL 就變，瀏覽器/
+   CDN 必須當成全新資源重新抓取，不會再讀到「HTML 換版但資源沒換」的
+   混版快取。
+
+   版本來源：直接對「會被快取破棄的那幾個檔案」本身的位元組內容做
+   SHA-256（取前 10 碼），不是 git commit hash。第一版曾經用 commit
+   hash，結果被 build.mjs --check 抓到自我矛盾的 drift：build.mjs 在
+   commit 前執行，當時的 HEAD 是「上一個」commit，所以產物裡烙印的是
+   上一個 commit 的雜湊；等這次 commit 真的建立、CI checkout 出這個
+   commit 後再跑一次 build.mjs --check，這時 HEAD 已經是「這個」
+   commit，重新計算出不同的雜湊，於是判定「跟已提交的產物不一致」而
+   失敗——這個矛盾是 commit-hash 版本法在 pre-commit 產生 pre-commit
+   內容這個場景下結構性無法避免的。內容雜湊沒有這個問題：只要來源檔案
+   位元組不變，任何時間點（commit 前、commit 後、CI 裡）重新計算都是
+   同一個值，天生跟 build:check 的「重新產生應與已提交產物逐位元組
+   相同」要求相容。副作用是隨之而來的好處：只有這幾個檔案真的變了才會
+   換版本，不會像 commit hash 那樣每次隨便一個 commit（哪怕沒動到
+   css/js）都跟著換一次。
    單一計算、單一來源——build.mjs 與 sync-notion.mjs 都經由這裡的
    renderPage() 拿到同一個版本字串，不需要各自維護。 */
+const VERSIONED_ASSET_PATHS = ["css/style.css", "css/article.css", "js/data.js", "js/main.js"];
+
 function computeBuildVersion() {
-  try {
-    return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
-  } catch {
-    // 沒有 git（理論上不會發生在這個 repo 的正常工作流程），
-    // 用當下時間當退路，至少每次執行都會產生新版本號、不會靜默沒有快取破棄。
-    return `dev${Date.now()}`;
+  const hash = createHash("sha256");
+  for (const rel of VERSIONED_ASSET_PATHS) {
+    hash.update(readFileSync(join(ROOT, rel)));
   }
+  return hash.digest("hex").slice(0, 10);
 }
 export const BUILD_VERSION = computeBuildVersion();
 
