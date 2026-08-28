@@ -99,81 +99,97 @@ const learningFocus = [
 
 
 /* ---------------- 專案 (Projects) ---------------- */
-/* status: "completed" | "in-progress" | "planned" */
+/* status:  "completed" | "in-progress" | "planned"
+   tier:    1 = 精選（碩論相關的主力系統）｜2 = 一般專案｜3 = 附屬／索引
+   visible: false 代表「資料先備好，但還不放到 production Projects 列表」。
+            這個網站是策展過的作品集，不是 GitHub repo 的鏡像——一個 repo
+            存在不等於它該被當成對外展示的專案。
+   每筆的 summary/role/tech/highlights 都以該 repo 實際的 README 與檔案
+   結構為準（Phase 4B.1 逐一核對過），不寫 repo 裡沒有的功能。 */
 const projects = [
   {
-    id: "metropulse",
-    name: "MetroPulse 推薦系統",
-    slug: "MP",
-    summary: "結合捷運人流與商圈資料的個人化地點推薦系統。",
-    tech: ["Python", "CSS", "TypeScript", "JavaScript", "Cloudflare"],
-    role: "主開發者 / 資料建模",
-    highlights: [
-      "整合捷運運量與時段熱度資料，建立人流預測特徵",
-      "設計 Hybrid Recommender：Content-Based + Collaborative Filtering",
-      "前後端整合並提供即時推薦 API"
-    ],
-    github: "https://github.com/samhung1205/MetroPulse",
-    demo:   "#",
-    status: "completed"
-  },
-  {
-    id: "yolo-ship",
-    name: "YOLO 船舶物件偵測",
+    id: "yolo-system",
+    name: "YOLO System — 桌面 ＋ Web 雙軌平台",
     slug: "YOLO",
-    summary: "以 YOLO 系列模型對海事影像進行船舶偵測與分類。",
-    tech: ["Python", "PyTorch", "YOLOv11", "OpenCV"],
-    role: "資料處理 / 模型訓練與評估",
+    tier: 1,
+    visible: true,
+    summary:
+      "把一支 UI、業務邏輯與 SQL 全部耦合在一起的 PySide6 桌面程式，" +
+      "重構成 FastAPI 後端搭配 React Web 前端、桌面版共用同一組 API 的雙軌平台，" +
+      "並在過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL。",
+    tech: ["FastAPI", "React", "PySide6", "LangGraph", "YOLO", "SQLAlchemy"],
+    role: "系統架構與全端實作（後端 / Web / 桌面）",
     highlights: [
-      "建立自訂船舶資料集並進行標註清理",
-      "比較 YOLOv5 / YOLOv8 在不同尺度船舶上的表現",
-      "輸出可視化偵測結果與 mAP 評估報告"
+      "分層重構 legacy：UI／業務邏輯／資料存取拆開，SQL 改走 SQLAlchemy ORM",
+      "身分驗證改為 bcrypt 雜湊 ＋ JWT，金鑰與 DB 連線移入環境變數",
+      "以 LangGraph 建立 agent 層並支援 SSE 串流，Web 與桌面共用同一組 API"
     ],
-    // Phase 4B：原本 "yolo-ship" repo 404，不存在。改連到
-    // DetectionData_Engine——本人自建的船舶偵測標註/QC/YOLO格式匯入
-    // 匯出 GUI 工具，內容與這個標註清理 highlight 直接對應，是驗證過
-    // 真實存在、有實質內容的 repo（非 fork）。
-    github: "https://github.com/samhung1205/DetectionData_Engine",
-    demo:   "#",
-    status: "completed"
-  },
-  {
-    id: "ai-agent-lab",
-    name: "AI Agent Lab",
-    slug: "AGENT",
-    summary: "以 LangGraph 打造可規劃、可呼叫工具的研究助理 Agent。",
-    tech: ["Python", "LangGraph", "LangChain", "RAG", "Tool Calling"],
-    role: "Agent 架構設計 / 工具整合",
-    highlights: [
-      "規劃多節點 Graph：Planner → Retriever → Tool Caller → Reflector",
-      "整合本地向量資料庫提供研究文獻 RAG 檢索",
-      "預計加入 Deep Agents 風格的子任務分派"
-    ],
-    // Phase 4B：原本 "ai-agent-lab" repo 404，不存在。查過本人所有
-    // public repo，沒有對應此專案的 repo——LangGraph/RAG 相關代碼尚未
-    // 公開。誠實留空，不猜一個網址；main.js 會因此不渲染 GitHub 連結，
-    // 而不是顯示一個會 404 的假連結。
-    github: "",
-    demo:   "#",
+    github: "https://github.com/samhung1205/Yolo-System",
+    demo:   "",
     status: "in-progress"
   },
   {
-    id: "personal-website",
-    name: "Personal Website",
-    slug: "WEB",
-    summary: "個人作品集、研究展示與履歷網站（即此網站）。",
-    tech: ["HTML", "CSS", "JavaScript"],
-    role: "設計與開發",
+    id: "detection-data-engine",
+    name: "SDDE — 船舶偵測資料工程工作台",
+    slug: "SDDE",
+    tier: 1,
+    visible: true,
+    summary:
+      "面向遙測與航空影像船舶偵測研究的 PyQt6 資料工程工作台：" +
+      "標註、YOLO 格式匯入匯出、prediction review、dataset QC 與錯誤分析集中在同一個介面，" +
+      "讓訓練資料的品質可以被檢查、被追蹤、被重現。",
+    tech: ["PyQt6", "Python", "OpenCV", "NumPy", "YOLO", "COCO"],
+    role: "工具設計與實作（GUI／資料流程／研究屬性標註）",
     highlights: [
-      "純 HTML / CSS / JS，預留遷移到 Next.js + TypeScript 的彈性",
-      "資料與畫面分離：所有內容集中在 js/data.js",
-      "響應式設計，支援桌機、平板、手機"
+      "多類別 HBB 標註，支援 YOLO、COCO、Pascal VOC 三種格式匯入匯出",
+      "Prediction review queue：pending／partial／reviewed 狀態可持久化並續作",
+      "研究屬性標註（尺度、遮擋、難例、場景）與 copy-paste augmentation"
     ],
-    // Phase 4B：原本 "personal-website" repo 404，不存在——這個網站的
-    // 真實 repo 名稱是 sam-portfolio（見 package.json / git remote）。
-    github: "https://github.com/samhung1205/sam-portfolio",
-    demo:   "https://samhung1205.github.io/sam-portfolio/",
+    github: "https://github.com/samhung1205/DetectionData_Engine",
+    demo:   "",
     status: "completed"
+  },
+  {
+    id: "metropulse",
+    name: "MetroPulse 捷運站點推薦系統",
+    slug: "MP",
+    tier: 2,
+    visible: true,
+    summary:
+      "把 Google PageRank 的連結分析套用到台北捷運人流，" +
+      "再疊上偏好匹配與旅行成本，做出每一分都能拆解回來源的可解釋站點推薦。",
+    tech: ["TypeScript", "Hono", "Cloudflare Workers", "D1", "Chart.js", "Vite"],
+    role: "演算法設計與全端實作",
+    highlights: [
+      "以站間人流建構轉移機率矩陣，計算各時段的站點 PageRank",
+      "推薦分數拆成熱門度／連結強度／偏好匹配／旅行成本四維，附自然語言理由",
+      "互動式捷運路線圖與站點詳情頁：PageRank 時序圖、偏好雷達圖"
+    ],
+    github: "https://github.com/samhung1205/MetroPulse",
+    demo:   "",
+    status: "completed"
+  },
+  {
+    id: "stocks",
+    name: "台股投資分析平台",
+    slug: "STOCKS",
+    tier: 3,
+    // Phase 4B.1：資料先備好，但暫不對外顯示——開發中，等 Sam 確認要公開
+    // 展示時把 visible 改成 true 即可，不需要動 main.js。
+    visible: false,
+    summary:
+      "純本機運行的台股研究工具：整合證交所、櫃買與 FinMind 等免費資料源，" +
+      "把大盤、籌碼、財務與估值收斂成可篩選、可評分、可記錄的研究流程。",
+    tech: ["Python", "FastAPI", "SQLAlchemy", "SQLite", "APScheduler"],
+    role: "全端實作（資料源整合／評分邏輯／介面）",
+    highlights: [
+      "三層資料策略：全市場輕量層、個股深度層、閒置資料清理層",
+      "行情來源可插拔，有金鑰走富果即時、無金鑰自動降級為證交所快照",
+      "全市場篩選器與 100 分評分表，量化欄位自動預填"
+    ],
+    github: "https://github.com/samhung1205/Stocks",
+    demo:   "",
+    status: "in-progress"
   }
 ];
 
@@ -249,7 +265,7 @@ const resume = {
       date: "2026 – Present",
       title: "AI Agent / Software Engineer (Self-directed)",
       org: "Independent Projects",
-      desc: "持續開發 AI Agent 與全端專案，包含 MetroPulse、YOLO 船舶偵測、AI Agent Lab 等。"
+      desc: "持續開發 AI Agent 與全端專案，包含 YOLO System、SDDE 資料工程工作台與 MetroPulse。"
     },
     {
       date: "2023 – 2024",

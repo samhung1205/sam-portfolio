@@ -171,11 +171,17 @@
       `).join("");
     }
 
-    // Featured Projects（取前 3 個；第一個是 Tier 1 精選案例，降密度）
+    // Featured Projects：與 Projects 頁同一份 tier/visible 事實來源，
+    // 只是首頁最多放 3 筆、且只有第一張用 Tier 1 降密度版型（首頁的
+    // .project-bento 一列只容得下一張跨欄大卡）。用 tier 排序而不是靠
+    // 陣列位置，data.js 調順位時首頁不會跟 Projects 頁講不同的故事。
     const featProj = renderTarget("featured-projects");
     if (featProj && data.projects) {
-      featProj.innerHTML = data.projects
-        .slice(0, 3)
+      const top = visibleProjects()
+        .slice()
+        .sort((a, b) => (a.tier || 2) - (b.tier || 2))
+        .slice(0, 3);
+      featProj.innerHTML = top
         .map((p, i) => projectCardHTML(p, { featured: i === 0 }))
         .join("");
     }
@@ -215,32 +221,26 @@
      5-3. Projects：完整列表（三層真實分級）
      ===================================================== */
   /**
-   * Phase 4B 暫定的精選案例（TEMPORARY DISPLAY TIER，非最終案例研究頁
-   * 選定）：MetroPulse + YOLO 船舶偵測。理由見 Phase 4B 報告——兩者都有
-   * 驗證過、真實存在且有實質內容的 repo，技術深度與個人主導權都最
-   * 清楚；AI Agent Lab 雖然主題與「AI Agent Engineer」定位最貼合，但
-   * 目前沒有公開 repo、highlights 裡還有「預計加入」這種未完成的項目，
-   * 現階段拿不出足夠證據撐起 Tier 1。是否要正式定為 Case Study 需要
-   * Sam 確認，這裡先只決定「首頁/Projects 頁怎麼分層顯示」。
+   * Projects 的分層與可見性都由 js/data.js 的 tier / visible 欄位決定，
+   * 不再在這裡維護一份 id 白名單——分層是「內容策展決策」，屬於資料，
+   * 不屬於渲染邏輯；要調整順位或把開發中的專案放出來，只需要改 data.js。
+   * visible:false 的專案完全不進 DOM（不是 CSS 隱藏），避免把還沒準備好
+   * 對外的專案洩漏在原始碼或搜尋結果裡。
    */
-  const FEATURED_PROJECT_IDS = ["metropulse", "yolo-ship"];
+  const visibleProjects = () =>
+    (data.projects || []).filter(p => p.visible !== false);
+  const byTier = (list, tier) => list.filter(p => (p.tier || 2) === tier);
 
   function renderProjects() {
     const grid = renderTarget("projects-grid");
     if (!grid || !data.projects) return;
-    const featured = data.projects.filter(p => FEATURED_PROJECT_IDS.includes(p.id));
-    const rest = data.projects.filter(p => !FEATURED_PROJECT_IDS.includes(p.id));
-    // Tier 2：有真實 highlights/tech 但份量比 Tier 1 少的專案，用標準卡。
-    // Tier 3：份量最輕、或屬性上偏「附屬/索引」的專案，用列表列（本站
-    // 目前只有 personal-website 落在這裡——它是這個網站本身，訪客已經
-    // 在用了，不需要再用一張大卡重複強調）。
-    const tier2 = rest.filter(p => p.id !== "personal-website");
-    const tier3 = rest.filter(p => p.id === "personal-website");
+    const list = visibleProjects();
+    const tier1 = byTier(list, 1);
+    const tier2 = byTier(list, 2);
+    const tier3 = byTier(list, 3);
 
     grid.innerHTML = `
-      <div class="project-tier1">
-        ${featured.map(projectFeaturedHTML).join("")}
-      </div>
+      ${tier1.length ? `<div class="project-tier1">${tier1.map(projectFeaturedHTML).join("")}</div>` : ""}
       ${tier2.length ? `<div class="project-tier2">${tier2.map(p => projectCardHTML(p)).join("")}</div>` : ""}
       ${tier3.length ? `<div class="project-tier3">${tier3.map(projectRowHTML).join("")}</div>` : ""}
     `;
@@ -339,8 +339,10 @@
         }</div>`
       : `<div class="card__meta"><b>角色：</b>${escape(p.role || "—")}</div>`;
 
-    // 首頁案例研究頁尚未建立（Phase 4B+），先指到 projects.html 對應卡片的
-    // 錨點，是誠實可用的目的地，不是虛構連結。
+    // 首頁 Tier 1 的 CTA 指到 projects.html 對應卡片的錨點。標籤刻意寫
+    // 「View Project」而不是「View Case Study」——精選專案不等於案例研究，
+    // 案例研究頁目前一頁都還沒有，按鈕不能承諾一個不存在的東西
+    // （design-system/MASTER.md §20）。
     // GitHub 連結只在真的有效時才渲染——p.github 是空字串代表「查證過
     // 沒有公開 repo」，不能落回 "#" 顯示一個會 404 的假按鈕
     // （design-system/MASTER.md §9）。
@@ -353,7 +355,7 @@
     const footer = featured
       ? `<div class="card__footer">
            <a class="card__case-cta" href="projects.html#project-${id}">
-             View Case Study <i class="fa-solid fa-arrow-right"></i>
+             View Project <i class="fa-solid fa-arrow-right"></i>
            </a>
          </div>`
       : `<div class="card__footer">

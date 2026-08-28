@@ -1019,6 +1019,18 @@ nav[aria-label="Primary navigation"] {
 .project-row__link a:hover { color: var(--color-primary-2); }
 .project-row__link .card__link-placeholder { color: var(--color-text-dim); font-size: var(--fs-sm); }
 
+/* 721–900px（平板直向）：這個區間還沒 stack，但 minmax 的上限會讓
+   縮圖欄吃到 320px，比內容欄（768px 時只剩 287px）還寬——一塊沒有內容
+   的 placeholder 佔比重過真正的內容，層級是反的。這裡只壓縮圖欄上限，
+   不改 >=901px 的桌機版型、也不提前 stack（提前 stack 會變成一整條
+   705px 寬的空 placeholder，更糟）。 */
+@media (min-width: 721px) and (max-width: 900px) {
+  .project-feature {
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+}
+
 @media (max-width: 720px) {
   .project-feature {
     grid-template-columns: 1fr;

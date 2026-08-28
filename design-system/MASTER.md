@@ -336,7 +336,7 @@ Software & Systems        → Python, TypeScript/JS, Git, FastAPI/Flask, Docker
 Statistics & Data         → Experimental Design, Statistical Modeling, Optimization, Data Analysis
 ```
 
-Each group may close with a plain-text line connecting it to real, named projects/experience — e.g. *"實際運用於：YOLO 船舶物件偵測、AI Agent Lab."* **[RULE]** Skills are chips inside a grouped block, not individually large badges — the group is the visual unit, not the individual skill.
+Each group may close with a plain-text line connecting it to real, named projects/experience — e.g. *"實際運用於：YOLO System、SDDE 資料工程工作台."* **[RULE]** Skills are chips inside a grouped block, not individually large badges — the group is the visual unit, not the individual skill.
 
 ---
 
@@ -468,6 +468,14 @@ This section exists so implementation doesn't silently drift from this document.
 - At least one real project artifact (screenshot/diagram/plot) needs to exist before §12's State A can be verified end-to-end rather than just specified.
 - Real vector logo art (§19).
 - The exact nav Contact-collapse width (§7) — behavior is fully specified; the pixel value is found during implementation, not invented here.
+
+**Master's thesis information architecture (documented here, implemented in the Research phase):**
+- The thesis is a **Research** artifact, never an Article. Articles are technical writing; the thesis is primary research output and is delivered mainly as a PDF.
+- Planned page: `research/master-thesis.html` — a recruiter-readable Research Overview that stands on its own, with the PDF as the deeper artifact behind a *View Full Thesis PDF* CTA. A reader must never be forced to open the PDF just to understand the work.
+- Planned section order: title → research overview → research problem → key contributions → methodology / system overview → architecture & model figures → verified evaluation results → related engineering tools → PDF CTA.
+- *Related engineering tools* links out to the two Tier-1 projects (`Yolo-System`, `DetectionData_Engine`), which are the thesis's engineering artifacts. This is the only sanctioned cross-link between Research and Projects.
+- Evaluation numbers on that page are subject to the same no-fabrication rule as §11: omit the slot rather than invent a figure.
+- Case-study scope is separate from featured status: **Featured Project ≠ Case Study.** Currently planned case studies are `Yolo-System` (software / AI engineering) and the thesis itself (research). `DetectionData_Engine` stays a Featured Project unless and until a case study is explicitly commissioned.
 
 **Content, not layout:**
 - Whether a verified metric exists for the current Tier-1 featured project. §11 explicitly allows the metric line to be omitted rather than fabricated — do not invent a number to fill the slot.
