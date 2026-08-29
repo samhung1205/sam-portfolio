@@ -1,360 +1,103 @@
-# Personal Website
+# Sam Hung — Portfolio
 
-一個面向 **軟體工程師 / AI Agent 工程師** 求職與個人品牌的作品集網站，
-以純 **HTML + CSS + JavaScript** 製作，採用「資料與畫面分離」架構，
-未來可平順遷移到 **Next.js + TypeScript**。
+Sam Hung 的個人品牌網站，用來持續累積 Projects、Research、Articles 與個人經歷。正式站：<https://samhung1205.github.io/sam-portfolio/>
 
-> 設計風格：現代、乾淨、具科技感（深藍 / 黑灰 / 淡紫 / 青色），支援 RWD。
+網站以靜態 HTML、CSS 與 JavaScript 實作，採用 Graphite 與 muted copper 的設計系統。主要公開資訊架構為：
 
----
+- Home
+- About
+- Projects
+- Research
+- Articles
+- Resume
+- YOLO System engineering case study
 
-## 1. 專案資料夾結構
+Projects 表達「我建造了什麼」；Research 表達「我正在研究什麼」。Articles 與 Notion publishing pipeline 仍是長期架構的一部分，但目前正式站只顯示誠實的空狀態，不發布尚未整理完成的文章。
 
+## Architecture
+
+網站沒有前端框架或執行期後端。可編輯來源與部署產物刻意分開：
+
+```text
+_src/pages/                 page-specific source content
+_src/partials/              shared head, navigation, and footer
+_src/layouts/               shared HTML shell
+_src/config/                navigation, SEO, and contrast contracts
+scripts/build.mjs           source -> generated public HTML
+scripts/lib/layout.mjs      shared renderer and content hashes
+scripts/sync-notion.mjs     Notion -> Articles publishing pipeline
+scripts/regen-articles.mjs  offline Articles regeneration
+css/                        shared and article styles
+js/                         content data and browser behavior
+assets/                     images, screenshots, and resume PDF
+articles.html               generated Articles listing
+articles/                   generated nested article routes
+case-studies/               generated case-study routes
 ```
-personal-website/
-├── index.html          # Home：Hero、核心定位、Featured Projects、Featured Research、CTA
-├── about.html          # About：背景、核心特色、學習方向
-├── projects.html       # Projects：完整專案卡片列表
-├── research.html       # Research：碩士論文 + AI Agent 研究
-├── resume.html         # Resume：教育、技能、經歷、獲獎 + PDF 下載 + 聯絡管道
-├── articles.html       # Articles：Notion 同步的文章列表（產出檔，勿手改）
-├── articles/           # 各篇文章頁（產出檔，勿手改）
-│
-├── css/
-│   └── style.css       # 全站樣式（含設計 tokens、元件、RWD、動畫）
-│
-├── js/
-│   ├── data.js         # ⭐ 所有「會變動的內容」集中於此（個人資料、專案、研究、技能、履歷）
-│   └── main.js         # 共用互動：導覽列、Scroll Reveal、Skill bar、各頁渲染
-│
-├── assets/
-│   ├── images/         # 圖片資源（個人照、專案截圖等）
-│   └── files/          # 可下載檔案（resume.pdf 等）
-│
-└── README.md           # 本文件
-```
 
-### 各檔案用途速查
+根目錄的公開 HTML 是 generated output，需與 `_src/` 一起提交。一般頁面由 `npm run build` 產生；Articles listing 與文章頁由 Notion pipeline 或離線 regeneration 產生。不要直接修改 generated HTML 來解決 source conflict。
 
-| 檔案 | 用途 |
-|---|---|
-| `index.html` | 首頁。Hero、核心定位、精選專案、精選研究、CTA |
-| `about.html` | 詳細介紹、應用數學背景、技能、目前學習方向 |
-| `projects.html` | 所有專案卡片（含狀態：Completed / In Progress / Coming Soon） |
-| `research.html` | 碩士論文研究 + AI Agent 獨立研究 |
-| `resume.html` | 履歷（教育、技能、經歷、獲獎），含 PDF 下載與聯絡管道（`#contact`） |
-| `articles.html` / `articles/` | Notion 同步產出的文章列表與內頁，**請勿手動編輯** |
-| `css/style.css` | 設計 tokens（CSS 變數）、版面、元件、動畫、RWD |
-| `js/data.js` | **資料層**：個人資料、技能、專案、研究、履歷、聯絡資訊 |
-| `js/main.js` | **邏輯層**：渲染 + 互動，依當頁存在的 DOM 自動執行 |
-| `assets/images/` | 圖片資源 |
-| `assets/files/resume.pdf` | 真實 PDF 履歷（請自行放入） |
+所有一般頁面與 Articles 共用同一套 shell。驗證會檢查 shell freshness、導覽設定、內部路徑、HTML 結構、色彩與對比規則，避免一般頁面和巢狀 article/case-study routes 漂移。
 
----
+## Local development
 
-## 2. 已實作的功能
-
-✅ **頁面**：Home / About / Projects / Research / Articles / Resume 六頁完整串接
-（原 Contact 頁已併入 Resume 底部 `#contact`，聯絡管道另於每頁 footer 常駐）
-✅ **導覽列**：sticky 黏頂、active link 標記、行動版漢堡選單
-✅ **資料驅動渲染**：所有專案、研究、技能、履歷皆來自 `js/data.js`
-✅ **設計系統**：以 CSS 變數定義色彩、間距、字級、圓角、陰影
-✅ **科技感視覺**：Hero 程式碼風格卡片、漸層文字、Mono 字體 eyebrow
-✅ **卡片元件**：專案卡 / 研究卡 / 特色卡，含 hover 效果與狀態標籤
-✅ **狀態標籤**：`Completed` / `In Progress` / `Coming Soon`，三色清楚區分
-✅ **技能進度條**：滾入時動畫展開
-✅ **Scroll Reveal**：使用 `IntersectionObserver`，元素進場淡入
-✅ **RWD**：桌機 / 平板 / 手機三段斷點
-✅ **動態 Footer**：年份、社群連結皆從 `data.js` 自動產生
-
----
-
-## 3. 功能入口（URI / 路徑與參數）
-
-本網站為純靜態網站，無後端 API。所有頁面皆為靜態 `.html`：
-
-| Path | 頁面 | 說明 |
-|---|---|---|
-| `/` 或 `/index.html` | Home | 首頁 |
-| `/about.html` | About | 關於我 |
-| `/projects.html` | Projects | 所有專案 |
-| `/research.html` | Research | 研究展示 |
-| `/resume.html` | Resume | 履歷（含 PDF 下載） |
-| `/articles.html` | Articles | 文章列表（Notion 同步） |
-| `/articles/<slug>.html` | Article | 單篇文章（Notion 同步） |
-| `/resume.html#contact` | Contact | 聯絡管道（原 contact.html） |
-| `/assets/files/resume.pdf` | PDF | 履歷 PDF（請自行放置） |
-
-> 目前未實作任何 query string 或動態參數。
-> 專案 / 研究的「詳細頁」尚未建立，第一版以卡片摘要呈現。
-
----
-
-## 4. 如何在本機預覽網站
-
-### 方法 A：直接用瀏覽器開啟（最快）
-直接雙擊 `personal-website/index.html` 即可。
-由於本網站僅使用 CDN + 本地相對路徑檔案，無需 build。
-
-### 方法 B：起一個本地伺服器（建議，較貼近正式環境）
-
-選擇任一個你方便的工具：
+需求：Node.js 20 或更新版本。
 
 ```bash
-# Python 3
-cd personal-website
-python -m http.server 8000
-# → 瀏覽器打開 http://localhost:8000
-
-# 或 Node.js
-npx serve personal-website
-
-# 或 VS Code 的 Live Server 擴充套件，右鍵 index.html → Open with Live Server
+npm ci
+npm run build
+python3 -m http.server 8000
 ```
 
----
+開啟 <http://localhost:8000/>。修改 `_src/pages/`、shared partials 或 layout 後，重新執行 `npm run build`。
 
-## 5. 如何修改個人資料、專案、研究內容
-
-**95% 的內容都集中在 `js/data.js`**，這是本網站「資料層」。
-修改後重新整理瀏覽器即可看到變化。
-
-### 5.1 修改個人基本資料
-在 `js/data.js` 找到 `profile`：
-```js
-const profile = {
-  name: "Your Name",
-  email: "your.email@example.com",
-  links: {
-    github:   "https://github.com/your-username",
-    linkedin: "https://www.linkedin.com/in/your-id",
-    resume:   "assets/files/resume.pdf"
-  }
-};
-```
-
-### 5.2 新增 / 修改專案
-在 `projects` 陣列中新增物件，欄位如下：
-```js
-{
-  id: "唯一識別",
-  name: "專案名稱",
-  slug: "縮圖文字（建議 ≤ 8 字元）",
-  summary: "一句話摘要",
-  tech: ["技術1", "技術2"],
-  role: "你的角色 / 貢獻",
-  highlights: ["亮點 1", "亮點 2"],
-  github: "https://github.com/...",
-  demo:   "https://...",        // 若無 demo，請保留 "#"
-  status: "completed"            // completed | in-progress | planned
-}
-```
-
-### 5.3 新增 / 修改研究
-在 `research` 陣列中新增物件：
-```js
-{
-  id: "唯一識別",
-  type: "Master Thesis / Independent Research",
-  title: "研究標題",
-  summary: "研究摘要",
-  keywords: ["關鍵字 1", "關鍵字 2"],
-  highlights: ["亮點 1", "亮點 2"],
-  status: "in-progress",
-  links: { paper: "#", slides: "#", repo: "#" }
-}
-```
-
-### 5.4 修改技能 / 履歷 / 聯絡資訊
-直接編輯 `skills` / `resume` / `contacts` / `learningFocus` 對應區塊即可。
-
-### 5.5 替換 PDF 履歷
-把實體 PDF 放到 `assets/files/resume.pdf`，Resume 頁的下載按鈕即可生效。
-
-### 5.6 微調設計風格
-在 `css/style.css` 最上方 `:root { ... }` 修改 CSS 變數：
-- `--color-primary` / `--color-primary-2` / `--color-accent`：主色
-- `--color-bg` / `--color-bg-alt` / `--color-surface`：背景與卡片
-- 字級、間距、圓角皆有對應變數
-
----
-
-## 6. 部署到 GitHub Pages / Cloudflare Pages / Vercel
-
-### 6.1 GitHub Pages
+## Verification
 
 ```bash
-# 1. 在 GitHub 建立一個 repo，例如 personal-website
-# 2. 把本資料夾推上去
-cd personal-website
-git init
-git add .
-git commit -m "init: personal website v1"
-git branch -M main
-git remote add origin https://github.com/your-username/personal-website.git
-git push -u origin main
-
-# 3. 到 GitHub 的 repo → Settings → Pages
-#    Source 選 "Deploy from a branch" → Branch: main / root → Save
-# 4. 等 1-2 分鐘，網址會出現在 https://your-username.github.io/personal-website/
+npm run build:check
+npm run verify
+npm run verify:fixture
 ```
 
-> 如果你希望網址是 `https://your-username.github.io/`（沒有後綴），
-> 請把 repo 命名為 `your-username.github.io`。
+- `build:check`：確認 source 與 committed generated pages 完全一致。
+- `verify`：執行 build drift、shared-shell、nav、asset、contrast、SEO 與結構檢查。
+- `verify:fixture`：用 repository fixture 隔離驗證 Notion pipeline，不讀寫 production Notion。
 
-### 6.2 Cloudflare Pages
+CI 會在 push 與 pull request 上執行 `verify` 和 `verify:fixture`。
 
-1. 在 Cloudflare Dashboard → Workers & Pages → Create application → Pages → Connect to Git
-2. 選擇剛剛建立的 GitHub repo
-3. **Build settings 全部留空**（這是純靜態網站，不需要 build）
-   - Build command: *(留空)*
-   - Build output directory: `/`
-4. Save and Deploy → 即可獲得 `xxx.pages.dev` 網址
+## Content-hash cache busting
 
-### 6.3 Vercel
+CSS、JavaScript 與 resume PDF 的公開 URL 使用檔案內容的 SHA-256 短雜湊作為 `?v=` 版本。相同內容會得到相同 URL；只有檔案內容改變時版本才改變。這個策略不依賴時間戳、`Date.now()` 或 Git commit SHA，因此 local build、CI 與部署結果可重現。
 
-1. 到 Vercel → Add New Project → Import Git Repository
-2. Framework Preset 選 **Other**（純靜態）
-3. Root Directory 留 `./`
-4. Deploy → 完成
+## Articles and Notion
 
----
+Notion infrastructure 保留在 `scripts/sync-notion.mjs`，包含 renderer、article CSS、fixture、shared-shell freshness 與 nested route 支援。
 
-## 7. 未實作的功能與未來規劃
+目前產品決策是暫不公開 article content：
 
-### 第一版未實作
-- ✅ Blog / Notes 文章系統（已實作，見第 10 節：Notion 同步）
-- ❌ 真實聯絡表單（原前端表單已移除，改以 Email / GitHub / LinkedIn 直接聯絡）
-- ❌ 英文版 i18n 切換（`data.js` 已採用單一來源結構，未來易擴充 `zh / en`）
-- ❌ 專案 / 研究的「詳細頁」（目前以卡片摘要呈現）
-- ❌ 暗色 / 亮色主題切換（目前為固定深色主題）
-- ❌ 搜尋 / 篩選功能（專案列表）
+- `articles.html` 應顯示空狀態。
+- 未整理完成的文章不應存在於 production output。
+- `npm run verify:fixture` 只在隔離暫存目錄測試同步結果。
+- 不要為了本機 conflict 直接執行 production Notion sync。
 
-### 建議的下一步
+需要重新發布文章時，先在 Notion 確認內容與 Published 狀態，再以正確環境變數執行同步流程。
 
-1. **填入真實內容**：把 `data.js` 中所有 `Your Name`、`#`、`your-username` 替換為實際內容。
-2. **放置 PDF 履歷**：將 `resume.pdf` 放入 `assets/files/`。
-3. **加入個人頭像 / 專案截圖**：放在 `assets/images/`，並在 `data.js` 加上 `thumbnail` 欄位後於 `main.js` 渲染。
-4. **新增 Blog 頁**：建立 `blog.html` 與 `js/posts.js`（與 `data.js` 同模式），未來再考慮升 Next.js MDX。
-5. **加上 SEO / Open Graph meta**：在每個 HTML 加上 `og:title`、`og:image`、`twitter:card`。
-6. **聯絡表單串接**：用 [Formspree](https://formspree.io) / [Web3Forms](https://web3forms.com) 等無後端服務，幾行 fetch 即可。
-7. **加入 Google Analytics / Plausible**：追蹤訪客行為。
+## Deployment
 
----
+GitHub Pages 從 `main` 的 repository root 發布 committed static output。標準發布流程：
 
-## 8. 未來遷移到 Next.js + TypeScript 的建議路線
-
-本網站從一開始就為遷移做了規劃。以下是建議步驟：
-
-### 8.1 建立 Next.js 專案
 ```bash
-npx create-next-app@latest my-portfolio --typescript --app --tailwind
-cd my-portfolio
+npm run build:check
+npm run verify
+npm run verify:fixture
+git push origin main
 ```
 
-### 8.2 對應遷移表
+推送後等待 GitHub Actions 的 Verify 與 Pages deployment 完成，再對正式站做 smoke test。
 
-| 目前架構 | Next.js + TS 對應 |
-|---|---|
-| `index.html` | `app/page.tsx` |
-| `about.html` | `app/about/page.tsx` |
-| `projects.html` | `app/projects/page.tsx` |
-| `research.html` | `app/research/page.tsx` |
-| `resume.html` | `app/resume/page.tsx` |
-| `contact.html` | `app/contact/page.tsx` |
-| 共用 `<header>` 導覽列 | `app/layout.tsx` + `components/Navbar.tsx` |
-| 共用 `<footer>` | `app/layout.tsx` + `components/Footer.tsx` |
-| `js/data.js` | `data/profile.ts`、`data/projects.ts`、`data/research.ts`（加上 interface） |
-| `js/main.js` 的渲染函式 | 拆成 React 元件：`<ProjectCard />`、`<ResearchCard />`、`<SkillBar />`、`<Timeline />` |
-| `css/style.css` 的 CSS 變數 | 直接保留為 global CSS；或對應到 Tailwind 的 `theme.extend.colors` |
-| Scroll Reveal | 可用 [framer-motion](https://www.framer.com/motion/) 的 `whileInView` 取代 |
+## Known and deferred work
 
-### 8.3 TypeScript 型別範例
-
-把 `data.js` 升級為 `data/projects.ts`：
-```ts
-export type ProjectStatus = "completed" | "in-progress" | "planned";
-
-export interface Project {
-  id: string;
-  name: string;
-  slug: string;
-  summary: string;
-  tech: string[];
-  role: string;
-  highlights: string[];
-  github: string;
-  demo: string;
-  status: ProjectStatus;
-}
-
-export const projects: Project[] = [/* ... 直接搬過去 */];
-```
-
-> 因為目前 `data.js` 的物件結構已經是 schema 化的（每筆資料欄位一致），
-> 升級成 TS 幾乎只需要：加上 `interface` 與 `export`，**內容本身不用改寫**。
-
-### 8.4 i18n（中英文切換）
-建議使用 `next-intl` 或 `next-i18next`：
-- 把 `data.ts` 改成 `data.zh.ts` / `data.en.ts`，再用 locale 切換。
-- 或在每筆物件內，把字串改為 `{ zh: "...", en: "..." }` 結構。
-
-### 8.5 為什麼第一版不直接用 Next.js？
-- 第一版重點是「**快速上線、累積內容**」，純 HTML/CSS/JS 無需 build、無需 node_modules。
-- 等內容（文章、案例、英文版）累積到一定量，再升級到 Next.js 享受 ISR / MDX / 動態路由的好處，CP 值最高。
-
----
-
-## 9. 專案目標總結
-
-| 項目 | 內容 |
-|---|---|
-| **專案名稱** | Personal Website (Portfolio · Research · Resume) |
-| **定位** | 個人作品集 / 研究展示 / 求職履歷 / 個人品牌 |
-| **目標族群** | 招募方、合作夥伴、研究同行 |
-| **技術棧** | HTML5、CSS3（CSS Variables）、Vanilla JavaScript、Font Awesome、Google Fonts |
-| **資料儲存** | 純前端 JS 物件（`js/data.js`），無資料庫 |
-| **公開網址** | _尚未部署_（部署後請更新此欄位） |
-| **作者** | Your Name（請於 `js/data.js` 修改） |
-
----
-
-## 10. Notion 文章同步（Articles）
-
-文章在 Notion 的「**Site Articles**」資料庫撰寫與管理，由 GitHub Actions 定時同步成靜態頁：
-
-```
-Notion（Status = Published）
-  → scripts/sync-notion.mjs（blocks → HTML、圖片上傳 Cloudflare R2）
-  → articles.html + articles/<slug>.html（自動 commit）
-  → GitHub Pages 自動部署
-```
-
-### 10.1 相關檔案
-
-| 檔案 | 用途 |
-|---|---|
-| `scripts/sync-notion.mjs` | 同步腳本：查詢資料庫 → 轉 HTML → 處理圖片 → 產頁 |
-| `scripts/fixture.json` | 離線測試資料，`npm run sync:fixture` 不用 token 就能驗證產頁 |
-| `css/article.css` | 文章列表頁 / 文章頁樣式（token 沿用 `style.css`） |
-| `.github/workflows/sync-notion.yml` | 排程（每天台北 05:00）＋ 手動觸發的同步 workflow |
-| `.env.example` | 所需環境變數清單（本機測試複製成 `.env` 填值） |
-
-### 10.2 首次設定（一次性）
-
-1. 到 <https://www.notion.so/my-integrations> 建立 internal integration，取得 `NOTION_TOKEN`。
-2. 在 Notion 打開「Site Articles」資料庫 → 右上 `⋯` → Connections → 加入該 integration。
-3. 到 GitHub repo Settings → Secrets and variables → Actions，新增 `NOTION_TOKEN` 與 `NOTION_DATABASE_ID`。
-4. （選配 R2 圖床）在 Cloudflare 建立 R2 bucket 並開啟公開存取，新增 `R2_ACCOUNT_ID`、`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_BUCKET_NAME`、`R2_PUBLIC_URL` 五個 secrets。**未設定 R2 時圖片會改存進 repo 的 `assets/images/articles/`，功能不受影響。**
-
-### 10.3 發佈文章
-
-1. 在「Site Articles」資料庫新增文章，填 `Slug`（英文網址代稱）、`Summary`、`Tags`、`PublishedAt`。
-2. 把 `Status` 設為 `Published`。
-3. 等每日排程，或到 GitHub repo 的 Actions → Sync Notion articles → Run workflow 立即同步。
-
-`articles.html` 與 `articles/` 為腳本產出檔，**請勿手動編輯**。
-
----
-
-Built with ❤ and a lot of `console.log`.
+- Master's Thesis 仍在進行中；目前不提供完成版 thesis page。
+- Articles 暫時只有公開空狀態，內容整理完成後才恢復發布。
+- Resume 中無法由 public repository 直接驗證的敘述，需由本人依私人紀錄確認；本 repository 不自動增強或改寫這些主張。
+- Dark mode、獨立 thesis page、article rewriting 與其他新功能不屬於目前 release baseline。
