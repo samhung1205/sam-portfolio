@@ -1,0 +1,19 @@
+/.codex
+/.claude
+/design-system/*
+!/design-system/MASTER.md
+/CLAUDE.md
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+/.github
+/.impeccable
+
+# Local browser and visual-review artifacts
+/.playwright-cli/
+/output/playwright/
+
+# Design references are not production assets
+/assets/images/reference/

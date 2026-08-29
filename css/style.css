@@ -299,7 +299,27 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 
 .page-hero--research {
-  --page-hero-image: none;
+  --page-hero-image: url("../assets/images/research_bg.jpeg");
+  --page-hero-position: right center;
+}
+
+/* Research is the one inner-page context where the abstract image adds meaning:
+   its restrained paths support the page's systems-and-verification theme. Keep it
+   on the right and fade it away before the reading column so it remains decorative. */
+.page-hero--research::before {
+  opacity: 0.60;
+  -webkit-mask-image: linear-gradient(90deg,
+    transparent 0%,
+    transparent 38%,
+    rgb(var(--c-text-rgb) / 0.25) 55%,
+    rgb(var(--c-text-rgb) / 1) 84%,
+    rgb(var(--c-text-rgb) / 1) 100%);
+  mask-image: linear-gradient(90deg,
+    transparent 0%,
+    transparent 38%,
+    rgb(var(--c-text-rgb) / 0.25) 55%,
+    rgb(var(--c-text-rgb) / 1) 84%,
+    rgb(var(--c-text-rgb) / 1) 100%);
 }
 
 /* Phase 4D：7.jpg 是「筆電 + 藍色全息程式碼」庫存渲染圖，同時踩到兩條
@@ -312,8 +332,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
 }
 
 .page-hero--contact {
-  --page-hero-image: url("../assets/images/1.jpg");
-  --page-hero-position: right center;
+  --page-hero-image: none;
 }
 
 .section--compact {
@@ -1813,6 +1832,10 @@ nav[aria-label="Primary navigation"] {
     --page-hero-position: 70% center;
   }
 
+  .page-hero--research::before {
+    opacity: 0.28;
+  }
+
   .hero__grid,
   .about-hero__grid {
     grid-template-columns: 1fr;
@@ -1935,6 +1958,14 @@ nav[aria-label="Primary navigation"] {
   .page-hero--resume,
   .page-hero--contact {
     --page-hero-position: 76% center;
+  }
+
+  .page-hero--research {
+    --page-hero-image: none;
+  }
+
+  .page-hero--research::before {
+    opacity: 0;
   }
 
   .nav__logo { height: 36px; }
