@@ -359,11 +359,13 @@ const ARTICLE_BANNER =
 const ARTICLE_EXTRA_CSS = ["css/article.css"];
 const nav = loadNavConfig();
 
-function pageShell({ title, description, rel, main }) {
+function pageShell({ title, description, canonicalPath, ogType, rel, main }) {
   return renderPage(
     {
       title: escapeHtml(title),
       description: escapeAttr(description),
+      canonicalPath,
+      ogType,
       pathPrefix: rel,
       extraCss: ARTICLE_EXTRA_CSS,
       banner: ARTICLE_BANNER,
@@ -419,6 +421,7 @@ function listingPageHtml(articles) {
   return pageShell({
     title: "Articles · Sam Hung",
     description: "Sam Hung 的技術文章與筆記：AI Agent、演算法、軟體工程與數學。",
+    canonicalPath: "articles.html",
     rel: "",
     main,
   });
@@ -450,6 +453,8 @@ ${a.html}
   return pageShell({
     title: `${a.title} · Sam Hung`,
     description: a.summary || a.title,
+    canonicalPath: `articles/${a.slug}.html`,
+    ogType: "article",
     rel: "../",
     main,
   });

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://samhung1205.github.io/sam-portfolio/sitemap.xml

@@ -1,17 +1,29 @@
 <!DOCTYPE html>
-<!-- shell:cfe2088790 -->
+<!-- shell:adc118f17b -->
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About · Personal Website</title>
+  <title>About · Sam Hung</title>
   <meta name="description" content="從應用數學走到軟體與 AI 工程：我怎麼看問題、怎麼決定邊界，以及目前的方向。" />
+  <link rel="canonical" href="https://samhung1205.github.io/sam-portfolio/about.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Sam Hung" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="About · Sam Hung" />
+  <meta property="og:description" content="從應用數學走到軟體與 AI 工程：我怎麼看問題、怎麼決定邊界，以及目前的方向。" />
+  <meta property="og:url" content="https://samhung1205.github.io/sam-portfolio/about.html" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="About · Sam Hung" />
+  <meta name="twitter:description" content="從應用數學走到軟體與 AI 工程：我怎麼看問題、怎麼決定邊界，以及目前的方向。" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/style.css?v=0c5d10f3a0" />
+  <link rel="stylesheet" href="css/style.css?v=1959b6e86c" />
   <!-- JS 失敗時內容仍須可見（design-system/MASTER.md §16）：.reveal /
        .fade-in 預設 opacity:0，只有 initReveal() 的 IntersectionObserver
        會補上 is-visible。沒有 JS 就永遠是 0，此處強制蓋回可見。 -->
@@ -98,14 +110,14 @@
         <header class="section-header reveal">
           <span class="section-eyebrow">How I Work</span>
           <h2>三個我實際會做的決定</h2>
-          <p class="about-note">以下每一項都能在 <a href="case-studies/yolo-system.html">Yolo-System 案例研究</a>裡找到對應的實作。</p>
+          <p class="about-note">以下每一項都能在 <a href="case-studies/yolo-system.html">YOLO System 案例研究</a>裡找到對應的實作。</p>
         </header>
 
         <div class="principles">
           <article class="principle reveal">
             <h3>先立邊界，再談功能</h3>
             <p>
-              重構 Yolo-System 時，我沒有從「加什麼功能」開始，而是先把資料庫、模型與外部 API
+              重構 YOLO System 時，我沒有從「加什麼功能」開始，而是先把資料庫、模型與外部 API
               的存取權從 UI 手上拿走。邊界立好之後，加一個 Web 前端就從「重寫一次」變成純前端工作。
             </p>
           </article>
@@ -136,7 +148,7 @@
           <h2>目前的方向</h2>
           <p>
             短期想做的是把 agent 從「能回答」推到「能被驗證」。
-            Yolo-System 的 agent 層已經有一套 component eval，用手寫案例檢查回答有沒有捏造
+            YOLO System 的 agent 層已經有一套 component eval，用手寫案例檢查回答有沒有捏造
             不存在的類別或信心度數值；我想把這件事做得更系統化，而不是靠人工抽查。
           </p>
           <p>
@@ -161,7 +173,7 @@
     </div>
   </footer>
 
-  <script src="js/data.js?v=0c5d10f3a0"></script>
-  <script src="js/main.js?v=0c5d10f3a0"></script>
+  <script src="js/data.js?v=1959b6e86c"></script>
+  <script src="js/main.js?v=1959b6e86c"></script>
 </body>
 </html>

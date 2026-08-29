@@ -45,7 +45,8 @@ const results = [];
 for (const file of sources) {
   const { meta, content } = parsePageSource(readFileSync(join(pagesDir, file), "utf8"));
   const depth = file.split("/").length - 1;
-  const html = renderPage({ ...meta, pathPrefix: "../".repeat(depth), content }, nav);
+  const canonicalPath = file === "index.html" ? "" : file;
+  const html = renderPage({ ...meta, canonicalPath, pathPrefix: "../".repeat(depth), content }, nav);
   const target = join(ROOT, file);
 
   let previous = null;

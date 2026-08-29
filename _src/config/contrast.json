@@ -120,6 +120,36 @@
       "threshold": 4.5,
       "wcag": "WCAG 2.1 SC 1.4.3 AA",
       "phase": 2
+    },
+    {
+      "id": "focus-ring-on-bg",
+      "foregroundToken": "--color-primary-2",
+      "backgroundToken": "--color-bg",
+      "context": "全站 :focus-visible 3px outline 疊在頁面背景",
+      "category": "ui-boundary",
+      "threshold": 3,
+      "wcag": "WCAG 2.1 SC 1.4.11 AA",
+      "phase": 2
+    },
+    {
+      "id": "focus-ring-on-bg-alt",
+      "foregroundToken": "--color-primary-2",
+      "backgroundToken": "--color-bg-alt",
+      "context": "全站 :focus-visible 3px outline 疊在交錯區段背景",
+      "category": "ui-boundary",
+      "threshold": 3,
+      "wcag": "WCAG 2.1 SC 1.4.11 AA",
+      "phase": 2
+    },
+    {
+      "id": "focus-ring-on-surface",
+      "foregroundToken": "--color-primary-2",
+      "backgroundToken": "--color-surface",
+      "context": "全站 :focus-visible 3px outline 疊在卡片與導覽表面",
+      "category": "ui-boundary",
+      "threshold": 3,
+      "wcag": "WCAG 2.1 SC 1.4.11 AA",
+      "phase": 2
     }
   ],
   "phase3Debt": [

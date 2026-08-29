@@ -75,7 +75,10 @@
       );
 
       document.addEventListener("keydown", e => {
-        if (e.key === "Escape") setMenu(false);
+        if (e.key === "Escape" && menu.classList.contains("is-open")) {
+          setMenu(false);
+          toggle.focus();
+        }
       });
     }
   }
@@ -282,14 +285,12 @@
     const tags = (p.tech || []).map(t => `<span class="tag">${escape(t)}</span>`).join("");
     const highlights = (p.highlights || [])
       .map(h => `<li>${escape(h)}</li>`).join("");
-    const isPlaceholder = !p.demo || p.demo === "#";
-    const demoLink = isPlaceholder
-      ? `<span class="card__link-placeholder">
-           Demo not published yet
-         </span>`
-      : `<a href="${escape(p.demo)}" target="_blank" rel="noopener">
+    const hasDemo = !!(p.demo && p.demo !== "#");
+    const demoLink = hasDemo
+      ? `<a href="${escape(p.demo)}" target="_blank" rel="noopener">
            <i class="fa-solid fa-up-right-from-square"></i> Live Demo
-         </a>`;
+         </a>`
+      : "";
 
     const metaLine = featured
       ? `<div class="card__meta"><b>角色：</b>${escape(p.role || "—")}${

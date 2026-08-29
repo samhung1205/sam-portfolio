@@ -178,7 +178,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid rgb(var(--c-primary-rgb) / 0.35);
+  outline: 3px solid var(--color-primary-2);
   outline-offset: 3px;
 }
 
@@ -382,6 +382,7 @@ p { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
   align-items: center;
   gap: var(--space-3);
   flex-shrink: 0;
+  min-inline-size: 44px;
   min-height: 44px;
   color: var(--color-text);
 }
@@ -623,10 +624,10 @@ nav[aria-label="Primary navigation"] {
   text-transform: none;
 }
 .hero__title {
-  font-size: clamp(2.45rem, 5.4vw, 4.45rem);
+  font-size: clamp(2.45rem, 5vw, 4rem);
   line-height: 1.04;
   margin-bottom: var(--space-4);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
 }
 .hero__subtitle {
   font-size: var(--fs-md);
@@ -870,9 +871,11 @@ nav[aria-label="Primary navigation"] {
   gap: var(--space-3);
   margin-bottom: var(--space-3);
 }
+.card__header > div { min-width: 0; }
 .card__title {
   font-size: var(--fs-lg);
   margin: 0;
+  overflow-wrap: anywhere;
 }
 .card__kicker {
   display: inline-block;
@@ -961,6 +964,7 @@ nav[aria-label="Primary navigation"] {
 }
 .project-bento .project-card {
   height: auto;
+  min-width: 0;
 }
 /* Tier 1 — 精選案例：內距與陰影是三層裡唯一有的
    （design-system/MASTER.md §11）。grid-column:span 2 另外只在
@@ -1992,6 +1996,12 @@ nav[aria-label="Primary navigation"] {
   }
   .hero__visual {
     width: min(100%, 415px);
+  }
+}
+
+@media (min-width: 901px) {
+  .hero__title-line {
+    white-space: nowrap;
   }
 }
 

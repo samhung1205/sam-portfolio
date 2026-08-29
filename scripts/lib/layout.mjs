@@ -20,6 +20,9 @@ import { createHash } from "node:crypto";
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const SRC = join(HERE, "..", "..", "_src");
 const ROOT = join(HERE, "..", "..");
+export const SITE_CONFIG = JSON.parse(
+  readFileSync(join(SRC, "config", "site.json"), "utf8")
+);
 
 /* =====================================================
    Build version — cache-busting for 靜態 asset（css/js）
@@ -59,6 +62,14 @@ function computeBuildVersion() {
 }
 export const BUILD_VERSION = computeBuildVersion();
 
+function computeFileVersion(rel) {
+  return createHash("sha256")
+    .update(readFileSync(join(ROOT, rel)))
+    .digest("hex")
+    .slice(0, 10);
+}
+export const RESUME_VERSION = computeFileVersion("assets/files/resume.pdf");
+
 /* =====================================================
    Shell version — 殼層新鮮度簽章（Phase 4B.3）
    ---------------------------------------------------------
@@ -82,6 +93,7 @@ const SHELL_SOURCE_PATHS = [
   join(SRC, "partials", "footer.html"),
   join(SRC, "layouts", "base.html"),
   join(SRC, "config", "nav.json"),
+  join(SRC, "config", "site.json"),
 ];
 
 function computeShellVersion() {
@@ -116,6 +128,8 @@ export function loadNavConfig() {
  * @param {string}  page.title
  * @param {string}  page.description
  * @param {string}  page.content         <main> 內容（原樣，含縮排）
+ * @param {string}  page.canonicalPath   相對 production root 的公開路徑；首頁用空字串
+ * @param {string}  [page.ogType]        Open Graph 類型，預設 website
  * @param {boolean} [page.showBrand]     false 時「完全不輸出」brand DOM 節點
  * @param {string[]}[page.extraCss]      額外樣式表（相對站台根目錄）
  * @param {string}  [page.banner]        <body> 後的註解行
@@ -124,6 +138,13 @@ export function loadNavConfig() {
  */
 export function renderPage(page, nav) {
   const pathPrefix = page.pathPrefix ?? "";
+  const canonicalUrl = page.canonicalPath
+    ? `${SITE_CONFIG.url}/${page.canonicalPath}`
+    : `${SITE_CONFIG.url}/`;
+  const content = page.content.replaceAll(
+    "{{resumeUrl}}",
+    `${pathPrefix}assets/files/resume.pdf?v=${RESUME_VERSION}`
+  );
 
   // showBrand === false → 輸出「空」的 <span class="nav__brand-text"></span>，
   // 不省略節點本身。
@@ -162,6 +183,11 @@ export function renderPage(page, nav) {
   const head = fill(readPart("partials/head.html"), {
     title: page.title,
     description: page.description,
+    canonicalUrl,
+    ogType: page.ogType ?? "website",
+    siteName: SITE_CONFIG.name,
+    siteLocale: SITE_CONFIG.locale,
+    twitterCard: SITE_CONFIG.twitterCard,
     pathPrefix,
     extraCss,
     buildVersion: BUILD_VERSION,
@@ -187,7 +213,7 @@ export function renderPage(page, nav) {
     head,
     banner: page.banner ?? "  <!-- ===== Navigation ===== -->",
     nav: navHtml,
-    content: page.content,
+    content,
     footer,
   });
 

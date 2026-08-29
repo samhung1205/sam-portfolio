@@ -8,7 +8,7 @@
 
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { SHELL_VERSION } from "./layout.mjs";
+import { SHELL_VERSION, SITE_CONFIG } from "./layout.mjs";
 
 function lineOf(text, index) {
   return text.slice(0, index).split("\n").length;
@@ -29,11 +29,51 @@ export function checkStructuralHtml(rootDir, htmlRelPaths, options = {}) {
       findings.push({ file: rel, line: 1, message: "檔案以 `---` 開頭，會被 Jekyll 誤判為 front matter" });
     }
 
-    if (!/<title>[^<]+<\/title>/i.test(html)) {
+    const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+    if (!titleMatch) {
       findings.push({ file: rel, line: null, message: "缺少非空的 <title>" });
     }
-    if (!/<meta\s+name=["']description["']\s+content=["'][^"']+["']/i.test(html)) {
+    const descriptionMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+    if (!descriptionMatch) {
       findings.push({ file: rel, line: null, message: '缺少非空的 <meta name="description">' });
+    }
+
+    const canonicalMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"\s*\/>/i);
+    const expectedCanonical = rel === "index.html" ? `${SITE_CONFIG.url}/` : `${SITE_CONFIG.url}/${rel}`;
+    if (!canonicalMatch) {
+      findings.push({ file: rel, line: null, message: '缺少 <link rel="canonical">' });
+    } else if (canonicalMatch[1] !== expectedCanonical) {
+      findings.push({
+        file: rel,
+        line: lineOf(html, canonicalMatch.index),
+        message: `canonical URL 不正確：預期 ${expectedCanonical}，實際 ${canonicalMatch[1]}`,
+      });
+    }
+
+    const expectedMeta = [
+      ["property", "og:type", rel.startsWith("articles/") ? "article" : "website"],
+      ["property", "og:site_name", SITE_CONFIG.name],
+      ["property", "og:locale", SITE_CONFIG.locale],
+      ["property", "og:title", titleMatch?.[1]],
+      ["property", "og:description", descriptionMatch?.[1]],
+      ["property", "og:url", expectedCanonical],
+      ["name", "twitter:card", SITE_CONFIG.twitterCard],
+      ["name", "twitter:title", titleMatch?.[1]],
+      ["name", "twitter:description", descriptionMatch?.[1]],
+    ];
+    for (const [attr, name, expected] of expectedMeta) {
+      if (!expected) continue;
+      const pattern = new RegExp(`<meta\\s+${attr}="${name}"\\s+content="([^"]+)"`, "i");
+      const match = html.match(pattern);
+      if (!match) {
+        findings.push({ file: rel, line: null, message: `缺少 ${name} metadata` });
+      } else if (match[1] !== expected) {
+        findings.push({
+          file: rel,
+          line: lineOf(html, match.index),
+          message: `${name} 應與權威來源一致：預期 "${expected}"，實際 "${match[1]}"`,
+        });
+      }
     }
 
     const mainOpens = [...html.matchAll(/<main\b/gi)];
@@ -78,6 +118,45 @@ export function checkStructuralHtml(rootDir, htmlRelPaths, options = {}) {
           findings.push({ file: rel, line: lineOf(html, m.index), message: `內部連結目標不存在：${target}` });
         }
       }
+    }
+  }
+  return findings;
+}
+
+/* =====================================================
+   G. SEO discovery surface
+   ===================================================== */
+export function checkSeoFiles(rootDir) {
+  const findings = [];
+  const robotsPath = join(rootDir, "robots.txt");
+  const sitemapPath = join(rootDir, "sitemap.xml");
+
+  if (!existsSync(robotsPath)) {
+    findings.push({ file: "robots.txt", line: null, message: "缺少 robots.txt" });
+  } else {
+    const robots = readFileSync(robotsPath, "utf8");
+    if (!/^User-agent:\s*\*$/m.test(robots) || !/^Allow:\s*\/$/m.test(robots)) {
+      findings.push({ file: "robots.txt", line: null, message: "robots.txt 應允許公開站台被索引" });
+    }
+    if (!robots.includes(`Sitemap: ${SITE_CONFIG.url}/sitemap.xml`)) {
+      findings.push({ file: "robots.txt", line: null, message: "robots.txt 的 Sitemap URL 不正確" });
+    }
+  }
+
+  if (!existsSync(sitemapPath)) {
+    findings.push({ file: "sitemap.xml", line: null, message: "缺少 sitemap.xml" });
+    return findings;
+  }
+
+  const sitemap = readFileSync(sitemapPath, "utf8");
+  const required = [
+    `${SITE_CONFIG.url}/`,
+    ...["about.html", "projects.html", "research.html", "articles.html", "resume.html", "case-studies/yolo-system.html"]
+      .map((rel) => `${SITE_CONFIG.url}/${rel}`),
+  ];
+  for (const url of required) {
+    if (!sitemap.includes(`<loc>${url}</loc>`)) {
+      findings.push({ file: "sitemap.xml", line: null, message: `缺少公開頁面 URL：${url}` });
     }
   }
   return findings;

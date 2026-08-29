@@ -125,7 +125,7 @@ const projects = [
   },
   {
     id: "detection-data-engine",
-    name: "SDDE — 船舶偵測資料工程工作台",
+    name: "SDDE (DetectionData_Engine) — 船舶偵測資料工程工作台",
     slug: "SDDE",
     tier: 1,
     visible: true,
@@ -161,7 +161,7 @@ const projects = [
       "互動式捷運路線圖與站點詳情頁：PageRank 時序圖、偏好雷達圖"
     ],
     github: "https://github.com/samhung1205/MetroPulse",
-    demo:   "",
+    demo:   "https://metro-go.pages.dev",
     status: "completed"
   },
   {

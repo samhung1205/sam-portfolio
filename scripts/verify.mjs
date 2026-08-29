@@ -12,6 +12,7 @@
      D. css/style.css、css/article.css 的色彩 token 紀律
      E. _src/config/contrast.json 宣告的 WCAG 對比基準線
      F. 結構性 HTML 檢查（title/description/main/h1/aria-controls/內部連結）
+     G. canonical / Open Graph / Twitter Card / robots / sitemap
      H. 文章行動裝置換行修正（overflow-wrap）不回歸
      I. 產生頁（articles.html / articles/*.html）殼層是否為最新版本
    ========================================================= */
@@ -28,6 +29,7 @@ import {
   checkContrast,
   checkArticleRobustness,
   checkShellFreshness,
+  checkSeoFiles,
 } from "./lib/checks.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -89,6 +91,7 @@ run("C. navigation config", () => checkNavConfig(ROOT, htmlFiles, nav));
 run("D. color token discipline", () => checkColorTokenDiscipline(ROOT, ["css/style.css", "css/article.css"]));
 run("E. contrast", () => checkContrast(ROOT, "css/style.css", contrastConfig));
 run("F. structural HTML", () => checkStructuralHtml(ROOT, htmlFiles));
+run("G. SEO discovery", () => checkSeoFiles(ROOT));
 run("H. article robustness", () => checkArticleRobustness(ROOT));
 run("I. shell freshness", () => checkShellFreshness(ROOT, htmlFiles));
 
