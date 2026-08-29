@@ -3,19 +3,82 @@
    由 scripts/sync-notion.mjs 產生的頁面載入，設計 token 沿用 style.css
    ========================================================= */
 
-/* 列表頁 hero：沿用 page-hero 機制，補上背景圖 */
+/* Phase 4F：6.jpg 是「筆電 + 藍色全息程式碼」庫存渲染圖（7.jpg 的同系列），
+   同時踩到庫存插圖（MASTER.md §12）與藍系 AI-tech 色彩（§3）。比照
+   Projects／Resume／About／Research 拿掉背景圖，沿用中性漸層。 */
 .page-hero--articles {
-  --page-hero-image: url("../assets/images/6.jpg");
-  --page-hero-position: right center;
+  --page-hero-image: none;
 }
+
+.articles-intro { max-width: 58ch; }
+
+/* ---------- 文章列表：閱讀清單，不是專案卡牆 ---------- */
+.article-list {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+}
+.article-item {
+  position: relative;
+  padding: var(--space-5) var(--space-6) var(--space-5) 0;
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
+}
+.article-item:hover { background: rgb(var(--c-primary-rgb) / 0.03); }
+.article-item__date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--color-text-dim);
+}
+.article-item__title {
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-lg);
+}
+.article-item__title a { color: var(--color-text); }
+.article-item__title a:hover { color: var(--color-primary); }
+/* 整列都是點擊區，但可及名稱只有標題本身——日期與 tag 不會被讀進連結名稱。 */
+.article-item__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.article-item__title a:focus-visible { outline-offset: 4px; }
+.article-item__summary {
+  margin: var(--space-3) 0 0;
+  max-width: 62ch;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+.article-item .tag-list { margin-top: var(--space-3); }
+.article-item__cue {
+  position: absolute;
+  right: 0;
+  top: var(--space-5);
+  color: var(--color-text-dim);
+  font-size: var(--fs-sm);
+}
+.article-item:hover .article-item__cue { color: var(--color-primary); }
 
 /* 文章頁 hero */
 .article-hero {
   padding-bottom: var(--space-6);
   border-bottom: 1px solid var(--color-border);
 }
+.article-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+.article-back:hover { color: var(--color-primary); }
 .article-title {
-  max-width: 860px;
+  max-width: 20ch;
+  margin-top: var(--space-2);
   font-size: clamp(1.9rem, 4vw, var(--fs-3xl));
 }
 .article-meta {
@@ -29,16 +92,51 @@
 .article-meta i { color: var(--color-primary); margin-right: 6px; }
 .article-meta .tag-list { margin-top: 0; }
 
-/* 內文排版 */
+/* 內文排版
+   ---------------------------------------------------------
+   閱讀寬度：原本寫死 760px，實測是 75 個拉丁字元／行，超過 §4.3 訂的
+   62–65ch。改用 ch 讓它跟著字級走，取上限 65ch——換算成中文約 39 字／行，
+   也落在 CJK 常見的 35–45 區間，兩種語言都成立。 */
 .article-body {
-  max-width: 760px;
+  max-width: 65ch;
   margin: 0 auto;
 }
-.article-body h2,
-.article-body h3,
-.article-body h4 {
-  margin-top: var(--space-6);
+
+/* 標題節奏：原本 h2/h3/h4 共用同一個 margin-top，三級之間只剩字級差異，
+   在這種長篇筆記裡幾乎分不出章節層次。改成「上方留白隨層級遞減」，
+   讓 h2 讀起來是新章節、h3 是小節、h4 是段落標籤。 */
+.article-body h2 {
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-h3);
 }
+.article-body h3 {
+  margin-top: var(--space-7);
+  font-size: var(--fs-xl);
+}
+.article-body h4 {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-lg);
+  color: var(--color-text-muted);
+}
+.article-body h2:first-child,
+.article-body h3:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* 清單節奏：這類筆記的主體幾乎都是巢狀清單（本文 109 個 li／52 個 ul），
+   項目之間沒有間距時整段會糊成一團；巢狀層也需要一點上下留白。 */
+.article-body li { margin-bottom: var(--space-2); }
+.article-body li > ul,
+.article-body li > ol {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.article-body li:last-child { margin-bottom: 0; }
 .article-body figure {
   margin: var(--space-5) 0;
 }
@@ -63,14 +161,16 @@
   color: var(--color-text-muted);
 }
 .article-body blockquote p { margin: 0; }
+/* 行內 code：這種筆記整篇都是行內公式（本文 175 個），原本每一個都帶
+   1px 邊框 + 銅色字，整頁會變成一片框線與色點。拿掉邊框、字色回到內文色，
+   只留很淡的底色做區隔——密度高的時候「安靜」比「顯眼」更好讀。 */
 .article-body code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  padding: 0.15em 0.4em;
-  border-radius: 6px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border);
-  color: var(--color-primary-2);
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+  background: rgb(var(--c-text-rgb) / 0.05);
+  color: var(--color-text);
   overflow-wrap: anywhere;
 }
 .article-body a {
@@ -90,6 +190,7 @@
   padding: 0;
   border: none;
   background: transparent;
+  border-radius: 0;
   /* 同上，固定搭配深色底色的淺色字，跟站台的 light/dark 主題無關。 */
   color: #e2e8f0;
   font-size: var(--fs-sm);
@@ -123,10 +224,18 @@
   font-weight: 600;
   color: var(--color-text);
 }
+/* <hr> 在這類筆記裡是章節分隔，原本上下留白跟 h3 的 margin-top 一樣大，
+   讀起來不像斷點。加大留白讓它真的把章節切開。 */
 .article-body hr {
-  margin: var(--space-6) 0;
+  margin: var(--space-8) 0;
   border: none;
   border-top: 1px solid var(--color-border);
+}
+.article-body hr + h2,
+.article-body hr + h3 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 .table-wrap {
   margin: var(--space-5) 0;
@@ -152,6 +261,14 @@
   margin-right: 4px;
 }
 
-/* 列表卡片的標題連結沿用內文色 */
+/* 列表卡片的標題連結沿用內文色（保留給其他仍使用 .card 的情境） */
 .card__title a { color: var(--color-text); }
 .card__title a:hover { color: var(--color-primary); }
+/* Notion 沒填摘要時不要留下一個佔高度的空段落（模板已改為不輸出，
+   這條是既有產物的保險）。 */
+.card__summary:empty { display: none; }
+
+@media (max-width: 720px) {
+  .article-item { padding-right: var(--space-5); }
+  .article-body { max-width: 100%; }
+}

@@ -373,40 +373,45 @@ function pageShell({ title, description, rel, main }) {
   );
 }
 
-function articleCardHtml(a) {
+/* Phase 4F：列表改成閱讀清單列，不再用 Projects 的大卡片。文章數量少時
+   一整排大卡只會製造假密度；標題連結用 ::after 撐滿整列當點擊區（見
+   css/article.css .article-item__title a::after），可及名稱維持只有標題。
+   summary 為空時整段不輸出——Notion 沒填摘要時原本會留下一個空的
+   <p class="card__summary">。 */
+function articleItemHtml(a) {
   const tags = a.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
-  return `        <article class="card reveal">
-          <div class="card__header">
-            <div>
-              <span class="card__kicker">${escapeHtml(a.date)}</span>
-              <h3 class="card__title card__title--spaced"><a href="articles/${a.slug}.html">${escapeHtml(a.title)}</a></h3>
-            </div>
-          </div>
-          <p class="card__summary">${escapeHtml(a.summary)}</p>
-          ${tags ? `<div class="tag-list">${tags}</div>` : ""}
-          <div class="card__footer">
-            <a href="articles/${a.slug}.html"><i class="fa-solid fa-book-open"></i> 閱讀全文</a>
-          </div>
-        </article>`;
+  const summary = (a.summary || "").trim();
+  const rows = [
+    `<span class="article-item__date">${escapeHtml(a.date)}</span>`,
+    `<h3 class="article-item__title"><a href="articles/${a.slug}.html">${escapeHtml(a.title)}</a></h3>`,
+    summary ? `<p class="article-item__summary">${escapeHtml(summary)}</p>` : "",
+    tags ? `<div class="tag-list">${tags}</div>` : "",
+    `<span class="article-item__cue" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>`,
+  ].filter(Boolean);
+  return `          <li class="article-item reveal">\n${rows.map((r) => `            ${r}`).join("\n")}\n          </li>`;
 }
 
 function listingPageHtml(articles) {
-  const cards = articles.map(articleCardHtml).join("\n");
+  const items = articles.map(articleItemHtml).join("\n");
   const main = `    <section class="section page-hero page-hero--articles">
       <div class="container reveal">
-        <span class="section-eyebrow">// ARTICLES</span>
+        <span class="section-eyebrow">Articles</span>
         <h1>文章筆記</h1>
-        <p class="page-intro">
-          技術筆記與心得，在 Notion 撰寫、自動同步到這裡。涵蓋 AI Agent、演算法、軟體工程與數學。
+        <p class="page-intro articles-intro">
+          讀書筆記與技術整理，在 Notion 寫、自動同步到這裡。
+          這裡放的是「我在學什麼、怎麼記」——做出來的東西在 <a href="projects.html">Projects</a>。
         </p>
       </div>
     </section>
 
     <section class="section section--alt">
       <div class="container">
+        <header class="section-header reveal">
+          <h2>全部文章</h2>
+        </header>
         ${
           articles.length
-            ? `<div class="grid grid--2">\n${cards}\n        </div>`
+            ? `<ul class="article-list">\n${items}\n        </ul>`
             : `<p class="text-center">目前還沒有發佈的文章，敬請期待。</p>`
         }
       </div>
@@ -423,10 +428,10 @@ function articlePageHtml(a) {
   const tags = a.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
   const main = `    <section class="section article-hero">
       <div class="container reveal">
-        <span class="section-eyebrow">// ARTICLE</span>
+        <a class="article-back" href="../articles.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> 文章筆記</a>
         <h1 class="article-title">${escapeHtml(a.title)}</h1>
         <div class="article-meta">
-          <span><i class="fa-regular fa-calendar"></i> ${escapeHtml(a.date)}</span>
+          <span><i class="fa-regular fa-calendar" aria-hidden="true"></i> ${escapeHtml(a.date)}</span>
           ${tags ? `<span class="tag-list">${tags}</span>` : ""}
         </div>
       </div>
@@ -438,7 +443,7 @@ function articlePageHtml(a) {
 ${a.html}
         </article>
         <div class="btn-row btn-row--center">
-          <a class="btn btn--ghost" href="../articles.html"><i class="fa-solid fa-arrow-left"></i> 回文章列表</a>
+          <a class="btn btn--ghost" href="../articles.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> 回文章列表</a>
         </div>
       </div>
     </section>`;
@@ -563,7 +568,20 @@ async function main() {
   console.log(`完成：${articles.length} 篇文章 → articles.html + articles/*.html`);
 }
 
-main().catch((err) => {
-  console.error("同步失敗：", err);
-  process.exit(1);
-});
+/* 只有「直接執行這支腳本」時才跑同步。scripts/regen-articles.mjs 會
+   import 上面的 listingPageHtml / articlePageHtml 來用目前的模板重產
+   已提交的文章頁（不連 Notion）——沒有這個守衛的話，光是 import 就會
+   觸發一次真正的同步。CLI 行為完全不變：npm run sync、
+   npm run sync:fixture，以及 verify-fixture.mjs 用 execFileSync 起的
+   子行程都仍然是 entry point。 */
+const isEntryPoint =
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isEntryPoint) {
+  main().catch((err) => {
+    console.error("同步失敗：", err);
+    process.exit(1);
+  });
+}
+
+export { listingPageHtml, articlePageHtml };
