@@ -176,6 +176,13 @@ export function renderPage(page, nav) {
     .map((i) => `          <li><a class="nav__link" href="${pathPrefix}${i.href}">${i.label}</a></li>`)
     .join("\n");
 
+  // Contact 現在指向站內的 Resume 聯絡區。一般站內路徑需要和導覽項目
+  // 一樣套用 pathPrefix，才能從 case-studies/ 與 articles/ 等巢狀頁面
+  // 正確回到網站根目錄；mailto:/https:/# 等特殊目標則維持原值。
+  const contactHref = /^(?:[a-z][a-z\d+.-]*:|#)/i.test(nav.contact.href)
+    ? nav.contact.href
+    : `${pathPrefix}${nav.contact.href}`;
+
   const extraCss = (page.extraCss ?? [])
     .map((href) => `\n  <link rel="stylesheet" href="${pathPrefix}${href}?v=${BUILD_VERSION}" />`)
     .join("");
@@ -203,7 +210,7 @@ export function renderPage(page, nav) {
     brandHtml,
     menuId: nav.menuId,
     navItems,
-    contactHref: nav.contact.href,
+    contactHref,
     contactLabel: nav.contact.label,
   });
 

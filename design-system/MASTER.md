@@ -197,7 +197,7 @@ Unchanged from the legacy system — this part was already sound.
 **[RULE] Preserve the current 6 items and structure:** Home, About, Projects, Research, Articles, Resume. **Do not restructure.** (Note: this differs from the legacy doc's "recommended" list, which included Contact and omitted Articles — that recommendation is superseded; Articles is real, shipped content and stays.)
 
 **[RULE] Direct-contact nav affordance (new).**
-- Wide desktop: current 6 nav items + a compact, filled, **labelled** Contact action, `mailto:` direct, 44px min-height.
+- Wide desktop: current 6 nav items + a compact, filled, **labelled** Contact action to `resume.html#contact`, 44px min-height.
 - Constrained laptop width: all 6 nav destinations are preserved — the IA does not shrink. If the labelled Contact action starts crowding the nav at this width, **collapse Contact to a 44×44 icon-only action first**, before touching anything else.
 - Mobile: existing disclosure/hamburger behavior, Contact collapses to 44×44 icon-only. (A first prototype pass shipped Contact at 198px wide on mobile and visibly crowded the header — confirmed by testing, fixed by icon-only collapse.)
 
@@ -265,7 +265,7 @@ No marketing language, no headline padding. The supporting line was specifically
 | Priority | Label | Target |
 |---|---|---|
 | Primary | View Projects | `projects.html` |
-| Secondary | Contact Me | `mailto:` direct |
+| Secondary | Contact Me | `resume.html#contact` |
 | Tertiary | Download Resume | `assets/files/resume.pdf` |
 
 Weight expressed through fill/size/font-weight, not just position — legacy shipped these at inverted widths (tertiary widest at 187px vs primary's 159px). Target proportions: primary filled and widest, secondary outlined, tertiary a plain text link with no icon.
@@ -329,9 +329,7 @@ Verified exact at two sizes during prototyping:
 
 **[RULE] Only the strongest 1–2 projects get a full Case Study page.** Everything else stays at Tier 2/3 depth. Do not build case-study infrastructure for every project.
 
-**[RULE] Card height is content-driven.** Do not encode prototype measurements (e.g. a validated "486px vs 640px" comparison) as fixed production heights — those numbers were evidence that the *density reduction* worked, not target pixel values. If content changes, height changes with it.
-
-*(Implementation note, not a design rule: CSS Grid's default `align-items: stretch` will silently force a shorter Tier-1 card back up to match a taller row-sibling. This was caught during prototyping — the fix is `align-items: start` on the grid **and** overriding the base `.card { height: 100% }` rule for cards inside this grid, since `height:100%` re-introduces the stretch even with `align-items:start` set. Flagging here so the same bug isn't rediscovered during implementation.)*
+**[RULE] Card height remains content-driven; never encode fixed production heights.** The two Home Tier-1 cards are one deliberate comparison pair, so their outer surfaces stretch to equal height while they share a row and their CTAs align at the bottom. This is grid alignment, not a fixed pixel height. Once the layout becomes single-column, each card returns to its natural content height. Other project tiers remain natural-height.
 
 ---
 
@@ -381,10 +379,11 @@ Requirements:
 
 ## 15. Contact
 
-**[RULE] Direct contact is a core conversion path**, not a secondary afterthought living at the bottom of another page.
+**[RULE] Direct contact is a core conversion path.** It must also give deterministic browser feedback instead of depending entirely on whether the visitor configured a desktop mail handler.
 
-- **Retired:** the `resume.html#contact` cross-page jump used by the old hero and CTA-panel buttons. Measured at 3208px into a 3854px page in the legacy implementation — effectively unreachable as a "primary" action.
-- **New:** every contact entry point (hero secondary CTA, nav action, footer) routes to `mailto:` directly.
+- **Navigation and general Home CTAs:** route to `resume.html#contact`, where Email, GitHub and LinkedIn are visible choices.
+- **Explicit Email links:** retain `mailto:` and prefill the recipient and a short subject. Keep the address visible so it can still be copied when no default mail application is configured.
+- **Avoid duplicate actions:** the Resume contact section does not need a separate “寄信給我” button beside an already fully clickable Email row.
 - Desktop nav: compact filled Contact pill, 44px min-height.
 - Mobile nav: 44×44 icon-only Contact target.
 - Hero Contact stays **secondary** to View Projects — contact is important, but action on real work is the primary ask.

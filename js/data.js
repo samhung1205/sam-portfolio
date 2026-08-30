@@ -281,8 +281,8 @@ const contacts = [
     icon: "fa-envelope",
     label: "Email",
     value: profile.email,
-    href: `mailto:${profile.email}`,
-    hint: "歡迎合作、面試邀請或技術討論"
+    href: `mailto:${profile.email}?subject=${encodeURIComponent("Portfolio inquiry")}`,
+    hint: "開啟預設郵件程式；歡迎合作、面試邀請或技術討論"
   },
   {
     icon: "fa-brands fa-github",

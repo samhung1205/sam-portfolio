@@ -94,10 +94,11 @@
     const social = renderTarget("footer-social");
     if (social && data.profile) {
       const { github, linkedin } = data.profile.links;
+      const emailHref = `mailto:${data.profile.email}?subject=${encodeURIComponent("Portfolio inquiry")}`;
       social.innerHTML = `
         <li><a href="${escape(github)}"   aria-label="GitHub"   target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a></li>
         <li><a href="${escape(linkedin)}" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a></li>
-        <li><a href="mailto:${escape(data.profile.email)}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a></li>
+        <li><a href="${escape(emailHref)}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a></li>
       `;
     }
   }
@@ -152,18 +153,16 @@
       `).join("");
     }
 
-    // Featured Projects：與 Projects 頁同一份 tier/visible 事實來源，
-    // 只是首頁最多放 3 筆、且只有第一張用 Tier 1 降密度版型（首頁的
-    // .project-bento 一列只容得下一張跨欄大卡）。用 tier 排序而不是靠
-    // 陣列位置，data.js 調順位時首頁不會跟 Projects 頁講不同的故事。
+    // Featured Projects：首頁只呈現資料中真正標為 Tier 1 的專案，
+    // 並全部使用精簡版型。Tier 2/3 仍完整保留在 Projects 頁，避免把
+    // 不同內容密度硬塞進同一個首頁 grid，造成空洞與錯位。
     const featProj = renderTarget("featured-projects");
     if (featProj && data.projects) {
       const top = visibleProjects()
-        .slice()
-        .sort((a, b) => (a.tier || 2) - (b.tier || 2))
-        .slice(0, 3);
+        .filter(p => (p.tier || 2) === 1)
+        .slice(0, 2);
       featProj.innerHTML = top
-        .map((p, i) => projectCardHTML(p, { featured: i === 0 }))
+        .map(p => projectCardHTML(p, { featured: true }))
         .join("");
     }
 
@@ -322,7 +321,7 @@
          </div>`;
 
     return `
-      <article id="project-${id}" class="card project-card project-card--${id} reveal">
+      <article id="project-${id}" class="card project-card project-card--${id}${featured ? " project-card--featured" : ""} reveal">
         <div class="card__thumb" aria-hidden="true">
           <span>${escape(p.slug || p.name)}</span>
         </div>
