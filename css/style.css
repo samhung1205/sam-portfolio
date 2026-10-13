@@ -927,6 +927,8 @@ nav[aria-label="Primary navigation"] {
   margin-bottom: var(--space-3);
 }
 .card__header > div { min-width: 0; }
+.research-card .card__header { flex-wrap: wrap; }
+.research-card .card__header > div { flex: 1 1 240px; }
 .card__title {
   font-size: var(--fs-lg);
   margin: 0;
@@ -987,8 +989,8 @@ nav[aria-label="Primary navigation"] {
 
 
 /* Project thumbnail — 完成版中性 fallback（design-system/MASTER.md
-   §12）：State A（有真實圖）由 <img class="card__thumb" ...
-   object-fit:cover> 取代這組樣式；State B（尚無真實圖）用中性填色 +
+   §12）：State A（有真實圖）使用可點開原圖的 WebP 預覽；
+   object-fit:contain 保留完整介面，不裁掉工具列或標註；State B（尚無真實圖）用中性填色 +
    既有 slug 做安靜的字磚，不用漸層、不用虛線、不假裝有內容。 */
 .card__thumb {
   height: 160px;
@@ -999,6 +1001,18 @@ nav[aria-label="Primary navigation"] {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.card__thumb--image { overflow: hidden; }
+.card__thumb--image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.project-feature__thumb.card__thumb--image {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 10;
+  align-self: center;
 }
 .card__thumb span {
   font-family: var(--font-heading);

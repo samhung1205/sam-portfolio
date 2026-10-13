@@ -1,0 +1,23 @@
+# GitHub Pages（分支根目錄／Jekyll）：文件與開發來源保留在 Git，不發布到網站。
+exclude:
+  - docs
+  - _drafts
+  - _src
+  - design-system
+  - scripts
+  - AGENTS.md
+  - CLAUDE.md
+  - README.md
+  - package.json
+  - package-lock.json
+  - node_modules
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - gemfiles
+  - .sass-cache
+  - .jekyll-cache
+  - .env
+  - .env.example
+  - .github
+  - .gitignore

@@ -224,9 +224,7 @@
 
     return `
       <article id="project-${escape(p.id)}" class="project-feature project-feature--${escape(p.id)} reveal">
-        <div class="card__thumb project-feature__thumb" aria-hidden="true">
-          <span>${escape(p.slug || p.name)}</span>
-        </div>
+        ${projectThumbnailHTML(p, "project-feature__thumb")}
         <div class="project-feature__body">
           <div class="card__header">
             <div>
@@ -277,10 +275,26 @@
    *   單一「View Case Study」（design-system/MASTER.md §11）。projects.html
    *   的完整列表與首頁 Tier 2/3 都不傳這個 flag，維持原本完整內容。
    */
+  function projectThumbnailHTML(p, extraClass = "") {
+    if (p.access === "personal" && !p.image) return "";
+    const classes = `card__thumb ${extraClass}`.trim();
+    if (!p.image) {
+      return `<div class="${classes}" aria-hidden="true"><span>${escape(p.slug || p.name)}</span></div>`;
+    }
+    return `<a class="${classes} card__thumb--image" href="${escape(p.image.original || p.image.src)}"
+               target="_blank" rel="noopener" aria-label="${escape(p.name)}：開啟完整介面截圖（新分頁）">
+              <img src="${escape(p.image.src)}" alt="${escape(p.image.alt)}"
+                   width="${p.image.width}" height="${p.image.height}" loading="lazy" decoding="async" />
+            </a>`;
+  }
+
   function projectCardHTML(p, opts = {}) {
     const featured = !!opts.featured;
     const id = escape(p.id || "default");
-    const s = statusMap[p.status] || statusMap["planned"];
+    const personal = p.access === "personal";
+    const s = personal
+      ? { cls: "status--planned", text: "個人使用" }
+      : statusMap[p.status] || statusMap["planned"];
     const tags = (p.tech || []).map(t => `<span class="tag">${escape(t)}</span>`).join("");
     const highlights = (p.highlights || [])
       .map(h => `<li>${escape(h)}</li>`).join("");
@@ -315,16 +329,15 @@
              ${p.caseStudy ? "View Case Study" : "View Project"} <i class="fa-solid fa-arrow-right"></i>
            </a>
          </div>`
-      : `<div class="card__footer">
-           ${githubLink}
-           ${demoLink}
-         </div>`;
+      : personal
+        ? `<div class="card__footer"><span class="card__meta">原始碼與使用網址未公開展示</span></div>`
+        : hasGithub || hasDemo
+          ? `<div class="card__footer">${githubLink}${demoLink}</div>`
+          : "";
 
     return `
       <article id="project-${id}" class="card project-card project-card--${id}${featured ? " project-card--featured" : ""} reveal">
-        <div class="card__thumb" aria-hidden="true">
-          <span>${escape(p.slug || p.name)}</span>
-        </div>
+        ${projectThumbnailHTML(p)}
         <div class="card__header">
           <div>
             <span class="card__kicker">Project</span>
@@ -360,13 +373,14 @@
     const links = r.links || {};
     const linkRow = Object.entries(links).map(([k, v]) => {
       if (!v || v === "#") return "";
-      return `<a href="${escape(v)}" target="_blank" rel="noopener">
-                <i class="fa-solid fa-up-right-from-square"></i> ${escape(k)}
+      const newTab = /^(?:https?:|.*\.pdf(?:[?#]|$))/i.test(v);
+      return `<a href="${escape(v)}"${newTab ? ' target="_blank" rel="noopener"' : ""}>
+                <i class="fa-solid ${newTab ? "fa-up-right-from-square" : "fa-arrow-right"}" aria-hidden="true"></i> ${escape(k)}
               </a>`;
     }).join("");
 
     return `
-      <article class="card reveal">
+      <article class="card research-card reveal">
         <div class="card__header">
           <div>
             <span class="section-eyebrow section-eyebrow--compact">${escape(r.type)}</span>

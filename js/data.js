@@ -19,7 +19,7 @@ const profile = {
     "擅長將影像辨識、資料分析與工程實作結合，建立可落地的智慧系統。",
   proof: [
     { icon: "fa-location-dot", label: "Taiwan" },
-    { icon: "fa-graduation-cap", label: "M.S. Applied Math" },
+    { icon: "fa-graduation-cap", label: "M.S. Candidate" },
     { icon: "fa-trophy", label: "TSMC IT CareerHack 1st Place" },
     { icon: "fa-circle-check", label: "Open to opportunities", live: true }
   ],
@@ -101,6 +101,13 @@ const skills = [
 const projects = [
   {
     id: "yolo-system",
+    image: {
+      src: "assets/images/previews/YoloSystem.webp",
+      original: "assets/images/YoloSystem.png",
+      alt: "YOLO System Web Console 儀表板，包含物件偵測、偵測紀錄與 AI Chat 功能入口",
+      width: 1200,
+      height: 525
+    },
     name: "YOLO System — 桌面 ＋ Web 雙軌平台",
     slug: "YOLO",
     tier: 1,
@@ -108,7 +115,8 @@ const projects = [
     summary:
       "把一支 UI、業務邏輯與 SQL 全部耦合在一起的 PySide6 桌面程式，" +
       "重構成 FastAPI 後端搭配 React Web 前端、桌面版共用同一組 API 的雙軌平台，" +
-      "並在過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL。",
+      "並在過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL。" +
+      "核心功能已完成，持續維護與優化，尚未部署公開網站。",
     tech: ["FastAPI", "React", "PySide6", "LangGraph", "YOLO", "SQLAlchemy"],
     role: "系統架構與全端實作（後端 / Web / 桌面）",
     highlights: [
@@ -121,10 +129,17 @@ const projects = [
     // 只有真的存在案例研究頁的專案才有這個欄位——沒有就不渲染 CTA，
     // 不指向不存在的頁面（design-system/MASTER.md §9/§20）。
     caseStudy: "case-studies/yolo-system.html",
-    status: "in-progress"
+    status: "completed"
   },
   {
     id: "detection-data-engine",
+    image: {
+      src: "assets/images/previews/SDDE.webp",
+      original: "assets/images/SDDE.png",
+      alt: "SDDE 桌面工作台，顯示港口影像、目標標註框與類別清單",
+      width: 1200,
+      height: 749
+    },
     name: "SDDE (DetectionData_Engine) — 船舶偵測資料工程工作台",
     slug: "SDDE",
     tier: 1,
@@ -145,7 +160,50 @@ const projects = [
     status: "completed"
   },
   {
+    id: "lifeops",
+    name: "LifeOps — 私人 AI 工作助理",
+    tier: 2,
+    visible: true,
+    access: "personal",
+    summary:
+      "將任務、Gmail 待辦、Google Calendar 與 GitHub 專案動態整合成私人工作空間。" +
+      "以 AI 協助辨識信件中的行動與期限、整理今日工作及產生回覆提案，" +
+      "搭配同步、重試與用量管理；Gmail 草稿建立由使用者審閱確認。",
+    tech: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Gemini", "Google OAuth", "GitHub App"],
+    role: "個人開發（全端與 AI 工作流程整合）",
+    highlights: [
+      "增量同步與可續作游標，保留資料來源與期限的時區脈絡",
+      "AI 輸出經 schema 驗證，低信心度或缺乏依據的期限交由使用者確認",
+      "單一擁有者存取、資料庫 RLS 與 AI 用量管理；不自動寄信"
+    ]
+  },
+  {
+    id: "scamshield",
+    name: "ScamShield — 防詐風險分析 PWA",
+    tier: 2,
+    visible: true,
+    access: "personal",
+    summary:
+      "針對可疑訊息、網址、截圖與 QR code，提供可解釋的風險訊號與查證建議。" +
+      "OCR 與 QR 解析在瀏覽器端執行；風險分數與證據充分程度分開處理，" +
+      "選用的 AI 只協助說明，不決定風險結果。",
+    tech: ["React", "TypeScript", "Cloudflare Workers", "D1", "Tesseract.js", "ZXing WASM", "IndexedDB"],
+    role: "個人開發（前端、風險引擎與 API 整合）",
+    highlights: [
+      "裝置端 OCR／QR 與本機歷史紀錄，圖片不需上傳解析",
+      "區分確認威脅情報、啟發式訊號與資訊不足，AI 說明驗證失敗時保留模板",
+      "建立規則測試與語料評估流程，記錄已知漏判；真實世界辨識率仍待驗證"
+    ]
+  },
+  {
     id: "metropulse",
+    image: {
+      src: "assets/images/previews/MetroPulse.webp",
+      original: "assets/images/MetroPulse.png",
+      alt: "MetroPulse 捷運推薦介面，包含出發站、時段、偏好設定與互動路線圖",
+      width: 1200,
+      height: 790
+    },
     name: "MetroPulse 捷運站點推薦系統",
     slug: "MP",
     tier: 2,
@@ -190,25 +248,28 @@ const projects = [
 
 
 /* ---------------- 研究 (Research) ---------------- */
-/* Phase 4E：論文尚未完成，因此這裡只描述「在做什麼、怎麼驗證」，
-   不寫最終 mAP、不寫結論、不放論文 PDF 連結。links 內的值若是 "#"
-   會被 researchCardHTML 濾掉，不會渲染成假連結。 */
+/* 碩士論文已完成（2026-09）；題目、摘要與結果以 assets/files/Thesis.pdf
+   為準。目前仍在學，預計 2027 年 3–4 月畢業，教育期間維持 Present。
+   links 內的值若是 "#"，不會渲染成假連結。 */
 const research = [
   {
     id: "thesis-ship-detection",
-    type: "Master Thesis · 進行中",
-    title: "多尺度環境下的船舶偵測",
+    type: "Master’s Thesis · 2026.09",
+    title: "跨域港口與機場目標偵測：YOLO11 模組變體、資料增強與圖形化介面研究支援系統",
     summary:
-      "研究在尺度差異大、背景複雜的遙測與航空影像中，如何提升船舶偵測的穩定度。" +
-      "以 YOLO11 為基礎比較不同特徵擷取模組，並建立可重複的評估流程。",
-    keywords: ["Ship Detection", "YOLO11", "Computer Vision", "Multi-scale"],
+      "以四類港口與三類機場目標建立七類跨域偵測設定，比較 YOLO11n、EfficientViM、DySample 與 ASFF。" +
+      "從錯誤分析出發，檢查標註修正與港口領域監督對偵測表現的影響，並建置兩套 GUI 支援研究流程。",
+    keywords: ["YOLO11", "Cross-domain Detection", "Data-centric AI", "GUI Research Tools"],
     highlights: [
-      "建立含多尺度船舶標註的自訂資料集，並持續處理標註一致性",
-      "在同一套流程下比較不同特徵擷取模組，控制變因以便對照",
-      "評估流程以 mAP 為指標；結論待論文完成後才會公開"
+      "各架構在任務、類別與指標間各有取捨，沒有單一架構普遍占優",
+      "固定評估基準下，部分船舶標註修正使 YOLO11n mAP@50 由 76.2% 提升至 77.0%",
+      "資料增強採合併處理，尚無組件式消融；船種輔助器保留人工最終確認"
     ],
-    status: "in-progress",
-    links: {}
+    status: "completed",
+    links: {
+      "研究摘要": "research.html#thesis-overview",
+      "閱讀完整論文（PDF）": "assets/files/Thesis.pdf"
+    }
   },
   {
     id: "agent-verifiability",
@@ -236,9 +297,9 @@ const resume = {
   education: [
     {
       date: "09/2024 – Present",
-      title: "數學建模與科學計算碩士",
+      title: "數學建模與科學計算碩士班（在學）",
       org: "國立陽明交通大學（NYCU）· 數科所",
-      desc: "研究方向為科學計算與影像辨識。碩士論文進行中，題目為多尺度環境下的船舶偵測；研究內容見 Research 頁。"
+      desc: "預計於 2027 年 3–4 月畢業。研究方向為科學計算與影像辨識；碩士論文已於 2026 年 9 月完成，研究跨域港口與機場目標偵測、資料增強與 GUI 研究支援；摘要與完整 PDF 見 Research 頁。"
     },
     {
       date: "09/2020 – 06/2024",
@@ -256,6 +317,12 @@ const resume = {
         "把一支 UI、業務邏輯與 SQL 耦合在同一層的 PySide6 桌面程式，重構成桌面版與 React Web 共用同一組 FastAPI 後端的偵測平台，" +
         "過程中修掉明文密碼、硬編碼金鑰與字串拼接 SQL；另建一套 PyQt6 資料工程工作台，處理標註、YOLO 格式匯入匯出與資料集品質檢查。",
       tech: "FastAPI · SQLAlchemy / Alembic · React · PySide6 / PyQt6 · LangGraph · MySQL"
+    },
+    {
+      date: "09/2024 – 08/2026",
+      title: "微積分課程教學助理",
+      org: "國立陽明交通大學（NYCU）",
+      desc: "協助微積分課程教學與課務管理，開發 AI Agent 輔助學生報名與課務流程；獲 114 學年度優良教學助理獎。"
     }
   ],
   /* Phase 4D 曾有一筆「2023 – 2024 研究專題：台北捷運人流分析」的經歷，
@@ -269,7 +336,19 @@ const resume = {
       date: "2026",
       title: "TSMC IT CareerHack 冠軍",
       org: "台積電",
-      desc: "競賽主題為 legacy code 重構與 AI Agent 應用。"
+      desc: "團隊以 AI 輔助 legacy code 重構與驗證流程，包含 C→Rust 遷移與 MVC 架構解耦。"
+    },
+    {
+      date: "114 學年度",
+      title: "優良教學助理獎",
+      org: "國立陽明交通大學（NYCU）",
+      desc: "於微積分課程教學助理任職期間獲獎。"
+    },
+    {
+      date: "2022",
+      title: "最佳研究獎",
+      org: "2022 Applied Mathematics Conference",
+      desc: "臺北捷運人流分析專題，負責數學建模、Python 實作與結果解讀。"
     }
   ]
 };

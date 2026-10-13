@@ -1,7 +1,7 @@
 <!--meta
 {
   "title": "Research · Sam Hung",
-  "description": "研究方向：多尺度環境下的船舶偵測（碩士論文進行中），以及 agent 系統的可驗證性探索。"
+  "description": "研究成果：跨域港口與機場目標偵測碩士論文（2026 年 9 月完成），以及 agent 系統的可驗證性探索。"
 }
 -->
     <!-- ===== Research Focus ===== -->
@@ -11,7 +11,7 @@
         <h1>研究</h1>
         <p class="page-intro research-lede">
           我關心的問題是：一個模型或一套系統，怎麼證明它真的有效。
-          目前有兩條線——碩士論文的多尺度船舶偵測，以及 agent 回答可驗證性的實作探索。
+          已完成的碩士論文聚焦跨域港口與機場目標偵測；另一條持續探索的方向是 agent 回答的可驗證性。
         </p>
         <p class="research-scope">
           這一頁講的是「在研究什麼、怎麼驗證」；把它做成軟體的部分在
@@ -20,16 +20,55 @@
       </div>
     </section>
 
-    <!-- ===== Current Research ===== -->
+    <!-- ===== Research Work ===== -->
     <section class="section section--alt">
       <div class="container">
         <header class="section-header reveal">
-          <span class="section-eyebrow">Current Research</span>
-          <h2>正在進行的研究</h2>
-          <p>兩項都在進行中。尚未完成的結論不會提前寫在這裡。</p>
+          <span class="section-eyebrow">Research Work</span>
+          <h2>研究成果與持續探索</h2>
+          <p>碩士論文已完成並提供全文；agent 回答可驗證性仍在持續探索。</p>
         </header>
 
         <div class="grid grid--2" data-render="research-grid"><!-- JS 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ===== Completed Thesis Overview ===== -->
+    <section class="section" id="thesis-overview">
+      <div class="container">
+        <div class="about-prose reveal">
+          <h2>碩士論文：跨域港口與機場目標偵測</h2>
+          <p>
+            <strong>完整題目：</strong>跨域港口與機場目標偵測：YOLO11 模組變體、資料增強與圖形化介面研究支援系統。<br />
+            國立陽明交通大學 · 數學建模與科學計算 · 2026 年 9 月完成。
+          </p>
+          <h3>研究問題與方法</h3>
+          <p>
+            港口與機場影像的目標尺度、密度與背景差異很大。我以四類港口與三類機場目標建立七類跨域偵測設定，
+            比較 YOLO11n 與 EfficientViM、DySample、ASFF 模組變體；再從錯誤分析出發，
+            檢查船舶標註修正，以及港口車輛人工標註、車輛與船載航空器前景合成的合併處理。
+            兩套 GUI 工具支援資料建置、標註審查、推論與結果分析。
+          </p>
+          <h3>主要結果</h3>
+          <ul>
+            <li>模型架構在不同任務、類別與指標之間各有取捨，沒有單一架構普遍占優。</li>
+            <li>固定評估基準下，部分船舶訓練標註修正使 YOLO11n 的 mAP@50 從 76.2% 提升至 77.0%（增加 0.8 個百分點），其他船舶 AP@50 從 41.9% 提升至 45.0%。</li>
+            <li>合併加入港口領域監督後，三種架構在完整測試集上的 mAP@50、mAP@50–95 與兩類車輛 AP@50 均提升，個別類別與場景仍有差異。</li>
+            <li>研究人員提供參考框後，船種輔助器能提出候選類別，協助漏標審查；最終標註由人工確認。</li>
+          </ul>
+          <h3>結果的適用範圍</h3>
+          <p>
+            多數偵測比較為單次實驗，結果屬描述性證據。船舶標註修正僅涵蓋部分訓練資料；
+            三項港口監督同時加入，未做組件式消融，不能分別歸因。
+            港口特定評估規模較小，最終七類模型亦尚無對應的建構式船載航空器測試結果。
+            GUI 功能驗證不等同已證明使用效率或部署成熟度。
+          </p>
+          <p class="research-note">以上摘要依論文摘要、第 5 章與第 6 章整理。完整方法、結果表格與限制請見全文。</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="assets/files/Thesis.pdf" target="_blank" rel="noopener">閱讀完整論文（PDF，約 15 MB）</a>
+            <a class="btn btn--ghost" href="assets/files/Thesis.pdf" download>下載論文 PDF</a>
+          </div>
+        </div>
       </div>
     </section>
 
