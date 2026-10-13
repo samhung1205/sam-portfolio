@@ -44,6 +44,8 @@ Notion：<https://app.notion.com/p/PySide6-Web-YOLO-System-3f8810f2a7c481f1b265c
 
 ## 發布界線
 
+2026-10-13 後續：文章正文備份、欄位與本報告已隨網站更新提交至 Git，網站部署完成；Notion 文章仍為 Draft，沒有發布成正式 Articles 頁。詳見 [網站發布紀錄](2026-10-13-release.md)。以下為先前入稿階段的範圍紀錄。
+
 目前 Articles 正式列表仍為空。已依本人要求寫入 Notion 草稿，沒有切換 Published、執行正式同步、commit、push 或部署。
 
 本人可直接在 Notion 繼續編輯；決定發布時再設定 Published 與 PublishedAt，由既有流程同步。草稿已附 Markdown、metadata 與使用現有文章模板的隔離本機預覽，不需為此改變網站架構。
